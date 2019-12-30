@@ -11,7 +11,8 @@ define( require => {
   // modules
   const Sim = require( 'JOIST/Sim' );
   const SimLauncher = require( 'JOIST/SimLauncher' );
-  const NormalModesScreen = require( 'NORMAL_MODES/normal-modes/NormalModesScreen' );
+  const TwoDimensionsScreen = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsScreen' );
+  const OneDimensionScreen = require( 'NORMAL_MODES/one-dimension/OneDimensionScreen' );
   const Tandem = require( 'TANDEM/Tandem' );
 
   // strings
@@ -34,7 +35,9 @@ define( require => {
   // until the images are fully loaded, see https://github.com/phetsims/coulombs-law/issues/70
   SimLauncher.launch( () => {
     const sim = new Sim( normalModesTitleString, [
-      new NormalModesScreen( Tandem.ROOT.createTandem( 'normalModesScreen' ) )
+      // new IntroScreen ..., TODO
+      new OneDimensionScreen( Tandem.ROOT.createTandem( 'oneDimensionScreen' ) ),
+      new TwoDimensionsScreen( Tandem.ROOT.createTandem( 'normalModesScreen' ) ),
     ], simOptions );
     sim.start();
   } );

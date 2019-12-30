@@ -1,5 +1,11 @@
 {
   "normal-modes.title": {
     "value": "Normal Modes"
+  },
+  "screen.one-dimension": {
+    "value": "One Dimension"
+  },
+  "screen.two-dimensions": {
+    "value": "Two Dimensions"
   }
 }

@@ -10,12 +10,12 @@ define( require => {
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   const ScreenView = require( 'JOIST/ScreenView' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
-  const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
+  const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
 
-  class NormalModesScreenView extends ScreenView {
+  class TwoDimensionsScreenView extends ScreenView {
 
     /**
-     * @param {NormalModesModel} model
+     * @param {TwoDimensionsModel} model
      * @param {Tandem} tandem
      */
     constructor( model, tandem ) {
@@ -30,8 +30,8 @@ define( require => {
           model.reset();
           this.reset();
         },
-        right: this.layoutBounds.maxX - NormalModesConstants.SCREEN_VIEW_X_MARGIN,
-        bottom: this.layoutBounds.maxY - NormalModesConstants.SCREEN_VIEW_Y_MARGIN,
+        right: this.layoutBounds.maxX - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
+        bottom: this.layoutBounds.maxY - TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
       this.addChild( resetAllButton );
@@ -55,5 +55,5 @@ define( require => {
     }
   }
 
-  return normalModes.register( 'NormalModesScreenView', NormalModesScreenView );
+  return normalModes.register( 'TwoDimensionsScreenView', TwoDimensionsScreenView );
 } );

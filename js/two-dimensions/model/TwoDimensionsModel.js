@@ -12,7 +12,7 @@ define( require => {
   /**
    * @constructor
    */
-  class NormalModesModel  {
+  class TwoDimensionsModel  {
 
     /**
      * @param {Tandem} tandem
@@ -39,5 +39,5 @@ define( require => {
     }
   }
 
-  return normalModes.register( 'NormalModesModel', NormalModesModel );
+  return normalModes.register( 'TwoDimensionsModel', TwoDimensionsModel );
 } );
