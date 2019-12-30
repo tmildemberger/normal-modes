@@ -11,7 +11,7 @@ define( require => {
     // modules
 
     const Color = require( 'SCENERY/util/Color' );
-    const Dimension2 = require( 'DOT/Dimension2' );
+    const PhetFont = require( 'SCENERY_PHET/PhetFont' );
 
     const normalModes = require( 'NORMAL_MODES/normalModes' );
 
@@ -24,8 +24,6 @@ define( require => {
   
       SCREEN_VIEW_X_MARGIN: 15,
       SCREEN_VIEW_Y_MARGIN: 15,
-
-      viewSize: new Dimension2( 768, 504 ),
 
       blueUpColor: new Color( 'hsl(210,70%,75%)' ),
       blueOverColor: new Color( 'hsl(210,90%,80%)' ),
@@ -44,6 +42,8 @@ define( require => {
 
       // how much to horizontally shift the window (to center)
       windowShift: 1,
+
+      phetFont: new PhetFont( 14 ),
 
   
       //TODO

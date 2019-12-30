@@ -8,11 +8,12 @@ define( require => {
 
   // modules
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
-  const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
   const ScreenView = require( 'JOIST/ScreenView' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
   const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
+
+  const OptionsPanel = require( 'NORMAL_MODES/common/OptionsPanel' );
 
   class OneDimensionScreenView extends ScreenView {
 
@@ -26,9 +27,6 @@ define( require => {
         tandem: tandem
       } );
 
-      const centerControlX = NormalModesConstants.viewSize.width / 2;
-      const centerControlY = NormalModesConstants.viewSize.height - 131;
-
       const resetAllButton = new ResetAllButton( {
         listener: () => {
           this.interruptSubtreeInput(); // cancel interactions that may be in progress
@@ -40,28 +38,26 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
-      const playPauseButtonOptions = {
-        upFill: NormalModesConstants.blueUpColor,
-        overFill: NormalModesConstants.blueOverColor,
-        disabledFill: NormalModesConstants.blueDisabledColor,
-        downFill: NormalModesConstants.blueDownColor,
-        backgroundGradientColorStop0: NormalModesConstants.buttonBorder0,
-        backgroundGradientColorStop1: NormalModesConstants.buttonBorder1,
-        innerButtonLineWidth: 1
+      const PANEL_OPTIONS = {
+        cornerRadius: 5,
+        fill: 'rgb( 254, 235, 214 )',
+        xMargin: 10,
+        yMargin: 10,
+        maxWidth: 180,
+        minWidth: 180
       };
-      const playPauseButton = new PlayPauseButton( model.playProperty, {
-        x: centerControlX + 45,
-        centerY: centerControlY,
-        scale: 0.6,
-        scaleFactorWhenPaused: 1.25,
-        touchAreaDilation: 12,
-        pauseOptions: playPauseButtonOptions,
-        playOptions: playPauseButtonOptions
-      } );
 
+      const optionsPanel = new OptionsPanel(
+        model.playProperty,
+        model.speedProperty,
+        model.numVisibleMassesProperty,
+        PANEL_OPTIONS,
+        model
+      );
 
-      this.addChild( playPauseButton );
+      this.addChild( optionsPanel );
       this.addChild( resetAllButton );
+      
     }
 
     /**

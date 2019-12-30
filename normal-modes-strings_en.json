@@ -7,5 +7,14 @@
   },
   "screen.two-dimensions": {
     "value": "Two Dimensions"
+  },
+  "options-panel.speed": {
+    "value": "Speed"
+  },
+  "options-panel.initial-positions": {
+    "value": "Initial Positions"
+  },
+  "options-panel.zero-positions": {
+    "value": "Zero Positions"
   }
 }
