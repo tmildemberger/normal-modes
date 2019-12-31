@@ -18,17 +18,23 @@ define( require => {
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
     const TextPushButton = require( 'SUN/buttons/TextPushButton' );
+    const StepButton = require( 'SCENERY_PHET/buttons/StepButton' );
     const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
     const NumberControl = require( 'SCENERY_PHET/NumberControl' );
     const Dimension2 = require( 'DOT/Dimension2' );
     const Panel = require( 'SUN/Panel' );
+    const Checkbox = require( 'SUN/Checkbox' );
+    const HSeparator = require( 'SUN/HSeparator' );
     const Text = require( 'SCENERY/nodes/Text' );
     const VBox = require( 'SCENERY/nodes/VBox' );
+    const HBox = require( 'SCENERY/nodes/HBox' );
     const RangeWithValue = require( 'DOT/RangeWithValue' );
     const inherit = require( 'PHET_CORE/inherit' );
 
     // strings
     const speedString = require( 'string!NORMAL_MODES/options-panel.speed' );
+    const showSpringsString = require( 'string!NORMAL_MODES/options-panel.show-springs' );
+    const showPhasesString = require( 'string!NORMAL_MODES/options-panel.show-phases' );
     const initialPositionsString = require( 'string!NORMAL_MODES/options-panel.initial-positions' );
     const zeroPositionsString = require( 'string!NORMAL_MODES/options-panel.zero-positions' );
     const numVisibleMassesString = require( 'string!NORMAL_MODES/options-panel.num-masses' );
@@ -41,8 +47,11 @@ define( require => {
        * @param {Property.<number>} numVisibleMassesProperty
        * @param {Object} [options]
        * @param {Model} model
+       * @param {Property.<boolean>} showSpringsProperty
+       * @param {Property.<boolean>} showPhasesProperty
        */
-      constructor( playProperty, speedProperty, numVisibleMassesProperty, options, model ) {
+      constructor( playProperty, speedProperty, numVisibleMassesProperty,
+         options, model, showSpringsProperty, showPhasesProperty) {
   
         /*
         // checkboxes
@@ -50,6 +59,49 @@ define( require => {
         const residualsCheckbox = createCheckbox( residualsVisibleProperty, residualsString );
         const valuesCheckbox = createCheckbox( valuesVisibleProperty, valuesString );
         */
+        const showSpringsCheckbox = new Checkbox(
+          new Text( showSpringsString, {
+            font: NormalModesConstants.phetFont,
+            maxWidth: 140
+          } ),
+          showSpringsProperty
+        );
+
+        // TODO
+        // ver se tem um jeito melhor de fazer isso
+
+        let showPhasesCheckbox = null;
+        let checkboxes = null;
+
+        if(showPhasesProperty) {
+          showPhasesCheckbox = new Checkbox(
+            new Text( showPhasesString, {
+              font: NormalModesConstants.phetFont,
+              maxWidth: 140
+            } ),
+            showPhasesProperty
+          );
+          checkboxes = new VBox( { 
+            spacing: 15,
+            children: [
+              showSpringsCheckbox,
+              showPhasesCheckbox
+            ]
+          });
+        }
+        else { /* showPhasesProperty */
+          checkboxes = new VBox( { 
+            spacing: 15,
+            children: [
+              showSpringsCheckbox
+            ]
+          })
+        }
+
+        // TODO - Franco
+        // To passando o model como parametro,
+        // mas seria bom tirar dps e talvez mandar
+        // so os callbacks, to pensando em um jeito
 
         const playPauseButtonOptions = {
           upFill: NormalModesConstants.blueUpColor,
@@ -60,13 +112,26 @@ define( require => {
           backgroundGradientColorStop1: NormalModesConstants.buttonBorder1,
           innerButtonLineWidth: 1
         };
-        const playPauseButton = new PlayPauseButton( model.playProperty, {
+        const playPauseButton = new PlayPauseButton( playProperty, {
           scale: 0.8,
           scaleFactorWhenPaused: 1.15,
           touchAreaDilation: 12,
           pauseOptions: playPauseButtonOptions,
           playOptions: playPauseButtonOptions
         } );
+
+        const stepButton = new StepButton();
+
+        const playAndStepButtons = new HBox( {
+          spacing: 15,
+          align: 'center',
+          children: [
+            playPauseButton,
+            stepButton
+          ]
+        } );
+
+        const separator = new HSeparator( 180 );
 
         // Initial Position push button class
         function InitialPositionsButton( model_ ) {
@@ -126,7 +191,7 @@ define( require => {
 
         const speedControl = new NumberControl(
           speedString,
-          model.speedProperty,
+          speedProperty,
           new RangeWithValue( 0.25, 3, 1 ),
           speedControlOptions
         );
@@ -152,45 +217,23 @@ define( require => {
 
         const numVisibleMassesControl = new NumberControl(
           numVisibleMassesString,
-          model.numVisibleMassesProperty,
+          numVisibleMassesProperty,
           new RangeWithValue( 1, 10, 3 ),
           numVisibleMassesControlOptions
         );
-        /*
-        const speedSliderOptions = {
-          trackFill: 'black',
-          trackSize: new Dimension2( 1, 120 ),
-          thumbSize: new Dimension2( 20, 10 ),
-          minorTickLineWidth: 2,
-          minorTickLength: 12,
-          thumbTouchAreaXDilation: 8, // supposed to make touch horizontal areas flush; see #72
-          thumbMouseAreaXDilation: 8,
-          thumbMouseAreaYDilation: 10
-        };
-        const speedSliderLabelOptions = {
-          font: NormalModesConstants.phetFont,
-          fill: 'black',
-          maxWidth: 20
-        };
-
-        const speedSlider = new HSlider( 
-          model.speedProperty,
-          new Range(),
-          speedString,
-          speedSliderOptions,
-        );
-        */
 
         // vertical layout
         const contentNode = new VBox( {
           spacing: 15,
           align: 'center',
           children: [
-            playPauseButton,
+            playAndStepButtons,
+            separator,
             speedControl,
             initialPositionsButton,
             zeroPositionsButton,
-            numVisibleMassesControl
+            numVisibleMassesControl,
+            checkboxes
           ]
         } );
   

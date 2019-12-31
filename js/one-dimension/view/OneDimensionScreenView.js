@@ -52,14 +52,14 @@ define( require => {
         model.speedProperty,
         model.numVisibleMassesProperty,
         PANEL_OPTIONS,
-        model
+        model,
+        model.showSpringsProperty,
+        model.showPhasesProperty,
       );
 
       this.addChild( optionsPanel );
       this.addChild( resetAllButton );
-      
     }
-
     /**
      * Resets the view.
      * @public

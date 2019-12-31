@@ -19,5 +19,11 @@
   },
   "options-panel.num-masses": {
     "value": "Number of Masses: "
+  },
+  "options-panel.show-springs": {
+    "value": "Show Springs"
+  },
+  "options-panel.show-phases": {
+    "value": "Show Phases"
   }
 }
