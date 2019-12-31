@@ -19,15 +19,19 @@ define( require => {
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
     const TextPushButton = require( 'SUN/buttons/TextPushButton' );
     const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
+    const NumberControl = require( 'SCENERY_PHET/NumberControl' );
+    const Dimension2 = require( 'DOT/Dimension2' );
     const Panel = require( 'SUN/Panel' );
     const Text = require( 'SCENERY/nodes/Text' );
     const VBox = require( 'SCENERY/nodes/VBox' );
+    const RangeWithValue = require( 'DOT/RangeWithValue' );
     const inherit = require( 'PHET_CORE/inherit' );
 
     // strings
     const speedString = require( 'string!NORMAL_MODES/options-panel.speed' );
     const initialPositionsString = require( 'string!NORMAL_MODES/options-panel.initial-positions' );
     const zeroPositionsString = require( 'string!NORMAL_MODES/options-panel.zero-positions' );
+    const numVisibleMassesString = require( 'string!NORMAL_MODES/options-panel.num-masses' );
 
     class OptionsPanel extends Panel {
   
@@ -38,7 +42,7 @@ define( require => {
        * @param {Object} [options]
        * @param {Model} model
        */
-      constructor( playProperty, speedProperty, numVisibleMassesProperty, options,  model ) {
+      constructor( playProperty, speedProperty, numVisibleMassesProperty, options, model ) {
   
         /*
         // checkboxes
@@ -93,14 +97,100 @@ define( require => {
         const initialPositionsButton = new InitialPositionsButton( model );
         const zeroPositionsButton = new ZeroPositionsButton( model );
 
+        const speedControlOptions = {
+          delta: 0.1,
+          sliderOptions: {
+            majorTicks: [ 
+              { 
+                value: 0.25,
+                label: new Text( "slow", { font: NormalModesConstants.phetFont } ) 
+              },
+              { 
+                value: 3,
+                label: new Text( "fast", { font: NormalModesConstants.phetFont } ) 
+              },
+            ],
+            minorTickSpacing: 0.1,
+          },
+          arrowButtonOptions: {
+            scale: 0
+          },
+          titleNodeOptions: {
+            font: NormalModesConstants.SPEED_SLIDER_FONT
+          },
+          numberDisplayOptions: {
+            font: NormalModesConstants.SPEED_SLIDER_FONT,
+            scale: 0
+          }
+        }
+
+        const speedControl = new NumberControl(
+          speedString,
+          model.speedProperty,
+          new RangeWithValue( 0.25, 3, 1 ),
+          speedControlOptions
+        );
+
+        const numVisibleMassesControlOptions = {
+          sliderOptions: {
+            majorTicks: [ 
+              { value: 1, label: "" },
+              { value: 10, label: "" },
+            ],
+            minorTickSpacing: 1
+          },
+          arrowButtonOptions: {
+            scale: 0
+          },
+          titleNodeOptions: {
+            font: NormalModesConstants.SPEED_SLIDER_FONT
+          },
+          numberDisplayOptions: {
+            font: NormalModesConstants.SPEED_SLIDER_FONT,
+          }
+        }
+
+        const numVisibleMassesControl = new NumberControl(
+          numVisibleMassesString,
+          model.numVisibleMassesProperty,
+          new RangeWithValue( 1, 10, 3 ),
+          numVisibleMassesControlOptions
+        );
+        /*
+        const speedSliderOptions = {
+          trackFill: 'black',
+          trackSize: new Dimension2( 1, 120 ),
+          thumbSize: new Dimension2( 20, 10 ),
+          minorTickLineWidth: 2,
+          minorTickLength: 12,
+          thumbTouchAreaXDilation: 8, // supposed to make touch horizontal areas flush; see #72
+          thumbMouseAreaXDilation: 8,
+          thumbMouseAreaYDilation: 10
+        };
+        const speedSliderLabelOptions = {
+          font: NormalModesConstants.phetFont,
+          fill: 'black',
+          maxWidth: 20
+        };
+
+        const speedSlider = new HSlider( 
+          model.speedProperty,
+          new Range(),
+          speedString,
+          speedSliderOptions,
+        );
+        */
+
         // vertical layout
         const contentNode = new VBox( {
           spacing: 15,
           align: 'center',
           children: [
             playPauseButton,
+            speedControl,
             initialPositionsButton,
-            zeroPositionsButton
+            zeroPositionsButton,
+            numVisibleMassesControl
           ]
         } );
   
@@ -109,10 +199,9 @@ define( require => {
   
       /**
        * @public
-       * Resets wereResidualsVisible for #161
        */
       reset() {
-        this.wereResidualsVisible = false;
+        
       }
   
     }

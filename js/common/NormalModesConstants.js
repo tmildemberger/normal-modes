@@ -45,6 +45,8 @@ define( require => {
 
       phetFont: new PhetFont( 14 ),
 
+      SPEED_SLIDER_FONT: new PhetFont( 18 ),
+
   
       //TODO
     };

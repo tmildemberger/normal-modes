@@ -16,5 +16,8 @@
   },
   "options-panel.zero-positions": {
     "value": "Zero Positions"
+  },
+  "options-panel.num-masses": {
+    "value": "Number of Masses: "
   }
 }
