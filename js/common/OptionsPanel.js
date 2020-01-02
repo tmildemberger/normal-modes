@@ -42,29 +42,27 @@ define( require => {
     class OptionsPanel extends Panel {
   
       /**
-       * @param {Property.<boolean>} playProperty
-       * @param {Property.<number>} speedProperty
-       * @param {Property.<number>} numVisibleMassesProperty
-       * @param {Object} [options]
+       * @param {Object} [panelOptions]
        * @param {Model} model
-       * @param {Property.<boolean>} showSpringsProperty
-       * @param {Property.<boolean>} showPhasesProperty
+       * @param {bool} doShowPhases
        */
-      constructor( playProperty, speedProperty, numVisibleMassesProperty,
-         options, model, showSpringsProperty, showPhasesProperty) {
+      constructor( panelOptions, model, doShowPhases=false ) {
   
         /*
-        // checkboxes
-        const curveCheckbox = createCheckbox( curveVisibleProperty, curveString );
-        const residualsCheckbox = createCheckbox( residualsVisibleProperty, residualsString );
-        const valuesCheckbox = createCheckbox( valuesVisibleProperty, valuesString );
+        Model properties used:
+          - playProperty
+          - speedProperty
+          - numVisibleMassesProperty
+          - showSpringsProperty
+          - showPhasesProperty (if 1D)
         */
+
         const showSpringsCheckbox = new Checkbox(
           new Text( showSpringsString, {
             font: NormalModesConstants.phetFont,
             maxWidth: 140
           } ),
-          showSpringsProperty
+          model.showSpringsProperty
         );
 
         // TODO
@@ -73,13 +71,13 @@ define( require => {
         let showPhasesCheckbox = null;
         let checkboxes = null;
 
-        if(showPhasesProperty) {
+        if( doShowPhases ) {
           showPhasesCheckbox = new Checkbox(
             new Text( showPhasesString, {
               font: NormalModesConstants.phetFont,
               maxWidth: 140
             } ),
-            showPhasesProperty
+            model.showPhasesProperty
           );
           checkboxes = new VBox( { 
             spacing: 15,
@@ -89,7 +87,7 @@ define( require => {
             ]
           });
         }
-        else { /* showPhasesProperty */
+        else { /* model.showPhasesProperty */
           checkboxes = new VBox( { 
             spacing: 15,
             children: [
@@ -112,7 +110,7 @@ define( require => {
           backgroundGradientColorStop1: NormalModesConstants.buttonBorder1,
           innerButtonLineWidth: 1
         };
-        const playPauseButton = new PlayPauseButton( playProperty, {
+        const playPauseButton = new PlayPauseButton( model.playProperty, {
           scale: 0.8,
           scaleFactorWhenPaused: 1.15,
           touchAreaDilation: 12,
@@ -120,7 +118,9 @@ define( require => {
           playOptions: playPauseButtonOptions
         } );
 
-        const stepButton = new StepButton();
+        const stepButton = new StepButton( {
+          isPlayingProperty: model.playProperty
+        } );
 
         const playAndStepButtons = new HBox( {
           spacing: 15,
@@ -191,7 +191,7 @@ define( require => {
 
         const speedControl = new NumberControl(
           speedString,
-          speedProperty,
+          model.speedProperty,
           new RangeWithValue( 0.25, 3, 1 ),
           speedControlOptions
         );
@@ -217,7 +217,7 @@ define( require => {
 
         const numVisibleMassesControl = new NumberControl(
           numVisibleMassesString,
-          numVisibleMassesProperty,
+          model.numVisibleMassesProperty,
           new RangeWithValue( 1, 10, 3 ),
           numVisibleMassesControlOptions
         );
@@ -237,7 +237,7 @@ define( require => {
           ]
         } );
   
-        super( contentNode, options );
+        super( contentNode, panelOptions );
       }
   
       /**

@@ -48,13 +48,9 @@ define( require => {
       };
 
       const optionsPanel = new OptionsPanel(
-        model.playProperty,
-        model.speedProperty,
-        model.numVisibleMassesProperty,
         PANEL_OPTIONS,
         model,
-        model.showSpringsProperty,
-        model.showPhasesProperty,
+        true /* showPhases checkbox */
       );
 
       this.addChild( optionsPanel );
