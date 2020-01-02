@@ -39,6 +39,8 @@ define( require => {
       } );
 
       const PANEL_OPTIONS = {
+        right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        top: OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
         xMargin: 10,
