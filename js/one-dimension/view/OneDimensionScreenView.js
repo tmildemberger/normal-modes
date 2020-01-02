@@ -14,6 +14,7 @@ define( require => {
   const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
 
   const OptionsPanel = require( 'NORMAL_MODES/common/OptionsPanel' );
+  const AmpPhasePanel = require( 'NORMAL_MODES/one-dimension/view/AmpPhasePanel' );
 
   class OneDimensionScreenView extends ScreenView {
 
@@ -38,7 +39,7 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
-      const PANEL_OPTIONS = {
+      const optionsPanelOptions = {
         right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
         top: OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
@@ -50,11 +51,27 @@ define( require => {
       };
 
       const optionsPanel = new OptionsPanel(
-        PANEL_OPTIONS,
+        optionsPanelOptions,
         model,
         true /* showPhases checkbox */
       );
 
+      const ampPhasePanelOptions = {
+        bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
+        cornerRadius: 5,
+        fill: 'rgb( 254, 235, 214 )',
+        xMargin: 10,
+        yMargin: 10,
+        maxWidth: 680,
+        minWidth: 680
+      };
+
+      const ampPhasePanel = new AmpPhasePanel(
+        ampPhasePanelOptions,
+        model
+      );
+
+      this.addChild( ampPhasePanel );
       this.addChild( optionsPanel );
       this.addChild( resetAllButton );
     }

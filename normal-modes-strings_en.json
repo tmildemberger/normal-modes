@@ -25,5 +25,26 @@
   },
   "options-panel.show-phases": {
     "value": "Show Phases"
+  },
+  "options-panel.slow": {
+    "value": "slow"
+  },
+  "options-panel.fast": {
+    "value": "fast"
+  },
+  "amp-phase-panel.normal-mode": {
+    "value": "Normal Mode: "
+  },
+  "amp-phase-panel.amplitude": {
+    "value": "Amplitude: "
+  },
+  "amp-phase-panel.phase": {
+    "value": "Phase: "
+  },
+  "amp-phase-panel.frequency": {
+    "value": "Frequency: "
+  },
+  "amp-phase-panel.polarization-control": {
+    "value": "Polarization Control: "
   }
 }

@@ -17,11 +17,11 @@ define( require => {
     // modules
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
+    const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
     const TextPushButton = require( 'SUN/buttons/TextPushButton' );
     const StepButton = require( 'SCENERY_PHET/buttons/StepButton' );
     const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
     const NumberControl = require( 'SCENERY_PHET/NumberControl' );
-    const Dimension2 = require( 'DOT/Dimension2' );
     const Panel = require( 'SUN/Panel' );
     const Checkbox = require( 'SUN/Checkbox' );
     const HSeparator = require( 'SUN/HSeparator' );
@@ -33,6 +33,8 @@ define( require => {
 
     // strings
     const speedString = require( 'string!NORMAL_MODES/options-panel.speed' );
+    const slowString = require( 'string!NORMAL_MODES/options-panel.slow' );
+    const fastString = require( 'string!NORMAL_MODES/options-panel.fast' );
     const showSpringsString = require( 'string!NORMAL_MODES/options-panel.show-springs' );
     const showPhasesString = require( 'string!NORMAL_MODES/options-panel.show-phases' );
     const initialPositionsString = require( 'string!NORMAL_MODES/options-panel.initial-positions' );
@@ -163,28 +165,28 @@ define( require => {
         const zeroPositionsButton = new ZeroPositionsButton( model );
 
         const speedControlOptions = {
-          delta: 0.1,
+          delta: OneDimensionConstants.DELTA_SPEED,
           sliderOptions: {
             majorTicks: [ 
               { 
-                value: 0.25,
-                label: new Text( "slow", { font: NormalModesConstants.phetFont } ) 
+                value: OneDimensionConstants.MIN_SPEED,
+                label: new Text( slowString, { font: NormalModesConstants.phetFont } ) 
               },
               { 
-                value: 3,
-                label: new Text( "fast", { font: NormalModesConstants.phetFont } ) 
+                value: OneDimensionConstants.MAX_SPEED,
+                label: new Text( fastString, { font: NormalModesConstants.phetFont } ) 
               },
             ],
-            minorTickSpacing: 0.1,
+            minorTickSpacing: OneDimensionConstants.DELTA_SPEED,
           },
           arrowButtonOptions: {
             scale: 0
           },
           titleNodeOptions: {
-            font: NormalModesConstants.SPEED_SLIDER_FONT
+            font: NormalModesConstants.CONTROL_FONT
           },
           numberDisplayOptions: {
-            font: NormalModesConstants.SPEED_SLIDER_FONT,
+            font: NormalModesConstants.CONTROL_FONT,
             scale: 0
           }
         }
@@ -192,33 +194,37 @@ define( require => {
         const speedControl = new NumberControl(
           speedString,
           model.speedProperty,
-          new RangeWithValue( 0.25, 3, 1 ),
+          new RangeWithValue( OneDimensionConstants.MIN_SPEED,
+                              OneDimensionConstants.MAX_SPEED,
+                              OneDimensionConstants.INIT_SPEED ),
           speedControlOptions
         );
 
         const numVisibleMassesControlOptions = {
           sliderOptions: {
             majorTicks: [ 
-              { value: 1, label: "" },
-              { value: 10, label: "" },
+              { value: NormalModesConstants.MIN_MASSES_ROW_LEN, label: "" },
+              { value: NormalModesConstants.MAX_MASSES_ROW_LEN, label: "" },
             ],
-            minorTickSpacing: 1
+            minorTickSpacing: NormalModesConstants.MIN_MASS_ROW_LEN
           },
           arrowButtonOptions: {
             scale: 0
           },
           titleNodeOptions: {
-            font: NormalModesConstants.SPEED_SLIDER_FONT
+            font: NormalModesConstants.CONTROL_FONT
           },
           numberDisplayOptions: {
-            font: NormalModesConstants.SPEED_SLIDER_FONT,
+            font: NormalModesConstants.CONTROL_FONT,
           }
         }
 
         const numVisibleMassesControl = new NumberControl(
           numVisibleMassesString,
           model.numVisibleMassesProperty,
-          new RangeWithValue( 1, 10, 3 ),
+          new RangeWithValue( NormalModesConstants.MIN_MASSES_ROW_LEN,
+                              NormalModesConstants.MAX_MASSES_ROW_LEN,
+                              NormalModesConstants.INIT_MASSES_ROW_LEN ),
           numVisibleMassesControlOptions
         );
 

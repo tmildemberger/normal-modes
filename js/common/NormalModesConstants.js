@@ -45,7 +45,12 @@ define( require => {
 
       phetFont: new PhetFont( 14 ),
 
-      SPEED_SLIDER_FONT: new PhetFont( 18 ),
+      CONTROL_FONT: new PhetFont( 18 ),
+
+      // number of masses in a row for both 1d and 2d
+      MIN_MASSES_ROW_LEN: 1,
+      INIT_MASSES_ROW_LEN: 3,
+      MAX_MASSES_ROW_LEN: 10,
 
   
       //TODO
