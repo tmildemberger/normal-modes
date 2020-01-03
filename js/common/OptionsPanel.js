@@ -139,11 +139,11 @@ define( require => {
         function InitialPositionsButton( model_ ) {
           TextPushButton.call( this, initialPositionsString, {
             listener: model_.initialPositions.bind( model_ ),
-            font: NormalModesConstants.phetFont,
+            font: NormalModesConstants.CONTROL_FONT,
             baseColor: 'hsl(210,0%,85%)',
             maxWidth: 250
           });
-          this.touchArea = this.localBounds.dilatedXY( 5, 20);
+          this.touchArea = this.localBounds.dilatedXY( 5, 20 );
         }
         //normalModes.register( 'InitialPositionsButton', InitialPositionsButton);
         inherit( TextPushButton, InitialPositionsButton );
@@ -152,11 +152,11 @@ define( require => {
         function ZeroPositionsButton( model_ ) {
           TextPushButton.call( this, zeroPositionsString, {
             listener: model_.zeroPositions.bind( model_ ),
-            font: NormalModesConstants.phetFont,
+            font: NormalModesConstants.CONTROL_FONT,
             baseColor: 'hsl(210,0%,85%)',
             maxWidth: 250
           });
-          this.touchArea = this.localBounds.dilatedXY( 5, 20);
+          this.touchArea = this.localBounds.dilatedXY( 5, 20 );
         }
         //normalModes.register( 'ZeroPositionsButton', ZeroPositionsButton);
         inherit( TextPushButton, ZeroPositionsButton );
@@ -206,7 +206,7 @@ define( require => {
               { value: NormalModesConstants.MIN_MASSES_ROW_LEN, label: "" },
               { value: NormalModesConstants.MAX_MASSES_ROW_LEN, label: "" },
             ],
-            minorTickSpacing: NormalModesConstants.MIN_MASS_ROW_LEN
+            minorTickSpacing: NormalModesConstants.MIN_MASSES_ROW_LEN
           },
           arrowButtonOptions: {
             scale: 0
@@ -254,23 +254,6 @@ define( require => {
       }
   
     }
-    /*
-    
-     * Creates a checkbox for this panel.
-     * @param {Property} property
-     * @param {string} label
-     * @returns {Checkbox}
-    
-    function createCheckbox( property, label ) {
-      return new Checkbox(
-        new Text( label, {
-          font: NormalModesConstants.CONTROL_FONT,
-          maxWidth: 140 // determined empirically
-        } ),
-        property,
-        NormalModesConstants.CHECKBOX_OPTIONS
-      );
-    }
-    */
+
     return normalModes.register( 'OptionsPanel', OptionsPanel );
   } );

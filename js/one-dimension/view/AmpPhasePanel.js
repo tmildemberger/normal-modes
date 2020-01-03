@@ -30,8 +30,7 @@ define( require => {
     const amplitudeString = require( 'string!NORMAL_MODES/amp-phase-panel.amplitude' );
     const phaseString = require( 'string!NORMAL_MODES/amp-phase-panel.phase' );
     const frequencyString = require( 'string!NORMAL_MODES/amp-phase-panel.frequency' );
-    const polarizationControlString = 
-        require( 'string!NORMAL_MODES/amp-phase-panel.polarization-control' );
+    const polarizationControlString = require( 'string!NORMAL_MODES/amp-phase-panel.polarization-control' );
     const normalModeString = require( 'string!NORMAL_MODES/amp-phase-panel.normal-mode' );
 
     class AmpPhasePanel extends Panel {
@@ -40,7 +39,7 @@ define( require => {
        * @param {Object} [panelOptions]
        * @param {Model} model
        */
-      constructor( panelOptions, model, doShowPhases=false ) {
+      constructor( panelOptions, model, layoutBounds ) {
   
         /*
         Model properties used:
@@ -191,6 +190,9 @@ define( require => {
             ampBox.children = ampSliders.slice(0, model.numVisibleMassesProperty.get());
             phaseBox.children = phaseSliders.slice(0, model.numVisibleMassesProperty.get());
             labelBox.children = modeLabels.slice(0, model.numVisibleMassesProperty.get());
+            
+            // model.zeroPositions();
+            console.log("[!] TODO - colocar zeroPositions() no listener de numMassesVisibleProperty em AmpPhasePanel");
           } 
         );
 

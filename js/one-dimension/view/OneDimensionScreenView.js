@@ -68,7 +68,8 @@ define( require => {
 
       const ampPhasePanel = new AmpPhasePanel(
         ampPhasePanelOptions,
-        model
+        model,
+        this.layoutBounds
       );
 
       this.addChild( ampPhasePanel );
