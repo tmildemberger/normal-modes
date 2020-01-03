@@ -16,6 +16,7 @@ define( require => {
     const StepButton = require( 'SCENERY_PHET/buttons/StepButton' );
     const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
     const NumberControl = require( 'SCENERY_PHET/NumberControl' );
+    const Dimension2 = require( 'DOT/Dimension2' );
     const Panel = require( 'SUN/Panel' );
     const Checkbox = require( 'SUN/Checkbox' );
     const HSeparator = require( 'SUN/HSeparator' );
@@ -48,20 +49,22 @@ define( require => {
           - polarizationControlProperty
         */
 
-        const sliderVBoxes = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
         const ampSliders = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
         const phaseSliders = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        const modeLabels = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
         const ampSliderOptions = {
           delta: 0.01,
           sliderOptions: {
-            orientation: 'vertical'
+            orientation: 'vertical',
+            trackSize: new Dimension2( 100, 3 ),
           },
           arrowButtonOptions: {
             scale: 0
           },
           titleNodeOptions: {
             font: NormalModesConstants.CONTROL_FONT,
+            scale: 0,
           },
           numberDisplayOptions: {
             font: NormalModesConstants.CONTROL_FONT,
@@ -69,6 +72,7 @@ define( require => {
           }
         }
 
+        // TODO trocar pi pra pi de math
         const phaseSliderOptions = {
           delta: 0.01,
           sliderOptions: {
@@ -87,6 +91,7 @@ define( require => {
                 label: new Text( "pi", { font: NormalModesConstants.phetFont } ) 
               },
             ],
+            trackSize: new Dimension2( 100, 3 ),
           },
           arrowButtonOptions: {
             scale: 0
@@ -101,9 +106,9 @@ define( require => {
           }
         }
 
-        for(let i = 0; i < sliderVBoxes.length; i++) {
+        for(let i = 0; i < ampSliders.length; i++) {
             ampSliders[i] = new NumberControl(
-              (i+1).toString(),
+              "",
               model.modeAmplitudeProperty[i],
               new RangeWithValue(OneDimensionConstants.MIN_MODE_AMPLITUDE,
                                  OneDimensionConstants.MAX_MODE_AMPLITUDE,
@@ -120,52 +125,83 @@ define( require => {
               phaseSliderOptions
             );
           
-            sliderVBoxes[i] = new VBox( {
-              spacing: 15,
-              children: [
-                ampSliders[i],
-                phaseSliders[i]
-              ],
-              maxHeight: 300
-            } );
+            modeLabels[i] = new Text(
+              ( i + 1 ).toString(),
+              { font: NormalModesConstants.CONTROL_FONT }
+            )
         }
-        
-        // TODO ver um bom jeito de colocar o texto Normal Mode
-        const textsContainer = new VBox( {
-          spacing: 120,
-          align: 'center',
+
+        const ampBox = new HBox( {
+          spacing: 6,
+          align: 'left',
+          children: ampSliders.slice( 0, model.numVisibleMassesProperty.get() )
+        } );
+
+        const phaseBox = new HBox( {
+          spacing: -20,
+          align: 'left',
+          children: phaseSliders.slice( 0, model.numVisibleMassesProperty.get() )
+        } );
+
+        const labelBox = new HBox( {
+          spacing: 60,
+          align: 'left',
+          children: modeLabels.slice( 0, model.numVisibleMassesProperty.get() )
+        } );
+
+        const labelRow = new HBox( {
+          spacing: 30,
+          align: 'left',
           children: [
-            new Text( amplitudeString, { font: NormalModesConstants.phetFont }),
-            new Text( phaseString, { font: NormalModesConstants.phetFont }),
+            new Text( normalModeString, { font: NormalModesConstants.phetFont, maxWidth: 65 } ),
+            labelBox
           ]
         } );
 
-        const slidersContainer = new HBox( {
-          align: 'center',
-          children: sliderVBoxes.slice(0, model.numVisibleMassesProperty.get())
-        } );
-
-        const contentNode = new HBox( {
+        const ampRow = new HBox ( {
           spacing: 0,
           align: 'center',
           children: [
-            textsContainer,
-            slidersContainer
+            new Text( amplitudeString, { font: NormalModesConstants.phetFont } ),
+            ampBox
+          ]
+        } );
+
+        const phaseRow = new HBox ( {
+          spacing: 0,
+          align: 'center',
+          children: [
+            new Text( phaseString, { font: NormalModesConstants.phetFont } ),
+            phaseBox
+          ]
+        } );
+
+        const contentNode = new VBox( {
+          spacing: 0,
+          align: 'left',
+          children: [
+            labelRow,
+            ampRow,
+            phaseRow
           ]
         } );
 
         model.numVisibleMassesProperty.link(
           function() {
-            slidersContainer.children = sliderVBoxes.slice(0, model.numVisibleMassesProperty.get());
+            ampBox.children = ampSliders.slice(0, model.numVisibleMassesProperty.get());
+            phaseBox.children = phaseSliders.slice(0, model.numVisibleMassesProperty.get());
+            labelBox.children = modeLabels.slice(0, model.numVisibleMassesProperty.get());
           } 
         );
 
         model.showPhasesProperty.link(
           function() {
-            phaseSliders.forEach( (slider) => {
-              slider.visible = model.showPhasesProperty.get();
-            } );
-            textsContainer.children[1].visible = model.showPhasesProperty.get();            
+            if( model.showPhasesProperty.get() ) {
+              contentNode.children = [ labelRow, ampRow, phaseRow ];
+            }
+            else {
+              contentNode.children = [ labelRow, ampRow ];
+            }
           }
         )
   
