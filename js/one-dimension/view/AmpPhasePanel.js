@@ -39,7 +39,7 @@ define( require => {
        * @param {Object} [panelOptions]
        * @param {Model} model
        */
-      constructor( panelOptions, model, layoutBounds ) {
+      constructor( panelOptions, model ) {
   
         /*
         Model properties used:
@@ -185,11 +185,17 @@ define( require => {
           ]
         } );
 
+        super( contentNode, panelOptions );
+
+        const self = this;
+        
         model.numVisibleMassesProperty.link(
           function() {
             ampBox.children = ampSliders.slice(0, model.numVisibleMassesProperty.get());
             phaseBox.children = phaseSliders.slice(0, model.numVisibleMassesProperty.get());
             labelBox.children = modeLabels.slice(0, model.numVisibleMassesProperty.get());
+
+            self.centerX = panelOptions.centerX;
             
             // model.zeroPositions();
             console.log("[!] TODO - colocar zeroPositions() no listener de numMassesVisibleProperty em AmpPhasePanel");
@@ -206,8 +212,7 @@ define( require => {
             }
           }
         )
-  
-        super( contentNode, panelOptions );
+
       }
   
       /**

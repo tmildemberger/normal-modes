@@ -57,19 +57,19 @@ define( require => {
       );
 
       const ampPhasePanelOptions = {
+        left: OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
         bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
         xMargin: 10,
         yMargin: 10,
         maxWidth: 680,
-        minWidth: 680
+        centerX: OneDimensionConstants.SCREEN_VIEW_X_MARGIN + 340,
       };
 
       const ampPhasePanel = new AmpPhasePanel(
         ampPhasePanelOptions,
-        model,
-        this.layoutBounds
+        model
       );
 
       this.addChild( ampPhasePanel );

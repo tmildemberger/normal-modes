@@ -24,7 +24,6 @@ define( require => {
     const NumberControl = require( 'SCENERY_PHET/NumberControl' );
     const Panel = require( 'SUN/Panel' );
     const Checkbox = require( 'SUN/Checkbox' );
-    const HSeparator = require( 'SUN/HSeparator' );
     const Text = require( 'SCENERY/nodes/Text' );
     const VBox = require( 'SCENERY/nodes/VBox' );
     const HBox = require( 'SCENERY/nodes/HBox' );
@@ -133,8 +132,6 @@ define( require => {
           ]
         } );
 
-        const separator = new HSeparator( 180 );
-
         // Initial Position push button class
         function InitialPositionsButton( model_ ) {
           TextPushButton.call( this, initialPositionsString, {
@@ -234,7 +231,6 @@ define( require => {
           align: 'center',
           children: [
             playAndStepButtons,
-            separator,
             speedControl,
             initialPositionsButton,
             zeroPositionsButton,
