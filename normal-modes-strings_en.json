@@ -44,7 +44,7 @@
   "amp-phase-panel.frequency": {
     "value": "Frequency: "
   },
-  "amp-phase-panel.polarization-control": {
-    "value": "Polarization Control: "
+  "amp-phase-panel.direction-of-motion": {
+    "value": "Direction of motion: "
   }
 }

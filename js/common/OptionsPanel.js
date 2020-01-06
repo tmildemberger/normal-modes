@@ -51,11 +51,11 @@ define( require => {
   
         /*
         Model properties used:
-          - playProperty
-          - speedProperty
+          - playingProperty
+          - simSpeedProperty
           - numVisibleMassesProperty
-          - showSpringsProperty
-          - showPhasesProperty (if 1D)
+          - springsVisibilityProperty
+          - phasesVisibilityProperty (if 1D)
         */
 
         const showSpringsCheckbox = new Checkbox(
@@ -63,7 +63,7 @@ define( require => {
             font: NormalModesConstants.phetFont,
             maxWidth: 140
           } ),
-          model.showSpringsProperty
+          model.springsVisibilityProperty
         );
 
         // TODO
@@ -78,7 +78,7 @@ define( require => {
               font: NormalModesConstants.phetFont,
               maxWidth: 140
             } ),
-            model.showPhasesProperty
+            model.phasesVisibilityProperty
           );
           checkboxes = new VBox( { 
             spacing: 15,
@@ -88,7 +88,7 @@ define( require => {
             ]
           });
         }
-        else { /* model.showPhasesProperty */
+        else { /* model.phasesVisibilityProperty */
           checkboxes = new VBox( { 
             spacing: 15,
             children: [
@@ -111,7 +111,8 @@ define( require => {
           backgroundGradientColorStop1: NormalModesConstants.buttonBorder1,
           innerButtonLineWidth: 1
         };
-        const playPauseButton = new PlayPauseButton( model.playProperty, {
+
+        const playPauseButton = new PlayPauseButton( model.playingProperty, {
           scale: 0.8,
           scaleFactorWhenPaused: 1.15,
           touchAreaDilation: 12,
@@ -120,7 +121,7 @@ define( require => {
         } );
 
         const stepButton = new StepButton( {
-          isPlayingProperty: model.playProperty
+          isPlayingProperty: model.playingProperty
         } );
 
         const playAndStepButtons = new HBox( {
@@ -190,7 +191,7 @@ define( require => {
 
         const speedControl = new NumberControl(
           speedString,
-          model.speedProperty,
+          model.simSpeedProperty,
           new RangeWithValue( OneDimensionConstants.MIN_SPEED,
                               OneDimensionConstants.MAX_SPEED,
                               OneDimensionConstants.INIT_SPEED ),

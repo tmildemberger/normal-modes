@@ -30,7 +30,7 @@ define( require => {
     const amplitudeString = require( 'string!NORMAL_MODES/amp-phase-panel.amplitude' );
     const phaseString = require( 'string!NORMAL_MODES/amp-phase-panel.phase' );
     const frequencyString = require( 'string!NORMAL_MODES/amp-phase-panel.frequency' );
-    const polarizationControlString = require( 'string!NORMAL_MODES/amp-phase-panel.polarization-control' );
+    const directionOfMotionString = require( 'string!NORMAL_MODES/amp-phase-panel.direction-of-motion' );
     const normalModeString = require( 'string!NORMAL_MODES/amp-phase-panel.normal-mode' );
 
     class AmpPhasePanel extends Panel {
@@ -45,7 +45,9 @@ define( require => {
         Model properties used:
           - modeAmplitudeProperty[0..9]
           - modePhaseProperty[0..9]
-          - polarizationControlProperty
+          - directionOfMotionProperty
+          - numVisibleMassesProperty
+          - phasesVisibilityProperty
         */
 
         const ampSliders = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
@@ -202,9 +204,9 @@ define( require => {
           } 
         );
 
-        model.showPhasesProperty.link(
+        model.phasesVisibilityProperty.link(
           function() {
-            if( model.showPhasesProperty.get() ) {
+            if( model.phasesVisibilityProperty.get() ) {
               contentNode.children = [ labelRow, ampRow, phaseRow ];
             }
             else {
