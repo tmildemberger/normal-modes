@@ -70,7 +70,7 @@ define( require => {
         tandem: tandem.createTandem( 'timeProperty' )
       } );
 
-      // @public Accumulated delta-time
+      // @public {number} Accumulated delta-time
       this.dt = 0;
       
       this.modeAmplitudeProperty = new Array( MAX_VISIBLE_MASSES );
@@ -99,8 +99,8 @@ define( require => {
           }
         } );
 
-        this.modeAmplitudeProperty[ i ].link( this.recalculateInitialPositions.bind( this ) ); // aaaaaaaaaaa
-        this.modePhaseProperty[ i ].link( this.recalculateInitialPositions.bind( this ) );
+        this.modeAmplitudeProperty[ i ].lazyLink( this.setExactPositions.bind( this ) );
+        this.modePhaseProperty[ i ].lazyLink( this.setExactPositions.bind( this ) );
         
       }
       
@@ -113,14 +113,6 @@ define( require => {
       this.createDefaultSprings();
       
       this.numVisibleMassesProperty.link( this.changedNumberOfMasses.bind( this ) );
-    }
-
-    /**
-     * I dont even know what is this supposed to be;
-     * @private i guess
-     */
-    recalculateInitialPositions() {
-
     }
     
     /**
@@ -141,10 +133,12 @@ define( require => {
         this.masses[ i ].visibilityProperty.set( visible );
         this.masses[ i ].zeroPosition();
         
-        if ( x < xFinal ) {
+        if ( x < xFinal - xStep / 2 ) {
           x += xStep;
         }
       }
+
+      this.computeModeAmplitudesAndPhases();
     }
     
     /**
@@ -220,7 +214,7 @@ define( require => {
       //   this.masses[ i ].restoreInitialState();
       // }
       
-      this.computeModeAmplitudesAndPhases();
+      // this.computeModeAmplitudesAndPhases();
     }
 
     /**
@@ -230,6 +224,7 @@ define( require => {
     zeroPositions() {
       for(let i = 0; i < MAX_MASSES; i++) {
         this.masses[ i ].zeroPosition();
+        if ( this.masses[ i ].displacementProperty.get().magnitude != 0 ) console.log('mas ue');
       }
 
       this.computeModeAmplitudesAndPhases();
@@ -241,9 +236,9 @@ define( require => {
      * @public
      */
     step( dt ) {
-      // If simulationTimeStep > 0.3, ignore it - it probably means the user returned to the tab after
+      // If the time step > 0.15, ignore it - it probably means the user returned to the tab after
       // the tab or the browser was hidden for a while.
-      dt = Math.min( dt, 0.3 );
+      dt = Math.min( dt, 0.15 );
 
       if ( this.playingProperty.get() ) {
         this.dt += dt;
@@ -361,7 +356,33 @@ define( require => {
      * @private
      */
     computeModeAmplitudesAndPhases() {
-      // TODO
+      this.timeProperty.reset();
+      for ( let i = 1; i <= MAX_VISIBLE_MASSES; ++ i ) {
+        this.masses[ i ].initialDisplacementProperty.set( this.masses[ i ].displacementProperty.get() );
+        this.masses[ i ].initialVelocityProperty.set( this.masses[ i ].velocityProperty.get() );
+      }
+      const N = this.numVisibleMassesProperty.get();
+      for ( let i = 1; i <= N; ++i ) { // for each mode
+        let AmplitudeTimesCosPhase = 0;
+        let AmplitudeTimesSinPhase = 0;
+        for ( let j = 1; j <= N; ++j ) { // for each mass
+          let massDisplacement = 0;
+          let massVelocity = 0;
+          if ( this.directionOfMotionProperty.get() === this.directionOfMotion.HORIZONTAL ) {
+            massDisplacement = this.masses[ j ].initialDisplacementProperty.get().x;
+            massVelocity = this.masses[ j ].initialVelocityProperty.get().x;
+          } else {
+            massDisplacement = this.masses[ j ].initialDisplacementProperty.get().y;
+            massVelocity = this.masses[ j ].initialVelocityProperty.get().y;
+          }
+          if ( massVelocity != 0 || massDisplacement != 0 ) console.log( 'nozero' );
+          AmplitudeTimesCosPhase += ( 2 / ( N + 1 ) ) * massDisplacement * Math.sin( i * j * Math.PI / ( N + 1 ) );
+          AmplitudeTimesSinPhase += ( -2 / ( this.modeFrequencyProperty[ i - 1 ].get() * ( N + 1 ) ) ) * massVelocity * Math.sin( i * j * Math.PI / ( N + 1 ) );
+          // if ( AmplitudeTimesCosPhase != 0 || AmplitudeTimesSinPhase != 0 ) console.log( 'nozero' );
+        }
+        this.modeAmplitudeProperty[ i - 1 ].set( Math.sqrt( AmplitudeTimesCosPhase ** 2 + AmplitudeTimesSinPhase ** 2 ) );
+        this.modePhaseProperty[ i - 1 ].set( Math.atan2( AmplitudeTimesSinPhase, AmplitudeTimesCosPhase ) );
+      }
     }  
     
   }

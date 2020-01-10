@@ -23,7 +23,7 @@ define( require => {
 
     MIN_MODE_AMPLITUDE: 0,
     INIT_MODE_AMPLITUDE: 0,
-    MAX_MODE_AMPLITUDE: .8, /* TODO experimentar e trocar como necessario Franco */
+    MAX_MODE_AMPLITUDE: .5, /* TODO experimentar e trocar como necessario Franco */
 
     MIN_MODE_PHASE: -Math.PI,
     INIT_MODE_PHASE: 0,
