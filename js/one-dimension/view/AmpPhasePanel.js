@@ -108,25 +108,25 @@ define( require => {
         }
 
         for(let i = 0; i < ampSliders.length; i++) {
-            ampSliders[i] = new NumberControl(
+            ampSliders[ i ] = new NumberControl(
               "",
-              model.modeAmplitudeProperty[i],
+              model.modeAmplitudeProperty[ i ],
               new RangeWithValue(OneDimensionConstants.MIN_MODE_AMPLITUDE,
                                  OneDimensionConstants.MAX_MODE_AMPLITUDE,
                                  OneDimensionConstants.INIT_MODE_AMPLUITUDE),
               ampSliderOptions
             );
 
-            phaseSliders[i] = new NumberControl(
+            phaseSliders[ i ] = new NumberControl(
               "",
-              model.modePhaseProperty[i],
+              model.modePhaseProperty[ i ],
               new RangeWithValue(OneDimensionConstants.MIN_MODE_PHASE,
                                  OneDimensionConstants.MAX_MODE_PHASE,
                                  OneDimensionConstants.INIT_MODE_PHASE),
               phaseSliderOptions
             );
           
-            modeLabels[i] = new Text(
+            modeLabels[ i ] = new Text(
               ( i + 1 ).toString(),
               { font: NormalModesConstants.CONTROL_FONT }
             )

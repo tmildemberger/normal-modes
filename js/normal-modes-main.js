@@ -39,6 +39,8 @@ define( require => {
       new OneDimensionScreen( Tandem.ROOT.createTandem( 'oneDimensionScreen' ) ),
       new TwoDimensionsScreen( Tandem.ROOT.createTandem( 'normalModesScreen' ) ),
     ], simOptions );
+    // for debugging
+    console.log(sim);
     sim.start();
   } );
 } );

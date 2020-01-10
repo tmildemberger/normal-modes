@@ -15,20 +15,22 @@ define( require => {
     'use strict';
   
     // modules
+    const Checkbox = require( 'SUN/Checkbox' );
+    const HBox = require( 'SCENERY/nodes/HBox' );
+    const inherit = require( 'PHET_CORE/inherit' );
+    const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
-    const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
-    const TextPushButton = require( 'SUN/buttons/TextPushButton' );
-    const StepButton = require( 'SCENERY_PHET/buttons/StepButton' );
-    const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
     const NumberControl = require( 'SCENERY_PHET/NumberControl' );
+    const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
     const Panel = require( 'SUN/Panel' );
-    const Checkbox = require( 'SUN/Checkbox' );
-    const Text = require( 'SCENERY/nodes/Text' );
-    const VBox = require( 'SCENERY/nodes/VBox' );
-    const HBox = require( 'SCENERY/nodes/HBox' );
+    const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
     const RangeWithValue = require( 'DOT/RangeWithValue' );
-    const inherit = require( 'PHET_CORE/inherit' );
+    const RectangularButtonView = require( 'SUN/buttons/RectangularButtonView' );
+    const StepForwardButton = require( 'SCENERY_PHET/buttons/StepForwardButton' );
+    const Text = require( 'SCENERY/nodes/Text' );
+    const TextPushButton = require( 'SUN/buttons/TextPushButton' );
+    const VBox = require( 'SCENERY/nodes/VBox' );
 
     // strings
     const speedString = require( 'string!NORMAL_MODES/options-panel.speed' );
@@ -120,8 +122,9 @@ define( require => {
           playOptions: playPauseButtonOptions
         } );
 
-        const stepButton = new StepButton( {
-          isPlayingProperty: model.playingProperty
+        const stepButton = new StepForwardButton( {
+          isPlayingProperty: model.playingProperty,
+          listener: function() { model.singleStep.bind( model )( OneDimensionConstants.FIXED_DT ); },
         } );
 
         const playAndStepButtons = new HBox( {
@@ -133,34 +136,30 @@ define( require => {
           ]
         } );
 
-        // Initial Position push button class
-        function InitialPositionsButton( model_ ) {
-          TextPushButton.call( this, initialPositionsString, {
-            listener: model_.initialPositions.bind( model_ ),
-            font: NormalModesConstants.CONTROL_FONT,
-            baseColor: 'hsl(210,0%,85%)',
-            maxWidth: 250
-          });
-          this.touchArea = this.localBounds.dilatedXY( 5, 20 );
-        }
-        //normalModes.register( 'InitialPositionsButton', InitialPositionsButton);
-        inherit( TextPushButton, InitialPositionsButton );
+        const textButtonsOptions = {
+          font: NormalModesConstants.CONTROL_FONT,
+          baseColor: 'hsl(210,0%,85%)',
+          maxWidth: 250,
 
-        // Zero Position push button class
-        function ZeroPositionsButton( model_ ) {
-          TextPushButton.call( this, zeroPositionsString, {
-            listener: model_.zeroPositions.bind( model_ ),
-            font: NormalModesConstants.CONTROL_FONT,
-            baseColor: 'hsl(210,0%,85%)',
-            maxWidth: 250
-          });
-          this.touchArea = this.localBounds.dilatedXY( 5, 20 );
-        }
-        //normalModes.register( 'ZeroPositionsButton', ZeroPositionsButton);
-        inherit( TextPushButton, ZeroPositionsButton );
+          touchAreaXDilation: 10,
+          touchAreaYDilation: 20,
+          mouseAreaXDilation: 5,
+          mouseAreaYDilation: 5,
 
-        const initialPositionsButton = new InitialPositionsButton( model );
-        const zeroPositionsButton = new ZeroPositionsButton( model );
+          buttonAppearanceStrategy: RectangularButtonView.FlatAppearanceStrategy,
+          lineWidth: 2,
+          stroke: '#202020'
+        };
+
+        // Initial positions button
+        const initialPositionsButton = new TextPushButton( initialPositionsString, merge( {
+          listener: model.initialPositions.bind(model)
+        }, textButtonsOptions ) );
+
+        // Zero positions button
+        const zeroPositionsButton = new TextPushButton( zeroPositionsString, merge( {
+          listener: model.zeroPositions.bind(model)
+        }, textButtonsOptions ) );
 
         const speedControlOptions = {
           delta: OneDimensionConstants.DELTA_SPEED,

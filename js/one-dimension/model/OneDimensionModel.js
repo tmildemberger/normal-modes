@@ -8,32 +8,26 @@ define( require => {
 
   // modules
   const BooleanProperty = require( 'AXON/BooleanProperty' );
+  const DerivedProperty = require( 'AXON/DerivedProperty' );
   const Enumeration = require( 'PHET_CORE/Enumeration' );
   const EnumerationProperty = require( 'AXON/EnumerationProperty' );
+  const Mass = require( 'NORMAL_MODES/one-dimension/model/Mass' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NumberProperty = require( 'AXON/NumberProperty' );
   const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
-  const Property = require( 'AXON/Property' );
+  const Spring = require( 'NORMAL_MODES/one-dimension/model/Spring' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   const MAX_VISIBLE_MASSES = 10;
   const MAX_MASSES = MAX_VISIBLE_MASSES + 2; // tem as imoveis das pontas tb - Franco
   const MAX_SPRINGS = MAX_MASSES - 1;
 
-  class OneDimensionModel  {
+  class OneDimensionModel {
 
     /**
      * @param {Tandem} tandem
      */
     constructor( tandem ) {
-
-      // @public {Mass[]} Array that will contain all of the masses.
-      this.masses = new Array( MAX_MASSES );
-      this.initialMasses = new Array( MAX_MASSES ); // pra resetar quando aperta Initial Positions Franco
-                                                    // TODO gravar essas posicoes qdo aperta play pela primeira vez e resetar qdo aperta zero positions
-      // TODO - foreach = new MassNode... Franco
-
-      // @public {Spring[]} Array that will contain all of the springs.
-      this.springs = new Array( MAX_SPRINGS );
 
       // @public {Enumeration}
       this.directionOfMotion = Enumeration.byKeys( [ 'HORIZONTAL', 'VERTICAL' ] );
@@ -65,26 +59,124 @@ define( require => {
         numberType: 'Integer',
         range: new Range( 1, 10 )
       } );
-
+      
       // @public {Property.<string>} the current direction of motion of the visible masses
       this.directionOfMotionProperty = new EnumerationProperty( this.directionOfMotion, this.directionOfMotion.VERTICAL, {
         tandem: tandem.createTandem( 'directionOfMotionProperty' )
       } );
+      
+      // @public {Property.<number>} the current time
+      this.timeProperty = new NumberProperty( 0, {
+        tandem: tandem.createTandem( 'timeProperty' )
+      } );
 
+      // @public Accumulated delta-time
+      this.dt = 0;
+      
       this.modeAmplitudeProperty = new Array( MAX_VISIBLE_MASSES );
       this.modePhaseProperty = new Array( MAX_VISIBLE_MASSES );
-      for(let i = 0; i < MAX_VISIBLE_MASSES; i++) {
-        this.modeAmplitudeProperty[i] = new NumberProperty( OneDimensionConstants.INIT_MODE_AMPLITUDE, {
+      this.modeFrequencyProperty = new Array( MAX_VISIBLE_MASSES );
+      for( let i = 0; i < MAX_VISIBLE_MASSES; i++ ) {
+        this.modeAmplitudeProperty[ i ] = new NumberProperty( OneDimensionConstants.INIT_MODE_AMPLITUDE, {
           tandem: tandem.createTandem( 'modeAmplitudeProperty' + i ),
           range: new Range( OneDimensionConstants.MIN_MODE_AMPLITUDE, Number.POSITIVE_INFINITY ) 
           // o slider da amplitude precisa ter um máximo, mas o valor da amplitude não pode - Thiago
         } );
-
-        this.modePhaseProperty[i] = new NumberProperty( OneDimensionConstants.INIT_MODE_PHASE, {
+        
+        this.modePhaseProperty[ i ] = new NumberProperty( OneDimensionConstants.INIT_MODE_PHASE, {
           tandem: tandem.createTandem( 'modePhaseProperty' + i ),
           range: new Range( OneDimensionConstants.MIN_MODE_PHASE, OneDimensionConstants.MAX_MODE_PHASE )
         } );
         
+        this.modeFrequencyProperty[ i ] = new DerivedProperty( [ this.numVisibleMassesProperty ], function( numMasses ) {
+          const k = OneDimensionConstants.SPRING_CONSTANT_VALUE;
+          const m = OneDimensionConstants.MASSES_MASS_VALUE;
+          if ( i >= numMasses ) {
+            return 0;
+          }
+          else {
+            return 2 * Math.sqrt( k / m ) * Math.sin( Math.PI / 2 * ( i + 1 ) / ( numMasses + 1 ) );
+          }
+        } );
+
+        this.modeAmplitudeProperty[ i ].link( this.recalculateInitialPositions.bind( this ) ); // aaaaaaaaaaa
+        this.modePhaseProperty[ i ].link( this.recalculateInitialPositions.bind( this ) );
+        
+      }
+      
+      // @public {Mass[]} Array that will contain all of the masses.
+      this.masses = new Array( MAX_MASSES );
+      this.createDefaultMasses( tandem );
+
+      // @public {Spring[]} Array that will contain all of the springs.
+      this.springs = new Array( MAX_SPRINGS );
+      this.createDefaultSprings();
+      
+      this.numVisibleMassesProperty.link( this.changedNumberOfMasses.bind( this ) );
+    }
+
+    /**
+     * I dont even know what is this supposed to be;
+     * @private i guess
+     */
+    recalculateInitialPositions() {
+
+    }
+    
+    /**
+     * Creates MAX_MASSES masses in the correct positions.
+     * @param {number} numMasses - the current number of visible masses in the simulation
+     * @private
+     */
+    changedNumberOfMasses( numMasses ) {
+
+      let x = OneDimensionConstants.LEFT_WALL_X_POS;
+      let xStep = OneDimensionConstants.DISTANCE_BETWEEN_WALLS / (numMasses + 1);
+      let xFinal = OneDimensionConstants.LEFT_WALL_X_POS + OneDimensionConstants.DISTANCE_BETWEEN_WALLS;
+
+      for ( let i = 0; i < MAX_MASSES; i++ ) {
+        let visible = ( i <= numMasses ) || ( i === MAX_MASSES - 1 );
+        
+        this.masses[ i ].equilibriumPositionProperty.set( new Vector2( x, 0 ) );
+        this.masses[ i ].visibilityProperty.set( visible );
+        this.masses[ i ].zeroPosition();
+        
+        if ( x < xFinal ) {
+          x += xStep;
+        }
+      }
+    }
+    
+    /**
+     * Creates MAX_MASSES masses in the correct positions.
+     * @param {Tandem} tandem
+     * @private
+     */
+    createDefaultMasses( tandem ) {
+      let defaultMassesNum = this.numVisibleMassesProperty.get();
+
+      let x = OneDimensionConstants.LEFT_WALL_X_POS;
+      let xStep = OneDimensionConstants.DISTANCE_BETWEEN_WALLS / (defaultMassesNum + 1);
+      let xFinal = OneDimensionConstants.LEFT_WALL_X_POS + OneDimensionConstants.DISTANCE_BETWEEN_WALLS;
+
+      for ( let i = 0; i < MAX_MASSES; i++ ) {
+        let visible = ( i <= defaultMassesNum ) || ( i === MAX_MASSES - 1 );
+        
+        this.masses[ i ] = new Mass( new Vector2( x, 0 ), visible, tandem.createTandem( 'mass' + i ) );
+        
+        if ( x < xFinal ) {
+          x += xStep;
+        }
+      }
+    }
+
+    /**
+     * Creates MAX_SPRINGS springs, connecting to the correct masses.
+     * @public
+     */
+    createDefaultSprings() {
+      for ( let i = 0; i < MAX_SPRINGS; i++ ) {
+        this.springs[ i ] = new Spring( this.masses[ i ], this.masses[ i + 1 ] );
       }
     }
 
@@ -94,8 +186,8 @@ define( require => {
      */
     resetNormalModes() {
       for(let i = 0; i < MAX_VISIBLE_MASSES; i++) {
-        this.modeAmplitudeProperty[i].reset(); // TODO ver range Franco
-        this.modePhaseProperty[i].reset(); // -pi..pi Franco
+        this.modeAmplitudeProperty[ i ].reset();
+        this.modePhaseProperty[ i ].reset();
       }
     }
 
@@ -119,10 +211,16 @@ define( require => {
      * @public
      */
     initialPositions() {
-      for(let i = 0; i < MAX_MASSES; i++) {
-        this.masses[i] = this.initialMasses[i];
-      }
-        // TODO recalcular amplitudes e phases
+      this.playingProperty.set( false );
+      this.timeProperty.reset();
+
+      this.setExactPositions();
+
+      // for(let i = 0; i < MAX_MASSES; i++) {
+      //   this.masses[ i ].restoreInitialState();
+      // }
+      
+      this.computeModeAmplitudesAndPhases();
     }
 
     /**
@@ -131,11 +229,10 @@ define( require => {
      */
     zeroPositions() {
       for(let i = 0; i < MAX_MASSES; i++) {
-        this.masses[i].reset();
-        this.initialMasses[i] = this.masses[i];
+        this.masses[ i ].zeroPosition();
       }
 
-      this.resetNormalModes();
+      this.computeModeAmplitudesAndPhases();
     }
 
     /**
@@ -144,8 +241,129 @@ define( require => {
      * @public
      */
     step( dt ) {
-      //TODO
+      // If simulationTimeStep > 0.3, ignore it - it probably means the user returned to the tab after
+      // the tab or the browser was hidden for a while.
+      dt = Math.min( dt, 0.3 );
+
+      if ( this.playingProperty.get() ) {
+        this.dt += dt;
+        
+        while ( this.dt >= OneDimensionConstants.FIXED_DT ) {
+          this.dt -= OneDimensionConstants.FIXED_DT;
+          this.singleStep( OneDimensionConstants.FIXED_DT );
+        }
+      }
+
     }
+    
+    /**
+     * Steps the model with a given dt.
+     * @param {number} dt - time step, in seconds
+     * @public
+     */
+    singleStep( dt ) {
+      dt *= this.simSpeedProperty.get()
+      this.timeProperty.set( this.timeProperty.get() + dt );
+      if ( false ) {
+        this.setVerletPositions( dt );
+      }
+      else {
+        this.recalculateVelocityAndAcceleration( dt );
+        this.setExactPositions();
+      }
+    }
+    
+    /**
+     * Update positions of masses at next time step, using Velocity Verlet algorithm.
+     * Needed when user has grabbed mass with mouse, making exact calculation of positions impossible.
+     * @param {number} dt - time step, in seconds
+     * @private
+     */
+    setVerletPositions( dt ) {
+      const N = this.numVisibleMassesProperty.get();
+      for ( let i = 1; i <= N; ++i ) {
+        const x = this.masses[ i ].displacementProperty.get();
+        const v = this.masses[ i ].velocityProperty.get();
+        const a = this.masses[ i ].accelerationProperty.get();
+
+        let displacement = x.plus( v.timesScalar( dt ) ).add( a.timesScalar( dt * dt / 2 ) );
+        this.masses[ i ].displacementProperty.set( displacement );
+        this.masses[ i ].previousAccelerationProperty.set( a );
+      }
+      
+      this.recalculateVelocityAndAcceleration( dt );
+      
+    }
+    
+    /**
+     * Update velocity and acceleration.
+     * @param {number} dt - time step, in seconds
+     * @private
+     */
+    recalculateVelocityAndAcceleration( dt ) {
+      const N = this.numVisibleMassesProperty.get();
+      for ( let i = 1; i <= N; ++i ) {
+        const k = OneDimensionConstants.SPRING_CONSTANT_VALUE;
+        const m = OneDimensionConstants.MASSES_MASS_VALUE;
+        const xLeft = this.masses[ i - 1 ].displacementProperty.get();
+        const x = this.masses[ i ].displacementProperty.get();
+        const xRight = this.masses[ i + 1 ].displacementProperty.get();
+        const v = this.masses[ i ].velocityProperty.get();
+        const a = this.masses[ i ].accelerationProperty.get();
+        const aLast = this.masses[ i ].previousAccelerationProperty.get();
+        
+        this.masses[ i ].accelerationProperty.set( xLeft.plus( xRight ).subtract( x.timesScalar( 2 ) ).multiplyScalar( k / m ) );
+        this.masses[ i ].velocityProperty.set( v.plus( a.plus( aLast ).multiplyScalar( dt / 2 ) ) );
+
+        // provavelmente é possível fazer isso
+        if ( this.directionOfMotionProperty.get() === this.directionOfMotion.HORIZONTAL ) {
+          this.masses[ i ].velocityProperty.get().y = 0;
+          this.masses[ i ].accelerationProperty.get().y = 0;
+        }
+        else {
+          this.masses[ i ].velocityProperty.get().x = 0;
+          this.masses[ i ].accelerationProperty.get().x = 0;
+        }
+      }
+
+    }
+
+    /**
+     * Update positions of masses at next time step, using exact calculation.
+     * Only used if no mass is grabbed by mouse.
+     * @private
+     */
+    setExactPositions() {
+      const N = this.numVisibleMassesProperty.get();
+      for ( let i = 1; i <= N; ++i ) {
+        let displacement = 0;
+        
+        for ( let r = 1; r <= N; ++r ) {
+          const j = r - 1;
+          const modeAmplitude = this.modeAmplitudeProperty[ j ].get();
+          const modeFrequency = this.modeFrequencyProperty[ j ].get();
+          const modePhase = this.modePhaseProperty[ j ].get();
+          displacement += modeAmplitude * Math.sin( i * r * Math.PI / ( N + 1 ) ) * Math.cos( modeFrequency * this.timeProperty.get() - modePhase );
+        }
+        
+        if ( this.directionOfMotionProperty.get() === this.directionOfMotion.HORIZONTAL ) {
+          const oldY = this.masses[ i ].displacementProperty.get().y;
+          this.masses[ i ].displacementProperty.set( new Vector2( displacement, oldY ) );
+        } else {
+          const oldX = this.masses[ i ].displacementProperty.get().x;
+          this.masses[ i ].displacementProperty.set( new Vector2( oldX, displacement ) );
+        }
+      }
+    }
+    
+    /**
+     * Compute mode amplitudes and phases based on current masses displacement and velocity.
+     * @private
+     */
+    computeModeAmplitudesAndPhases() {
+      // TODO
+    }  
+    
   }
 
   return normalModes.register( 'OneDimensionModel', OneDimensionModel );
