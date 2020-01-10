@@ -37,10 +37,11 @@ define( require => {
       // @public {OneDimensionModel}
       this.model = model;
 
-      const viewOrigin = new Vector2( this.visibleBoundsProperty.get().width / 2, this.visibleBoundsProperty.get().height / 2 );
+      const viewOrigin = new Vector2( ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 + 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+                                      ( this.layoutBounds.maxY - 2 * OneDimensionConstants.SCREEN_VIEW_Y_MARGIN - 300 ) / 2 + OneDimensionConstants.SCREEN_VIEW_Y_MARGIN);
 
       // @public {ModelViewTransform2}
-      this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping( Vector2.ZERO, viewOrigin, 150 );
+      this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping( Vector2.ZERO, viewOrigin, ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 );
 
       const resetAllButton = new ResetAllButton( {
         listener: () => {
@@ -70,15 +71,16 @@ define( require => {
         true /* showPhases checkbox */
       );
 
+      // left: OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
       const ampPhasePanelOptions = {
-        left: OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
         bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
         xMargin: 10,
         yMargin: 10,
-        maxWidth: 680,
-        centerX: OneDimensionConstants.SCREEN_VIEW_X_MARGIN + 340,
+        maxWidth: this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240,
+        centerX: ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 + 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
       };
 
       const ampPhasePanel = new AmpPhasePanel(

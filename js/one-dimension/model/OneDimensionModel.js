@@ -113,6 +113,11 @@ define( require => {
       this.createDefaultSprings();
       
       this.numVisibleMassesProperty.link( this.changedNumberOfMasses.bind( this ) );
+      
+      // @public {Property.<number>} the index of the mass being dragged
+      this.draggingMassIndexProperty = new NumberProperty( 0, {
+        tandem: tandem.createTandem( 'draggingMassIndexProperty' )
+      } );
     }
     
     /**
@@ -259,7 +264,7 @@ define( require => {
     singleStep( dt ) {
       dt *= this.simSpeedProperty.get()
       this.timeProperty.set( this.timeProperty.get() + dt );
-      if ( false ) {
+      if ( this.draggingMassIndexProperty.get() > 0 ) {
         this.setVerletPositions( dt );
       }
       else {
@@ -277,13 +282,17 @@ define( require => {
     setVerletPositions( dt ) {
       const N = this.numVisibleMassesProperty.get();
       for ( let i = 1; i <= N; ++i ) {
-        const x = this.masses[ i ].displacementProperty.get();
-        const v = this.masses[ i ].velocityProperty.get();
-        const a = this.masses[ i ].accelerationProperty.get();
+        if ( i != this.draggingMassIndexProperty.get() ) {
 
-        let displacement = x.plus( v.timesScalar( dt ) ).add( a.timesScalar( dt * dt / 2 ) );
-        this.masses[ i ].displacementProperty.set( displacement );
-        this.masses[ i ].previousAccelerationProperty.set( a );
+          const x = this.masses[ i ].displacementProperty.get();
+          const v = this.masses[ i ].velocityProperty.get();
+          const a = this.masses[ i ].accelerationProperty.get();
+
+          let displacement = x.plus( v.timesScalar( dt ) ).add( a.timesScalar( dt * dt / 2 ) );
+          this.masses[ i ].displacementProperty.set( displacement );
+          this.masses[ i ].previousAccelerationProperty.set( a );
+
+        }
       }
       
       this.recalculateVelocityAndAcceleration( dt );
@@ -298,26 +307,36 @@ define( require => {
     recalculateVelocityAndAcceleration( dt ) {
       const N = this.numVisibleMassesProperty.get();
       for ( let i = 1; i <= N; ++i ) {
-        const k = OneDimensionConstants.SPRING_CONSTANT_VALUE;
-        const m = OneDimensionConstants.MASSES_MASS_VALUE;
-        const xLeft = this.masses[ i - 1 ].displacementProperty.get();
-        const x = this.masses[ i ].displacementProperty.get();
-        const xRight = this.masses[ i + 1 ].displacementProperty.get();
-        const v = this.masses[ i ].velocityProperty.get();
-        const a = this.masses[ i ].accelerationProperty.get();
-        const aLast = this.masses[ i ].previousAccelerationProperty.get();
-        
-        this.masses[ i ].accelerationProperty.set( xLeft.plus( xRight ).subtract( x.timesScalar( 2 ) ).multiplyScalar( k / m ) );
-        this.masses[ i ].velocityProperty.set( v.plus( a.plus( aLast ).multiplyScalar( dt / 2 ) ) );
+        if ( i != this.draggingMassIndexProperty.get() ) {
 
-        // provavelmente é possível fazer isso
-        if ( this.directionOfMotionProperty.get() === this.directionOfMotion.HORIZONTAL ) {
-          this.masses[ i ].velocityProperty.get().y = 0;
-          this.masses[ i ].accelerationProperty.get().y = 0;
+          const k = OneDimensionConstants.SPRING_CONSTANT_VALUE;
+          const m = OneDimensionConstants.MASSES_MASS_VALUE;
+          const xLeft = this.masses[ i - 1 ].displacementProperty.get();
+          const x = this.masses[ i ].displacementProperty.get();
+          const xRight = this.masses[ i + 1 ].displacementProperty.get();
+          
+          this.masses[ i ].accelerationProperty.set( xLeft.plus( xRight ).subtract( x.timesScalar( 2 ) ).multiplyScalar( k / m ) );
+          
+          const v = this.masses[ i ].velocityProperty.get();
+          const a = this.masses[ i ].accelerationProperty.get();
+          const aLast = this.masses[ i ].previousAccelerationProperty.get();
+          
+          this.masses[ i ].velocityProperty.set( v.plus( a.plus( aLast ).multiplyScalar( dt / 2 ) ) );
+          
+          // provavelmente é possível fazer isso
+          if ( this.directionOfMotionProperty.get() === this.directionOfMotion.HORIZONTAL ) {
+            this.masses[ i ].velocityProperty.get().y = 0;
+            this.masses[ i ].accelerationProperty.get().y = 0;
+          }
+          else {
+            this.masses[ i ].velocityProperty.get().x = 0;
+            this.masses[ i ].accelerationProperty.get().x = 0;
+          }
+          
         }
         else {
-          this.masses[ i ].velocityProperty.get().x = 0;
-          this.masses[ i ].accelerationProperty.get().x = 0;
+          this.masses[ i ].accelerationProperty.set( new Vector2( 0, 0 ) );
+          this.masses[ i ].velocityProperty.set( new Vector2( 0, 0 ) );
         }
       }
 
@@ -332,6 +351,7 @@ define( require => {
       const N = this.numVisibleMassesProperty.get();
       for ( let i = 1; i <= N; ++i ) {
         let displacement = 0;
+        let velocity = 0;
         
         for ( let r = 1; r <= N; ++r ) {
           const j = r - 1;
@@ -339,14 +359,19 @@ define( require => {
           const modeFrequency = this.modeFrequencyProperty[ j ].get();
           const modePhase = this.modePhaseProperty[ j ].get();
           displacement += modeAmplitude * Math.sin( i * r * Math.PI / ( N + 1 ) ) * Math.cos( modeFrequency * this.timeProperty.get() - modePhase );
+          velocity += ( - modeFrequency ) * modeAmplitude * Math.sin( i * r * Math.PI / ( N + 1 ) ) * Math.sin( modeFrequency * this.timeProperty.get() - modePhase );
         }
         
         if ( this.directionOfMotionProperty.get() === this.directionOfMotion.HORIZONTAL ) {
           const oldY = this.masses[ i ].displacementProperty.get().y;
+          const oldVelocityY = this.masses[ i ].velocityProperty.get().y;
           this.masses[ i ].displacementProperty.set( new Vector2( displacement, oldY ) );
+          this.masses[ i ].velocityProperty.set( new Vector2( velocity, oldVelocityY ) );
         } else {
           const oldX = this.masses[ i ].displacementProperty.get().x;
+          const oldVelocityX = this.masses[ i ].velocityProperty.get().x;
           this.masses[ i ].displacementProperty.set( new Vector2( oldX, displacement ) );
+          this.masses[ i ].velocityProperty.set( new Vector2( oldVelocityX, velocity ) );
         }
       }
     }
@@ -375,10 +400,9 @@ define( require => {
             massDisplacement = this.masses[ j ].initialDisplacementProperty.get().y;
             massVelocity = this.masses[ j ].initialVelocityProperty.get().y;
           }
-          if ( massVelocity != 0 || massDisplacement != 0 ) console.log( 'nozero' );
+          
           AmplitudeTimesCosPhase += ( 2 / ( N + 1 ) ) * massDisplacement * Math.sin( i * j * Math.PI / ( N + 1 ) );
-          AmplitudeTimesSinPhase += ( -2 / ( this.modeFrequencyProperty[ i - 1 ].get() * ( N + 1 ) ) ) * massVelocity * Math.sin( i * j * Math.PI / ( N + 1 ) );
-          // if ( AmplitudeTimesCosPhase != 0 || AmplitudeTimesSinPhase != 0 ) console.log( 'nozero' );
+          AmplitudeTimesSinPhase += ( 2 / ( this.modeFrequencyProperty[ i - 1 ].get() * ( N + 1 ) ) ) * massVelocity * Math.sin( i * j * Math.PI / ( N + 1 ) );
         }
         this.modeAmplitudeProperty[ i - 1 ].set( Math.sqrt( AmplitudeTimesCosPhase ** 2 + AmplitudeTimesSinPhase ** 2 ) );
         this.modePhaseProperty[ i - 1 ].set( Math.atan2( AmplitudeTimesSinPhase, AmplitudeTimesCosPhase ) );

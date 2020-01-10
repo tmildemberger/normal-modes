@@ -41,12 +41,13 @@ define( require => {
 
       // @public {Rectangle}
       this.rect = new Rectangle( {
-        fill: '#111',
-        stroke: Color.toColor( '#111' ).colorUtilsDarker( .5 ),
+        fill: '#333',
+        stroke: Color.toColor( '#333' ).colorUtilsDarker( .5 ),
         boundsMethod: 'unstroked',
-        lineWidth: 4,
-        rectWidth: 15,
-        rectHeight: 70
+        lineWidth: 2,
+        rectWidth: 6,
+        rectHeight: 80,
+        cornerRadius: 2
       } );
       this.addChild( this.rect );
 

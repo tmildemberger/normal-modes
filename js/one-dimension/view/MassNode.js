@@ -10,6 +10,7 @@ define( require => {
 
   const Color = require( 'SCENERY/util/Color' );
   const DerivedProperty = require( 'AXON/DerivedProperty' );
+  const DragListener = require( 'SCENERY/listeners/DragListener' );
   const Node = require( 'SCENERY/nodes/Node' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const Property = require( 'AXON/Property' );
@@ -54,6 +55,32 @@ define( require => {
         self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) ).subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 ) );
       } );
       
+      this.addInputListener( new DragListener( {
+        applyOffset: false,
+        start: function( event, listener ) {
+          self.model.draggingMassIndexProperty.set( self.model.masses.indexOf( self.mass ) );
+        },
+        drag: function( event, listener ) {
+          // let point = .subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 );
+          console.log('model::'); console.log( listener.modelPoint );
+          // console.log('local::'); console.log( listener.localPoint );
+          console.log('parent::'); console.log( self.modelViewTransform.viewToModelPosition( listener.parentPoint ) );
+          let point = listener.modelPoint.plus( self.mass.equilibriumPositionProperty.get() );
+          if ( self.model.directionOfMotionProperty.get() === self.model.directionOfMotion.HORIZONTAL ) {
+            const oldY = self.mass.displacementProperty.get().y;
+            self.mass.displacementProperty.set( new Vector2( point.x, oldY ) );
+          } else {
+            const oldX = self.mass.displacementProperty.get().x;
+            self.mass.displacementProperty.set( new Vector2( oldX, point.y ) );
+          }
+        },
+        end: function( event, listener ) {
+          self.model.draggingMassIndexProperty.set( -1 );
+          self.model.computeModeAmplitudesAndPhases();
+        },
+        transform: self.modelViewTransform
+      } ) );
+
       this.visibilityProperty.linkAttribute( this, 'visible' );
     }
 
