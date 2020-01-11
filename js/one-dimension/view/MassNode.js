@@ -23,9 +23,10 @@ define( require => {
      * @param {Mass} mass
      * @param {ModelViewTransform2} modelViewTransform
      * @param {OneDimensionModel} model
+     * @param {boolean} oneDimension
      * @param {Tandem} tandem
      */
-    constructor( mass, modelViewTransform, model, tandem ) {
+    constructor( mass, modelViewTransform, model, oneDimension, tandem ) {
       super( { cursor: 'pointer' } );
 
       const self = this;
@@ -55,17 +56,17 @@ define( require => {
         self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) ).subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 ) );
       } );
       
-      this.addInputListener( new DragListener( {
-        applyOffset: false,
-        start: function( event, listener ) {
+      if ( oneDimension ) {
+        this.startCallback = function( event, listener ) {
           self.model.draggingMassIndexProperty.set( self.model.masses.indexOf( self.mass ) );
-        },
-        drag: function( event, listener ) {
+        };
+
+        this.dragCallback = function( event, listener ) {
           // let point = .subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 );
           console.log('model::'); console.log( listener.modelPoint );
           // console.log('local::'); console.log( listener.localPoint );
-          console.log('parent::'); console.log( self.modelViewTransform.viewToModelPosition( listener.parentPoint ) );
-          let point = listener.modelPoint.plus( self.mass.equilibriumPositionProperty.get() );
+          // console.log('parent::'); console.log( self.modelViewTransform.viewToModelPosition( listener.parentPoint ) );
+          let point = listener.modelPoint.minus( self.mass.equilibriumPositionProperty.get() );
           if ( self.model.directionOfMotionProperty.get() === self.model.directionOfMotion.HORIZONTAL ) {
             const oldY = self.mass.displacementProperty.get().y;
             self.mass.displacementProperty.set( new Vector2( point.x, oldY ) );
@@ -73,11 +74,46 @@ define( require => {
             const oldX = self.mass.displacementProperty.get().x;
             self.mass.displacementProperty.set( new Vector2( oldX, point.y ) );
           }
-        },
-        end: function( event, listener ) {
+        };
+
+        this.endCallback =  function( event, listener ) {
           self.model.draggingMassIndexProperty.set( -1 );
           self.model.computeModeAmplitudesAndPhases();
-        },
+        };
+      }
+      else {
+        this.startCallback = function( event, listener ) {
+          let foundIndex = -1;
+          let foundArray = null;
+          for ( let array of self.model.masses ) {
+            foundIndex = array.indexOf( self.mass );
+            if ( foundIndex != -1 ) {
+              foundArray = array;
+              break;
+            }
+          }
+          self.model.draggingMassIndexesProperty.set( {
+            i: self.model.masses.indexOf( foundArray ),
+            j: foundIndex
+          } );
+        };
+
+        this.dragCallback = function( event, listener ) {
+          console.log('model::'); console.log( listener.modelPoint );
+          self.mass.displacementProperty.set( listener.modelPoint.minus( self.mass.equilibriumPositionProperty.get() ) );
+        };
+
+        this.endCallback =  function( event, listener ) {
+          self.model.draggingMassIndexesProperty.set( null );
+          self.model.computeModeAmplitudesAndPhases();
+        };
+      }
+
+      this.addInputListener( new DragListener( {
+        applyOffset: false,
+        start: this.startCallback,
+        drag: this.dragCallback,
+        end: this.endCallback,
         transform: self.modelViewTransform
       } ) );
 

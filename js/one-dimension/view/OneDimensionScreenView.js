@@ -110,7 +110,7 @@ define( require => {
       // @private {MassNode[]} Array that will contain all of the massNodes.
       this.massNodes = [];
       for ( let i = 1; i < this.model.masses.length - 1; ++i ) {
-        this.massNodes.push( new MassNode( this.model.masses[ i ], this.modelViewTransform, this.model, tandem.createTandem( 'massNodes' ) ) );
+        this.massNodes.push( new MassNode( this.model.masses[ i ], this.modelViewTransform, this.model, true, tandem.createTandem( 'massNodes' ) ) );
         this.addChild( this.massNodes[ this.massNodes.length - 1 ] );
       }
       // this.massNodes = model.masses.map( function( mass ) {

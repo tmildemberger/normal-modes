@@ -132,7 +132,7 @@ define( require => {
       let xFinal = OneDimensionConstants.LEFT_WALL_X_POS + OneDimensionConstants.DISTANCE_BETWEEN_WALLS;
 
       for ( let i = 0; i < MAX_MASSES; i++ ) {
-        let visible = ( i <= numMasses ) || ( i === MAX_MASSES - 1 );
+        let visible = ( i <= numMasses );
         
         this.masses[ i ].equilibriumPositionProperty.set( new Vector2( x, 0 ) );
         this.masses[ i ].visibilityProperty.set( visible );
@@ -159,7 +159,7 @@ define( require => {
       let xFinal = OneDimensionConstants.LEFT_WALL_X_POS + OneDimensionConstants.DISTANCE_BETWEEN_WALLS;
 
       for ( let i = 0; i < MAX_MASSES; i++ ) {
-        let visible = ( i <= defaultMassesNum ) || ( i === MAX_MASSES - 1 );
+        let visible = ( i <= defaultMassesNum );
         
         this.masses[ i ] = new Mass( new Vector2( x, 0 ), visible, tandem.createTandem( 'mass' + i ) );
         
@@ -196,12 +196,14 @@ define( require => {
      */
     reset() {
       this.playingProperty.reset();
+      this.timeProperty.reset();
       this.simSpeedProperty.reset();
       this.phasesVisibilityProperty.reset();
       this.springsVisibilityProperty.reset();
       this.numVisibleMassesProperty.reset();
       this.directionOfMotionProperty.reset();
 
+      this.zeroPositions();   // calcula modos duas vezes no momento
       this.resetNormalModes();
     }
 
@@ -227,9 +229,8 @@ define( require => {
      * @public
      */
     zeroPositions() {
-      for(let i = 0; i < MAX_MASSES; i++) {
+      for ( let i = 0; i < MAX_MASSES; i++ ) {
         this.masses[ i ].zeroPosition();
-        if ( this.masses[ i ].displacementProperty.get().magnitude != 0 ) console.log('mas ue');
       }
 
       this.computeModeAmplitudesAndPhases();
@@ -382,7 +383,7 @@ define( require => {
      */
     computeModeAmplitudesAndPhases() {
       this.timeProperty.reset();
-      for ( let i = 1; i <= MAX_VISIBLE_MASSES; ++ i ) {
+      for ( let i = 1; i <= MAX_VISIBLE_MASSES; ++i ) {
         this.masses[ i ].initialDisplacementProperty.set( this.masses[ i ].displacementProperty.get() );
         this.masses[ i ].initialVelocityProperty.set( this.masses[ i ].velocityProperty.get() );
       }
@@ -407,7 +408,7 @@ define( require => {
         this.modeAmplitudeProperty[ i - 1 ].set( Math.sqrt( AmplitudeTimesCosPhase ** 2 + AmplitudeTimesSinPhase ** 2 ) );
         this.modePhaseProperty[ i - 1 ].set( Math.atan2( AmplitudeTimesSinPhase, AmplitudeTimesCosPhase ) );
       }
-    }  
+    }
     
   }
 

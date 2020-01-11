@@ -9,7 +9,6 @@ define( require => {
   // modules
 
   const Color = require( 'SCENERY/util/Color' );
-  const DerivedProperty = require( 'AXON/DerivedProperty' );
   const Node = require( 'SCENERY/nodes/Node' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const Property = require( 'AXON/Property' );
@@ -35,9 +34,9 @@ define( require => {
       this.model = model;
     
       // @public {Property.<boolean>} determines the visibility of the WallNode
-      this.visibilityProperty = new DerivedProperty ( [ this.mass.visibilityProperty ], function( massVisible ) {
-        return massVisible;
-      } );
+      // this.visibilityProperty = new DerivedProperty ( [ this.mass.visibilityProperty ], function( massVisible ) {
+      //   return massVisible;
+      // } );
 
       // @public {Rectangle}
       this.rect = new Rectangle( {
@@ -55,7 +54,7 @@ define( require => {
         self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) ).subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 ) );
       } );
       
-      this.visibilityProperty.linkAttribute( this, 'visible' );
+      // this.visibilityProperty.linkAttribute( this, 'visible' );
     }
 
     /**
