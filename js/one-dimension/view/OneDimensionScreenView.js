@@ -8,7 +8,7 @@ define( require => {
 
   // modules
   const AmpPhasePanel = require( 'NORMAL_MODES/one-dimension/view/AmpPhasePanel' );
-  const MassNode = require( 'NORMAL_MODES/one-dimension/view/MassNode' );
+  const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
@@ -16,7 +16,7 @@ define( require => {
   const OptionsPanel = require( 'NORMAL_MODES/common/OptionsPanel' );
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   const ScreenView = require( 'JOIST/ScreenView' );
-  const SpringNode = require( 'NORMAL_MODES/one-dimension/view/SpringNode' );
+  const SpringNode = require( 'NORMAL_MODES/common/view/SpringNode' );
   const Vector2 = require( 'DOT/Vector2' );
   const WallNode = require( 'NORMAL_MODES/one-dimension/view/WallNode' );
 

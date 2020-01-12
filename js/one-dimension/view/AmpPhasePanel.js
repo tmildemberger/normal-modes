@@ -198,9 +198,6 @@ define( require => {
             labelBox.children = modeLabels.slice(0, model.numVisibleMassesProperty.get());
 
             self.centerX = panelOptions.centerX;
-            
-            // model.zeroPositions();
-            console.log("[!] TODO - colocar zeroPositions() no listener de numMassesVisibleProperty em AmpPhasePanel");
           } 
         );
 

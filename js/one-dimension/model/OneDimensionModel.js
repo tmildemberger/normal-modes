@@ -11,11 +11,11 @@ define( require => {
   const DerivedProperty = require( 'AXON/DerivedProperty' );
   const Enumeration = require( 'PHET_CORE/Enumeration' );
   const EnumerationProperty = require( 'AXON/EnumerationProperty' );
-  const Mass = require( 'NORMAL_MODES/one-dimension/model/Mass' );
+  const Mass = require( 'NORMAL_MODES/common/model/Mass' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NumberProperty = require( 'AXON/NumberProperty' );
   const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
-  const Spring = require( 'NORMAL_MODES/one-dimension/model/Spring' );
+  const Spring = require( 'NORMAL_MODES/common/model/Spring' );
   const Vector2 = require( 'DOT/Vector2' );
 
   const MAX_VISIBLE_MASSES = 10;

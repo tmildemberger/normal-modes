@@ -9,11 +9,11 @@ define( require => {
   // modules
   const BooleanProperty = require( 'AXON/BooleanProperty' );
   const DerivedProperty = require( 'AXON/DerivedProperty' );
-  const Mass = require( 'NORMAL_MODES/one-dimension/model/Mass' );
+  const Mass = require( 'NORMAL_MODES/common/model/Mass' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NumberProperty = require( 'AXON/NumberProperty' );
   const Property = require( 'AXON/Property' );
-  const Spring = require( 'NORMAL_MODES/one-dimension/model/Spring' );
+  const Spring = require( 'NORMAL_MODES/common/model/Spring' );
   const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
   const Vector2 = require( 'DOT/Vector2' );
 
