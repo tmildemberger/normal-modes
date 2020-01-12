@@ -62,7 +62,7 @@ define( require => {
 
         const showSpringsCheckbox = new Checkbox(
           new Text( showSpringsString, {
-            font: NormalModesConstants.phetFont,
+            font: NormalModesConstants.GENERAL_FONT,
             maxWidth: 140
           } ),
           model.springsVisibilityProperty
@@ -77,7 +77,7 @@ define( require => {
         if( doShowPhases ) {
           showPhasesCheckbox = new Checkbox(
             new Text( showPhasesString, {
-              font: NormalModesConstants.phetFont,
+              font: NormalModesConstants.GENERAL_FONT,
               maxWidth: 140
             } ),
             model.phasesVisibilityProperty
@@ -167,11 +167,11 @@ define( require => {
             majorTicks: [ 
               { 
                 value: OneDimensionConstants.MIN_SPEED,
-                label: new Text( slowString, { font: NormalModesConstants.phetFont } ) 
+                label: new Text( slowString, { font: NormalModesConstants.GENERAL_FONT } ) 
               },
               { 
                 value: OneDimensionConstants.MAX_SPEED,
-                label: new Text( fastString, { font: NormalModesConstants.phetFont } ) 
+                label: new Text( fastString, { font: NormalModesConstants.GENERAL_FONT } ) 
               },
             ],
             minorTickSpacing: OneDimensionConstants.DELTA_SPEED,

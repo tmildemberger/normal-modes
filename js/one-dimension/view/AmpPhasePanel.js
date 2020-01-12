@@ -82,15 +82,15 @@ define( require => {
             majorTicks: [ 
               { 
                 value: OneDimensionConstants.MIN_MODE_PHASE,
-                label: new Text( "-pi", { font: NormalModesConstants.phetFont } ) 
+                label: new Text( "-\u03C0", { font: NormalModesConstants.GENERAL_FONT } ) 
               },
               { 
                 value: OneDimensionConstants.INIT_MODE_PHASE,
-                label: new Text( "0", { font: NormalModesConstants.phetFont } ) 
+                label: new Text( "0", { font: NormalModesConstants.GENERAL_FONT } ) 
               },
               { 
                 value: OneDimensionConstants.MAX_MODE_PHASE,
-                label: new Text( "pi", { font: NormalModesConstants.phetFont } ) 
+                label: new Text( "\u03C0", { font: NormalModesConstants.GENERAL_FONT } ) 
               },
             ],
             trackSize: new Dimension2( 100, 3 ),
@@ -138,7 +138,7 @@ define( require => {
           const freq = model.modeFrequencyProperty[ i ].get() / Math.sqrt( k / m );
           frequencyText[i] = new Text(
             `w = ${ freq.toFixed( 2 ) }w0`,
-            { font: NormalModesConstants.phetFont, maxWidth: 60 }
+            { font: NormalModesConstants.GENERAL_FONT, maxWidth: 60 }
           );
         }
 
@@ -146,22 +146,22 @@ define( require => {
 
         const normalModeLabel = new Text(
           normalModeString, 
-          { font: NormalModesConstants.phetFont, maxWidth: 65 }
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
         );
 
         const amplitudeLabel = new Text(
           amplitudeString, 
-          { font: NormalModesConstants.phetFont, maxWidth: 65 }
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
         );
 
         const phaseLabel = new Text(
           phaseString, 
-          { font: NormalModesConstants.phetFont, maxWidth: 65 }
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
         );
 
         const frequencyLabel = new Text(
           frequencyString, 
-          { font: NormalModesConstants.phetFont, maxWidth: 65 }
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
         );
         
         /* some ugly stuff, i don't know of a better way to do those different spacings */
@@ -207,7 +207,7 @@ define( require => {
               const m = OneDimensionConstants.MASSES_MASS_VALUE;
               const freq = model.modeFrequencyProperty[ i ].get() / Math.sqrt( k / m );
 
-              frequencyText[ i ].text = `w = ${ freq.toFixed( 2 ) }w0`;
+              frequencyText[ i ].text = `\u03C9 = ${ freq.toFixed( 2 ) }\u03C9\u2080`;
             }
           } 
         );
