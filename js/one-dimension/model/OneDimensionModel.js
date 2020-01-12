@@ -44,7 +44,7 @@ define( require => {
       } );
       
       // @public {Property.<boolean>} determines visibility of the phases sliders
-      this.phasesVisibilityProperty = new BooleanProperty( true, {
+      this.phasesVisibilityProperty = new BooleanProperty( false, {
         tandem: tandem.createTandem( 'phasesVisibilityProperty' )
       } );
 
