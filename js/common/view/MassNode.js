@@ -2,12 +2,15 @@
 
 /**
  * @author Thiago de Mendonça Mildemberger (UTFPR)
+ * @author Franco Barpp Gomes (UTFPR)
  */
 define( require => {
   'use strict';
 
   // modules
 
+  const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
+  const ButtonListener = require( 'SCENERY/input/ButtonListener' );
   const Color = require( 'SCENERY/util/Color' );
   const DerivedProperty = require( 'AXON/DerivedProperty' );
   const DragListener = require( 'SCENERY/listeners/DragListener' );
@@ -50,11 +53,51 @@ define( require => {
         rectWidth: 20,
         rectHeight: 20
       } );
-      this.addChild( this.rect );
 
       Property.multilink( [ this.mass.equilibriumPositionProperty, this.mass.displacementProperty ], function( massPosition, massDisplacement ) {
         self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) ).subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 ) );
       } );
+
+      const arrowOptions = {
+        fill: 'rgb(255,255,0)',
+        stroke: Color.toColor( 'rgb(255,255,0)' ).colorUtilsDarker( .6 ),
+        boundsMethod: 'unstroked',
+        lineWidth: 2,
+        tailWidth: 10,
+        headWidth: 20,
+        headHeight: 16,
+        visible: false,
+      };
+
+      // @public {Object}
+      this.arrows = {
+        left: new ArrowNode( 
+          this.rect.left,
+          this.rect.centerY,
+          this.rect.left - 23,
+          this.rect.centerY, arrowOptions ),
+        top: new ArrowNode( 
+          this.rect.centerX,
+          this.rect.top,
+          this.rect.centerX,
+          this.rect.top - 23, arrowOptions ),
+        right: new ArrowNode( 
+          this.rect.right,
+          this.rect.centerY,
+          this.rect.right + 23,
+          this.rect.centerY, arrowOptions ),
+        bottom: new ArrowNode( 
+          this.rect.centerX,
+          this.rect.bottom,
+          this.rect.centerX,
+          this.rect.bottom + 23, arrowOptions ),
+      }
+
+      this.addChild( this.arrows.left );
+      this.addChild( this.arrows.top );
+      this.addChild( this.arrows.right );
+      this.addChild( this.arrows.bottom );
+      this.addChild( this.rect );
       
       if ( oneDimension ) {
         this.startCallback = function( event, listener ) {
@@ -80,8 +123,27 @@ define( require => {
           self.model.draggingMassIndexProperty.set( -1 );
           self.model.computeModeAmplitudesAndPhases();
         };
+
+        this.overUpCallback = function( event, listener ) {
+          const axis = self.model.directionOfMotionProperty.get();
+          if( axis == self.model.directionOfMotion.VERTICAL ) {
+            self.arrows.top.visible = listener;
+            self.arrows.bottom.visible = listener;
+          }
+          else {
+            self.arrows.left.visible = listener;
+            self.arrows.right.visible = listener;
+          }
+        };
       }
       else {
+        const rotationPoint = new Vector2( this.rect.centerX, this.rect.centerY );
+        for(let arrow in this.arrows) {
+          this.arrows[ arrow ].rotateAround( rotationPoint, Math.PI / 4 );
+        }
+        //this.arrows.left.rotation = this.arrows.right.rotation =
+        //this.arrows.top.rotation = this.arrows.bottom.rotation = Math.PI / 4;
+
         this.startCallback = function( event, listener ) {
           let foundIndex = -1;
           let foundArray = null;
@@ -107,6 +169,13 @@ define( require => {
           self.model.draggingMassIndexesProperty.set( null );
           self.model.computeModeAmplitudesAndPhases();
         };
+
+        this.overUpCallback = function( event, listener ) {
+          self.arrows.top.visible = listener;
+          self.arrows.bottom.visible = listener;
+          self.arrows.left.visible = listener;
+          self.arrows.right.visible = listener;
+        };
       }
 
       this.addInputListener( new DragListener( {
@@ -115,6 +184,11 @@ define( require => {
         drag: this.dragCallback,
         end: this.endCallback,
         transform: self.modelViewTransform
+      } ) );
+      
+      this.addInputListener( new ButtonListener ( { 
+        over: ( event ) => { self.overUpCallback( event, true ) },
+        up: ( event ) => { self.overUpCallback( event, false ) },
       } ) );
 
       this.visibilityProperty.linkAttribute( this, 'visible' );

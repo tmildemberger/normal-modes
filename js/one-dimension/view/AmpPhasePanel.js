@@ -3,7 +3,8 @@
 /**
  * Panel containing amplitude and phase selection for the normal modes.
  *
- * @author Franco Barpp Gomes {UTFPR}
+ * @author Franco Barpp Gomes (UTFPR)
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
  */
 define( require => {
     'use strict';
@@ -74,7 +75,6 @@ define( require => {
           }
         }
 
-        // TODO trocar pi pra pi de math
         const phaseSliderOptions = {
           delta: 0.01,
           sliderOptions: {
