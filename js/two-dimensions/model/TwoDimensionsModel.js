@@ -45,7 +45,7 @@ define( require => {
       } );
 
       // @public {Property.<number>} the current number of visible masses in each row
-      this.numVisibleMassesProperty = new NumberProperty( 3, {
+      this.numVisibleMassesProperty = new NumberProperty( 2, {
         tandem: tandem.createTandem( 'numVisibleMassesProperty' ),
         numberType: 'Integer',
         range: new Range( 1, 10 )

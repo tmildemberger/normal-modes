@@ -1,4 +1,0 @@
-consertar indentação do optionspanel e ampphasemodel
-
-ver Mass e MassNode do Masses and Springs pra fazer os 1d e 2d
-ver como fazer o showPhases no AmpPhasePanel
