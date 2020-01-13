@@ -43,8 +43,7 @@ define( require => {
       // how much to horizontally shift the window (to center)
       windowShift: 1,
 
-      phetFont: new PhetFont( 14 ),
-
+      GENERAL_FONT: new PhetFont( 14 ),
       CONTROL_FONT: new PhetFont( 18 ),
 
       // number of masses in a row for both 1d and 2d

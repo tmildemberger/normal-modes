@@ -53,6 +53,7 @@ define( require => {
         const ampSliders = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
         const phaseSliders = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
         const modeLabels = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        const frequencyText = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
         const ampSliderOptions = {
           delta: 0.01,
@@ -81,15 +82,15 @@ define( require => {
             majorTicks: [ 
               { 
                 value: OneDimensionConstants.MIN_MODE_PHASE,
-                label: new Text( "-pi", { font: NormalModesConstants.phetFont } ) 
+                label: new Text( "-\u03C0", { font: NormalModesConstants.GENERAL_FONT } ) 
               },
               { 
                 value: OneDimensionConstants.INIT_MODE_PHASE,
-                label: new Text( "0", { font: NormalModesConstants.phetFont } ) 
+                label: new Text( "0", { font: NormalModesConstants.GENERAL_FONT } ) 
               },
               { 
                 value: OneDimensionConstants.MAX_MODE_PHASE,
-                label: new Text( "pi", { font: NormalModesConstants.phetFont } ) 
+                label: new Text( "\u03C0", { font: NormalModesConstants.GENERAL_FONT } ) 
               },
             ],
             trackSize: new Dimension2( 100, 3 ),
@@ -108,83 +109,87 @@ define( require => {
         }
 
         for(let i = 0; i < ampSliders.length; i++) {
-            ampSliders[ i ] = new NumberControl(
-              "",
-              model.modeAmplitudeProperty[ i ],
-              new RangeWithValue(OneDimensionConstants.MIN_MODE_AMPLITUDE,
-                                 OneDimensionConstants.MAX_MODE_AMPLITUDE,
-                                 OneDimensionConstants.INIT_MODE_AMPLUITUDE),
-              ampSliderOptions
-            );
+          const k = OneDimensionConstants.SPRING_CONSTANT_VALUE;
+          const m = OneDimensionConstants.MASSES_MASS_VALUE;
 
-            phaseSliders[ i ] = new NumberControl(
-              "",
-              model.modePhaseProperty[ i ],
-              new RangeWithValue(OneDimensionConstants.MIN_MODE_PHASE,
-                                 OneDimensionConstants.MAX_MODE_PHASE,
-                                 OneDimensionConstants.INIT_MODE_PHASE),
-              phaseSliderOptions
-            );
-          
-            modeLabels[ i ] = new Text(
-              ( i + 1 ).toString(),
-              { font: NormalModesConstants.CONTROL_FONT }
-            )
+          ampSliders[ i ] = new NumberControl(
+            "",
+            model.modeAmplitudeProperty[ i ],
+            new RangeWithValue(OneDimensionConstants.MIN_MODE_AMPLITUDE,
+                                OneDimensionConstants.MAX_MODE_AMPLITUDE,
+                                OneDimensionConstants.INIT_MODE_AMPLUITUDE),
+            ampSliderOptions
+          );
+
+          phaseSliders[ i ] = new NumberControl(
+            "",
+            model.modePhaseProperty[ i ],
+            new RangeWithValue(OneDimensionConstants.MIN_MODE_PHASE,
+                                OneDimensionConstants.MAX_MODE_PHASE,
+                                OneDimensionConstants.INIT_MODE_PHASE),
+            phaseSliderOptions
+          );
+        
+          modeLabels[ i ] = new Text(
+            ( i + 1 ).toString(),
+            { font: NormalModesConstants.CONTROL_FONT }
+          );
+
+          const freq = model.modeFrequencyProperty[ i ].get() / Math.sqrt( k / m );
+          frequencyText[i] = new Text(
+            `w = ${ freq.toFixed( 2 ) }w0`,
+            { font: NormalModesConstants.GENERAL_FONT, maxWidth: 60 }
+          );
         }
 
-        const ampBox = new HBox( {
-          spacing: 6,
-          align: 'left',
-          children: ampSliders.slice( 0, model.numVisibleMassesProperty.get() )
-        } );
+        const panelColumns = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN + 1);
 
-        const phaseBox = new HBox( {
-          spacing: -20,
-          align: 'left',
-          children: phaseSliders.slice( 0, model.numVisibleMassesProperty.get() )
-        } );
+        const normalModeLabel = new Text(
+          normalModeString, 
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
+        );
 
-        const labelBox = new HBox( {
+        const amplitudeLabel = new Text(
+          amplitudeString, 
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
+        );
+
+        const phaseLabel = new Text(
+          phaseString, 
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
+        );
+
+        const frequencyLabel = new Text(
+          frequencyString, 
+          { font: NormalModesConstants.GENERAL_FONT, maxWidth: 65 }
+        );
+        
+        /* some ugly stuff, i don't know of a better way to do those different spacings */
+        panelColumns[ 0 ] = new VBox( {
+          top: 5,
           spacing: 60,
-          align: 'left',
-          children: modeLabels.slice( 0, model.numVisibleMassesProperty.get() )
-        } );
-
-        const labelRow = new HBox( {
-          spacing: 30,
-          align: 'left',
-          children: [
-            new Text( normalModeString, { font: NormalModesConstants.phetFont, maxWidth: 65 } ),
-            labelBox
-          ]
-        } );
-
-        const ampRow = new HBox ( {
-          spacing: 0,
           align: 'center',
-          children: [
-            new Text( amplitudeString, { font: NormalModesConstants.phetFont } ),
-            ampBox
-          ]
+          children: [ normalModeLabel, new VBox( {
+            spacing: 110,
+            align: 'center',
+            children: [ amplitudeLabel, phaseLabel ]
+          } ), frequencyLabel ]
         } );
 
-        const phaseRow = new HBox ( {
-          spacing: 0,
-          align: 'center',
-          children: [
-            new Text( phaseString, { font: NormalModesConstants.phetFont } ),
-            phaseBox
-          ]
-        } );
+        for(let i = 0; i < panelColumns.length - 1; i++) {
+          panelColumns[ i + 1 ] = new VBox( {
+            spacing: 5,
+            align: 'center',
+            children: ( model.phasesVisibilityProperty.get() )? 
+                      [ modeLabels[ i ], ampSliders[ i ], phaseSliders[ i ], frequencyText[ i ] ] :
+                      [ modeLabels[ i ], ampSliders[ i ], frequencyText[ i ] ]
+          } );
+        }
 
-        const contentNode = new VBox( {
-          spacing: 0,
+        const contentNode = new HBox( {
+          spacing: -10,
           align: 'left',
-          children: [
-            labelRow,
-            ampRow,
-            phaseRow
-          ]
+          children: panelColumns.slice( 0, model.numVisibleMassesProperty.get() + 1 )
         } );
 
         super( contentNode, panelOptions );
@@ -193,25 +198,44 @@ define( require => {
         
         model.numVisibleMassesProperty.link(
           function() {
-            ampBox.children = ampSliders.slice(0, model.numVisibleMassesProperty.get());
-            phaseBox.children = phaseSliders.slice(0, model.numVisibleMassesProperty.get());
-            labelBox.children = modeLabels.slice(0, model.numVisibleMassesProperty.get());
+            contentNode.children = panelColumns.slice( 0, model.numVisibleMassesProperty.get() + 1 );
 
             self.centerX = panelOptions.centerX;
-            
-            // model.zeroPositions();
-            console.log("[!] TODO - colocar zeroPositions() no listener de numMassesVisibleProperty em AmpPhasePanel");
+
+            for(let i = 0; i < model.numVisibleMassesProperty.get(); i++) {
+              const k = OneDimensionConstants.SPRING_CONSTANT_VALUE;
+              const m = OneDimensionConstants.MASSES_MASS_VALUE;
+              const freq = model.modeFrequencyProperty[ i ].get() / Math.sqrt( k / m );
+
+              frequencyText[ i ].text = `\u03C9 = ${ freq.toFixed( 2 ) }\u03C9\u2080`;
+            }
           } 
         );
 
         model.phasesVisibilityProperty.link(
           function() {
             if( model.phasesVisibilityProperty.get() ) {
-              contentNode.children = [ labelRow, ampRow, phaseRow ];
+              contentNode.spacing = -10;
+              panelColumns[ 0 ].children[ 1 ].children = [ amplitudeLabel, phaseLabel ];
+              panelColumns[ 0 ].spacing = 62.5;
+
+              for(let i = 0; i < panelColumns.length - 1; i++) {
+                panelColumns[ i + 1 ].children = [ modeLabels[ i ],
+                 ampSliders[ i ], phaseSliders[ i ], frequencyText[ i ] ];
+              }
             }
             else {
-              contentNode.children = [ labelRow, ampRow ];
+              contentNode.spacing = 10;
+              panelColumns[ 0 ].children[ 1 ].children = [ amplitudeLabel ];
+              panelColumns[ 0 ].spacing = 60;
+              
+              for(let i = 0; i < panelColumns.length - 1; i++) {
+                panelColumns[ i + 1 ].children = [ modeLabels[ i ],
+                 ampSliders[ i ], frequencyText[ i ] ];
+              }
             }
+
+            self.centerX = panelOptions.centerX;
           }
         )
 

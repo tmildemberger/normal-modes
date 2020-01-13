@@ -9,14 +9,14 @@ define( require => {
   // modules
   const Bounds2 = require( 'DOT/Bounds2' );
   const Color = require( 'SCENERY/util/Color' );
-  const MassNode = require( 'NORMAL_MODES/one-dimension/view/MassNode' );
+  const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const OptionsPanel = require( 'NORMAL_MODES/common/OptionsPanel' );
   const Rectangle = require( 'SCENERY/nodes/Rectangle' );
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   const ScreenView = require( 'JOIST/ScreenView' );
-  const SpringNode = require( 'NORMAL_MODES/one-dimension/view/SpringNode' );
+  const SpringNode = require( 'NORMAL_MODES/common/view/SpringNode' );
   const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
   const Vector2 = require( 'DOT/Vector2' );
 
