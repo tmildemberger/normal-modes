@@ -105,6 +105,7 @@ define( require => {
         };
 
         this.dragCallback = function( event, listener ) {
+          self.model.arrowsVisibilityProperty.set( false );
           // let point = .subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 );
           console.log('model::'); console.log( listener.modelPoint );
           // console.log('local::'); console.log( listener.localPoint );
@@ -124,15 +125,15 @@ define( require => {
           self.model.computeModeAmplitudesAndPhases();
         };
 
-        this.overUpCallback = function( event, listener ) {
+        this.overUpCallback = function( isOver ) {
           const axis = self.model.directionOfMotionProperty.get();
           if( axis == self.model.directionOfMotion.VERTICAL ) {
-            self.arrows.top.visible = listener;
-            self.arrows.bottom.visible = listener;
+            self.arrows.top.visible = isOver;
+            self.arrows.bottom.visible = isOver;
           }
           else {
-            self.arrows.left.visible = listener;
-            self.arrows.right.visible = listener;
+            self.arrows.left.visible = isOver;
+            self.arrows.right.visible = isOver;
           }
         };
       }
@@ -161,6 +162,7 @@ define( require => {
         };
 
         this.dragCallback = function( event, listener ) {
+          self.model.arrowsVisibilityProperty.set( false );
           console.log('model::'); console.log( listener.modelPoint );
           self.mass.displacementProperty.set( listener.modelPoint.minus( self.mass.equilibriumPositionProperty.get() ) );
         };
@@ -170,26 +172,37 @@ define( require => {
           self.model.computeModeAmplitudesAndPhases();
         };
 
-        this.overUpCallback = function( event, listener ) {
-          self.arrows.top.visible = listener;
-          self.arrows.bottom.visible = listener;
-          self.arrows.left.visible = listener;
-          self.arrows.right.visible = listener;
+        this.overUpCallback = function( isOver ) {
+          self.arrows.top.visible = isOver;
+          self.arrows.bottom.visible = isOver;
+          self.arrows.left.visible = isOver;
+          self.arrows.right.visible = isOver;
         };
       }
 
-      this.addInputListener( new DragListener( {
+      this.dragListener = new DragListener( {
         applyOffset: false,
         start: this.startCallback,
         drag: this.dragCallback,
         end: this.endCallback,
         transform: self.modelViewTransform
-      } ) );
-      
-      this.addInputListener( new ButtonListener ( { 
-        over: ( event ) => { self.overUpCallback( event, true ) },
-        up: ( event ) => { self.overUpCallback( event, false ) },
-      } ) );
+      } );
+
+      this.addInputListener( this.dragListener );
+      this.model.arrowsVisibilityProperty.link( function( arrowsVisible ) {
+        let callback = self.overUpCallback.bind( self );
+        if ( arrowsVisible ) {
+          self.dragListener.isOverProperty.link( callback );
+        }
+        else {
+          self.arrows.top.visible = false;
+          self.arrows.bottom.visible = false;
+          self.arrows.left.visible = false;
+          self.arrows.right.visible = false;
+          self.dragListener.isOverProperty.unlink( callback );
+        }
+      } );
+
 
       this.visibilityProperty.linkAttribute( this, 'visible' );
     }

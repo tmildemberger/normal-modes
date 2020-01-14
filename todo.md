@@ -2,7 +2,7 @@
 
 ## Geral
 
-- [ ] Consertar indentação do optionspanel e ampphasemodel e colocar a frequência entre a amplitude e a fase (como na original)
+- [x] Consertar indentação do optionspanel e ampphasemodel e colocar a frequência entre a amplitude e a fase (como na original)
 
 - [ ] Desenhar molas mais bonitas (ao invés de só uma linha como atualmente ou algumas linhas retas como na original) - uma possibilidade seria fazer como eu fiz na minha própria simulação:
 
@@ -17,7 +17,7 @@ Ilustração dos dois itens anteriores:
 
 ## Parte Unidimensional
 
-- [ ] Criar um elemento na interface que controle a direção do movimento (horizontal ou vertical) - ao invés de usar um radio button comum como na simulação antiga, seria possível usar botões com imagem como feito atualmente (exemplo da imagem a seguir vem da simulação Vector Addition, também são do tipo em que só pode haver um selecionado por vez)
+- [x] Criar um elemento na interface que controle a direção do movimento (horizontal ou vertical) - ao invés de usar um radio button comum como na simulação antiga, seria possível usar botões com imagem como feito atualmente (exemplo da imagem a seguir vem da simulação Vector Addition, também são do tipo em que só pode haver um selecionado por vez)
   
   ![](new_buttons.png)
 
@@ -29,7 +29,7 @@ Ilustração dos dois itens anteriores:
 
   ![](wavy_things.png)
 
-- [ ] Fazer com que o painel com as amplitudes e fases e também as coisas do item anterior possam ser escondidas por meio de um botão como o retratado na imagem anterior - isso já foi feito em novas simulações obviamente mais bonitamente (imagem de exemplo novamente da linda simulação Vector Addition)
+- [x] (Feito mas falta a coisa de cima) Fazer com que o painel com as amplitudes e fases e também as coisas do item anterior possam ser escondidas por meio de um botão como o retratado na imagem anterior - isso já foi feito em novas simulações obviamente mais bonitamente (imagem de exemplo novamente da linda simulação Vector Addition)
 
   ![](hidden_panel.png)
 

@@ -135,6 +135,11 @@ define( require => {
       this.draggingMassIndexesProperty = new Property( null, {
         tandem: tandem.createTandem( 'draggingMassIndexesProperty' )
       } );
+
+      // @public {Property.<boolean>} determines visibility of the arrows on the masses
+      this.arrowsVisibilityProperty = new BooleanProperty( true, {
+        tandem: tandem.createTandem( 'arrowsVisibilityProperty' )
+      } );
     }
     
     /**
@@ -245,6 +250,8 @@ define( require => {
       this.simSpeedProperty.reset();
       this.springsVisibilityProperty.reset();
       this.numVisibleMassesProperty.reset();
+      this.draggingMassIndexesProperty.reset();
+      this.arrowsVisibilityProperty.reset();
 
       this.zeroPositions();
       this.resetNormalModes();
