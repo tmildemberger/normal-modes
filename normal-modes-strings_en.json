@@ -38,6 +38,9 @@
   "amp-phase-panel.amplitude": {
     "value": "Amplitude: "
   },
+  "amp-phase-panel.normal-mode-spectrum": {
+    "value": "Normal Mode Spectrum"
+  },
   "amp-phase-panel.phase": {
     "value": "Phase: "
   },

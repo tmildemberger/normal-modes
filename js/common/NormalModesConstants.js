@@ -43,6 +43,7 @@ define( require => {
       // how much to horizontally shift the window (to center)
       windowShift: 1,
 
+      SMALL_FONT: new PhetFont( 13 ),
       GENERAL_FONT: new PhetFont( 14 ),
       CONTROL_FONT: new PhetFont( 18 ),
 

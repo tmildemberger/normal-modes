@@ -7,7 +7,7 @@ define( require => {
   'use strict';
 
   // modules
-  const AmpPhasePanel = require( 'NORMAL_MODES/one-dimension/view/AmpPhasePanel' );
+  const AmpPhaseAccordionBox = require( 'NORMAL_MODES/one-dimension/view/AmpPhaseAccordionBox' );
   const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
@@ -72,8 +72,8 @@ define( require => {
       );
 
       // left: OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
-      const ampPhasePanelOptions = {
-        left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+      const ampPhaseAccordionBoxOptions = {
+        // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
         bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
@@ -83,12 +83,9 @@ define( require => {
         centerX: ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 + 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
       };
 
-      const ampPhasePanel = new AmpPhasePanel(
-        ampPhasePanelOptions,
-        model
-      );
+      const ampPhaseAccordionBox = new AmpPhaseAccordionBox( ampPhaseAccordionBoxOptions, model );
       
-      this.addChild( ampPhasePanel );
+      this.addChild( ampPhaseAccordionBox );
       this.addChild( optionsPanel );
       this.addChild( resetAllButton );
 

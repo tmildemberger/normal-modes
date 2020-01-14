@@ -124,7 +124,7 @@ define( require => {
 
         const stepButton = new StepForwardButton( {
           isPlayingProperty: model.playingProperty,
-          listener: function() { model.singleStep.bind( model )( OneDimensionConstants.FIXED_DT ); },
+          listener: function() { model.singleStep( OneDimensionConstants.FIXED_DT ); },
         } );
 
         const playAndStepButtons = new HBox( {

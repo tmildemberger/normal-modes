@@ -113,6 +113,7 @@ define( require => {
       this.createDefaultSprings();
       
       this.numVisibleMassesProperty.link( this.changedNumberOfMasses.bind( this ) );
+      this.directionOfMotionProperty.link( this.changedDirectionOfMotion.bind( this ) );
       
       // @public {Property.<number>} the index of the mass being dragged
       this.draggingMassIndexProperty = new NumberProperty( 0, {
@@ -121,7 +122,7 @@ define( require => {
     }
     
     /**
-     * Creates MAX_MASSES masses in the correct positions.
+     * Relocates all masses to their correct positions.
      * @param {number} numMasses - the current number of visible masses in the simulation
      * @private
      */
@@ -144,6 +145,22 @@ define( require => {
       }
 
       this.computeModeAmplitudesAndPhases();
+    }
+    
+    /**
+     * Swaps x and y in the displacements and velocities when the direction changes.
+     * @param {number} directionOfMotion - the current direction of motion
+     * @private
+     */
+    changedDirectionOfMotion( directionOfMotion ) {
+      for ( let i = 1; i <= MAX_VISIBLE_MASSES; i++ ) {
+        const oldX = this.masses[ i ].displacementProperty.get().x;
+        const oldY = this.masses[ i ].displacementProperty.get().y;
+        const oldVelocityX = this.masses[ i ].velocityProperty.get().x;
+        const oldVelocityY = this.masses[ i ].velocityProperty.get().y;
+        this.masses[ i ].displacementProperty.set( new Vector2( oldY, oldX ) );
+        this.masses[ i ].velocityProperty.set( new Vector2( oldVelocityY, oldVelocityX ) );
+      }
     }
     
     /**
