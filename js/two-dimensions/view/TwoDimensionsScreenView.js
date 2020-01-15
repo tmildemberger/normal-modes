@@ -7,6 +7,7 @@ define( require => {
   'use strict';
 
   // modules
+  const AmpSelectorAccordionBox = require( 'NORMAL_MODES/two-dimensions/view/AmpSelectorAccordionBox' );
   const Bounds2 = require( 'DOT/Bounds2' );
   const Color = require( 'SCENERY/util/Color' );
   const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
@@ -73,6 +74,20 @@ define( require => {
 
       this.addChild( optionsPanel );
       this.addChild( resetAllButton );
+
+      const ampSelectorAccordionBoxOptions = {
+        // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        right: this.layoutBounds.maxX - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
+        bottom: this.layoutBounds.maxY - TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
+        cornerRadius: 5,
+        fill: 'rgb( 254, 235, 214 )',
+        minWidth: 200,
+        selectorWidth: 290,
+      };
+
+      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, model );
+
+      this.addChild( ampSelectorAccordionBox );
 
       // @private {SpringNode[]} Array that will contain all of the springNodes.
       this.springXNodes = model.springsX.map( function( springArray ) {

@@ -12,12 +12,9 @@ define( require => {
     // modules
     const AccordionBox = require( 'SUN/AccordionBox' );
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
-    const Checkbox = require( 'SUN/Checkbox' );
     const Dimension2 = require( 'DOT/Dimension2' );
     const HBox = require( 'SCENERY/nodes/HBox' );
-    const HSeparator = require( 'SUN/HSeparator' );
     const HStrut = require( 'SCENERY/nodes/HStrut' );
-    const inherit = require( 'PHET_CORE/inherit' );
     const Line = require( 'SCENERY/nodes/Line' );
     const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
     const merge = require( 'PHET_CORE/merge' );
@@ -26,23 +23,18 @@ define( require => {
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
     const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
-    const Panel = require( 'SUN/Panel' );
-    const PlayPauseButton = require( 'SCENERY_PHET/buttons/PlayPauseButton' );
     const RadioButtonGroup = require( 'SUN/buttons/RadioButtonGroup' );
     const RangeWithValue = require( 'DOT/RangeWithValue' );
-    const StepButton = require( 'SCENERY_PHET/buttons/StepButton' );
     const Text = require( 'SCENERY/nodes/Text' );
-    const TextPushButton = require( 'SUN/buttons/TextPushButton' );
     const VBox = require( 'SCENERY/nodes/VBox' );
     const VStrut = require( 'SCENERY/nodes/VStrut' );
     
     // strings
-    const amplitudeString = require( 'string!NORMAL_MODES/amp-phase-panel.amplitude' );
-    const normalModeSpectrumString = require( 'string!NORMAL_MODES/amp-phase-panel.normal-mode-spectrum' );
-    const directionOfMotionString = require( 'string!NORMAL_MODES/amp-phase-panel.direction-of-motion' );
-    const frequencyString = require( 'string!NORMAL_MODES/amp-phase-panel.frequency' );
-    const normalModeString = require( 'string!NORMAL_MODES/amp-phase-panel.normal-mode' );
-    const phaseString = require( 'string!NORMAL_MODES/amp-phase-panel.phase' );
+    const amplitudeString = require( 'string!NORMAL_MODES/amp-selector-1d.amplitude' );
+    const normalModeSpectrumString = require( 'string!NORMAL_MODES/amp-selector-1d.normal-mode-spectrum' );
+    const frequencyString = require( 'string!NORMAL_MODES/amp-selector-1d.frequency' );
+    const normalModeString = require( 'string!NORMAL_MODES/amp-selector-1d.normal-mode' );
+    const phaseString = require( 'string!NORMAL_MODES/amp-selector-1d.phase' );
 
     class AmpPhaseAccordionBox extends AccordionBox {
   

@@ -9,6 +9,8 @@ define( require => {
   // modules
   const BooleanProperty = require( 'AXON/BooleanProperty' );
   const DerivedProperty = require( 'AXON/DerivedProperty' );
+  const Enumeration = require( 'PHET_CORE/Enumeration' );
+  const EnumerationProperty = require( 'AXON/EnumerationProperty' );
   const Mass = require( 'NORMAL_MODES/common/model/Mass' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NumberProperty = require( 'AXON/NumberProperty' );
@@ -140,6 +142,15 @@ define( require => {
       this.arrowsVisibilityProperty = new BooleanProperty( true, {
         tandem: tandem.createTandem( 'arrowsVisibilityProperty' )
       } );
+
+      // @public {Enumeration}
+      this.ampSelectorAxis = Enumeration.byKeys( [ 'HORIZONTAL', 'VERTICAL' ] );
+
+      // @public {Property.<string>} the current direction of motion of the visible masses
+      this.ampSelectorAxisProperty = new EnumerationProperty( this.ampSelectorAxis, this.ampSelectorAxis.VERTICAL, {
+        tandem: tandem.createTandem( 'ampSelectorAxisProperty' )
+      } );
+
     }
     
     /**

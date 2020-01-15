@@ -32,22 +32,22 @@
   "options-panel.fast": {
     "value": "fast"
   },
-  "amp-phase-panel.normal-mode": {
+  "amp-selector-1d.normal-mode": {
     "value": "Normal Mode: "
   },
-  "amp-phase-panel.amplitude": {
+  "amp-selector-1d.amplitude": {
     "value": "Amplitude: "
   },
-  "amp-phase-panel.normal-mode-spectrum": {
+  "amp-selector-1d.normal-mode-spectrum": {
     "value": "Normal Mode Spectrum"
   },
-  "amp-phase-panel.phase": {
+  "amp-selector-1d.phase": {
     "value": "Phase: "
   },
-  "amp-phase-panel.frequency": {
+  "amp-selector-1d.frequency": {
     "value": "Frequency: "
   },
-  "amp-phase-panel.direction-of-motion": {
-    "value": "Direction of motion: "
+  "amp-selector-2d.normal-mode-amplitudes": {
+    "value": "Normal Mode Amplitudes"
   }
 }
