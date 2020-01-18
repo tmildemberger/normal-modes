@@ -10,21 +10,16 @@ define( require => {
   
     // modules
     const ArrowShape = require( 'SCENERY_PHET/ArrowShape' );
+    const Bounds2 = require( 'DOT/Bounds2' );
     const CanvasNode = require( 'SCENERY/nodes/CanvasNode' );
     const inherit = require( 'PHET_CORE/inherit' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
 
     // constants
-    const AXIS_LINE_WIDTH = 1;
-    const AXES_ARROW_HEAD_HEIGHT = 8 * AXIS_LINE_WIDTH;
-
-    const SIGMA_HANDLE_OFFSET_PROPORTION = 0.08;  // Position of handle as function of node width.
-    const EPSILON_LINE_WIDTH = 1;
-
-    const GRAPH_SIZE = { width: 100, height: 30 };
-    const GRAPH_DELTA_X = 2;
-    const GRAPH_START = { x: 0, y: 0 };
+    const GRAPH_SIZE = { width: 100, height: 20 };
+    const X_RATIO = 100;
+    const GRAPH_START = { x: 0, y: GRAPH_SIZE.height / 2 };
   
     /**
      * @param {Model} [model] used to get model properties
@@ -32,11 +27,21 @@ define( require => {
      * @constructor
      */
     function ModeGraphCanvasNode( model, options ) {
+      //options.canvasBounds = new Bounds2( 0, options.normalModeNum * 55, GRAPH_SIZE.width, GRAPH_SIZE.height );
+      options.canvasBounds = new Bounds2( 0, 0, GRAPH_SIZE.width, GRAPH_SIZE.height );
       CanvasNode.call( this, options );
 
       this.curveYPositions = new Array( GRAPH_SIZE.width );  // @private
       this.normalModeNum = options.normalModeNum; // @private {Number} - 0 to 9 (representing 1 to 10)
-      this.strokeColor = options.strokeColor || '#000000';
+      this.strokeColor = options.strokeColor || 'black';
+      this.model = model;
+
+      /*
+      this.canvasEl = document.createElement( 'canvas' );
+      this.canvasEl.width = GRAPH_SIZE.width;
+      this.canvasEl.height = GRAPH_SIZE.height;
+      this.context = this.canvasEl.getContext( '2d' );
+      */
     }
   
     normalModes.register( 'ModeGraphCanvasNode', ModeGraphCanvasNode );
@@ -60,16 +65,18 @@ define( require => {
       },
   
       update: function( ) {
+        
+        const n = this.normalModeNum;
+        const amp = this.model.modeAmplitudeProperty[ n ].get();
+        const phase = this.model.modePhaseProperty[ n ].get();
+        const freq = this.model.modeFrequencyProperty[ n ].get();
+        const time = this.model.timeProperty.get();
 
         for ( let i = 1; i < this.curveYPositions.length; i++ ) {
-          const n = this.normalModeNum;
-          const amp = model.modeAmplitudeProperty[ n ].get();
-          const phase = model.modePhaseProperty[ n ].get();
-          const freq = model.modeFrequencyProperty[ n ].get();
-          const time = model.timeProperty.get();
-          const x = i / 10;
+          const x = i / X_RATIO;
         
-          this.curveYPositions[ i ] = GRAPH_SIZE.height * ( amp * Math.sin( x * ( n + 1 ) * Math.PI ) * Math.cos( freq * time - phase ) ) / OneDimensionConstants.MAX_MODE_AMPLITUDE;
+          // Franco put a negative sign in front of it because of y coordinate stuff
+          this.curveYPositions[ i ] = - ( 2 * GRAPH_SIZE.height / 3 ) * ( amp * Math.sin( x * ( n + 1 ) * Math.PI ) * Math.cos( freq * time - phase ) ) / OneDimensionConstants.MAX_MODE_AMPLITUDE;
         }
 
         // indicate that this should be repainted during the next paint cycle
