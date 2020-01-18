@@ -272,7 +272,6 @@ define( require => {
         } );
         // contentNode.children.push( new Line( 0, 0, 0, 100, { stroke: 'gray' } ) );
 
-
         const RADIO_BUTTON_ICON_SIZE = 45;
         const iconSize = RADIO_BUTTON_ICON_SIZE;
         const AXES_ARROW_OPTIONS = {

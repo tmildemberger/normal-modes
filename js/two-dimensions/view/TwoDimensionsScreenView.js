@@ -77,15 +77,14 @@ define( require => {
 
       const ampSelectorAccordionBoxOptions = {
         // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
-        right: this.layoutBounds.maxX - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
-        bottom: this.layoutBounds.maxY - TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
+        right: this.layoutBounds.maxX - 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
+        top: optionsPanel.top + optionsPanel.height + 10,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
-        minWidth: 200,
-        selectorWidth: 290,
+        maxHeight: 400
       };
 
-      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, model );
+      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, this.modelViewTransform, model );
 
       this.addChild( ampSelectorAccordionBox );
 

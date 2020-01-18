@@ -12,6 +12,7 @@ define( require => {
     // modules
     const AccordionBox = require( 'SUN/AccordionBox' );
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
+    const Color = require( 'SCENERY/util/Color' );
     const Dimension2 = require( 'DOT/Dimension2' );
     const HBox = require( 'SCENERY/nodes/HBox' );
     const HStrut = require( 'SCENERY/nodes/HStrut' );
@@ -22,6 +23,7 @@ define( require => {
     const NumberControl = require( 'SCENERY_PHET/NumberControl' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
+    const Panel = require( 'SUN/Panel' );
     const Property = require( 'AXON/Property' );
     const RadioButtonGroup = require( 'SUN/buttons/RadioButtonGroup' );
     const RangeWithValue = require( 'DOT/RangeWithValue' );
@@ -29,8 +31,8 @@ define( require => {
     const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
     const VBox = require( 'SCENERY/nodes/VBox' );
     const VStrut = require( 'SCENERY/nodes/VStrut' );
-    const Rectangle = require( 'SCENERY/nodes/Rectangle' );
-    const Color = require( 'SCENERY/util/Color' );
+    const Vector2 = require( 'DOT/Vector2' );
+    const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
     
     // strings
     const normalModeAmplitudesString = require( 'string!NORMAL_MODES/amp-selector-2d.normal-mode-amplitudes' );
@@ -41,7 +43,7 @@ define( require => {
        * @param {Object} [options]
        * @param {Model} model
        */
-      constructor( options, model ) {
+      constructor( options, modelViewTransform, model ) {
   
         /*
         Model properties used:
@@ -55,7 +57,7 @@ define( require => {
         const PANEL_X_MARGIN = 9;
         const PANEL_Y_MARGIN = 10;
 
-        const selectorWidth = options.selectorWidth;
+        const selectorWidth = 380;
 
         options = merge( options, {
           resize: true,
@@ -113,84 +115,80 @@ define( require => {
           orientation: 'vertical'
         } );
 
-        const rect1 = new VBox( {
+        const selectorRectXOptions = {
+          left: 0,
+          top: 0,
           cursor: 'pointer',
-          fill: 'rgb( 0, 0, 0) ',
-          minWidth: selectorWidth,
-          minHeight: selectorWidth,
-          rectWidth: selectorWidth,
-          rectHeight: selectorWidth
-        } );
-
-        const selectorRectOptions = {
-          cursor: 'pointer',
-          fill: 'rgb( 255, 255, 255) ',
-          rectWidth: 20, /* just a default value */
-          rectHeight: 20
+          fill: 'rgb( 0, 255, 255) ',
+          rectWidth: 18.7, /* just a default value */
+          rectHeight: 18.7
         };
 
+        const selectorRectYOptions = {
+          left: 0,
+          top: 0,
+          cursor: 'pointer',
+          fill: 'rgb( 0, 0, 255) ',
+          rectWidth: 18.7, /* just a default value */
+          rectHeight: 18.7
+        };
+
+        const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
+
+        // Franco to make handling it easier, it's a simple array (not nested), as its known how many nodes are per row
         const selectorRects = {
-          x: new Array( NormalModesConstants.MAX_MASSES_ROW_LEN ),
-          y: new Array( NormalModesConstants.MAX_MASSES_ROW_LEN )
+          x: new Array( selectorRectsLength ),
+          y: new Array( selectorRectsLength )
         };
-        const rows = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
-        for ( let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
-          selectorRects.x[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
-          selectorRects.y[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
-
-          for ( let j = 0; j < NormalModesConstants.MAX_MASSES_ROW_LEN; j++ ) {
-            selectorRects.x[ i ][ j ] = new Rectangle( selectorRectOptions );
-            selectorRects.y[ i ][ j ] = new Rectangle( selectorRectOptions );
-          }
-
-          rows[ i ] = new HBox( { 
-            spacing: 5,
-            align: 'left',
-            children: model.ampSelectorAxisProperty.get() == model.ampSelectorAxis.HORIZONTAL?
-                      selectorRects.x[ i ] : selectorRects.y[ i ]
-          } );
+        for ( let i = 0; i < selectorRectsLength; i++ ) {
+          selectorRects.x[ i ] = new Rectangle( selectorRectXOptions );
+          selectorRects.y[ i ] = new Rectangle( selectorRectYOptions );
         }
 
-        const selectionBox = new VBox( { 
-          spacing: 5,
-          align: 'left',
-          children: rows
+        const selectorBox = new Node( { 
+          children: selectorRects.x
         } );
 
         const contentNode = new HBox( {
-          spacing: 5,
-          align: 'left',
-          children: [ ampSelectorAxisRadioButtonGroup, selectionBox ]
+          spacing: 10,
+          align: 'center',
+          children: [ ampSelectorAxisRadioButtonGroup, selectorBox ]
         } );
-        
+
         super( contentNode, options );
 
         Property.multilink( [ model.ampSelectorAxisProperty, model.numVisibleMassesProperty ], function ( axis, numMasses ) {
-          if ( axis == model.ampSelectorAxis.HORIZONTAL ) {
-            for ( let i = 0; i < numMasses; i++ ) {
-              rows[ i ].children = selectorRects.x[ i ].slice( 0, numMasses );
+          
+          selectorBox.children = ( axis == model.ampSelectorAxis.HORIZONTAL )? selectorRects.x.slice( 0, numMasses * NormalModesConstants.MAX_MASSES_ROW_LEN ) : selectorRects.y.slice( 0, numMasses * NormalModesConstants.MAX_MASSES_ROW_LEN );
+          const rects = selectorBox.children;
+
+          const gridSize = selectorWidth / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
+
+          const cursor = new Vector2( 0, 0 );
+
+          let j = 0;
+          let row = 0;
+          for ( ; row < numMasses; row++ ) {
+            const visibleRowEnd = j + numMasses;
+            const rowEnd = j + NormalModesConstants.MAX_MASSES_ROW_LEN;
+
+            for ( ; j < visibleRowEnd; j++ ) {
+                rects[ j ].visible = true;
+                rects[ j ].rectWidth = rects[ j ].rectHeight = 3 * gridSize;
+
+                rects[ j ].left = cursor.x;
+                rects[ j ].top = cursor.y;
+                cursor.x += 4 * gridSize;
+              }
+            for ( ; j < rowEnd; j++ ) {
+              rects[ j ].visible = false;
             }
-          }
-          else {
-            for ( let i = 0; i < numMasses; i++ ) {
-              rows[ i ].children = selectorRects.y[ i ].slice( 0, numMasses );
-            }
+
+            cursor.x = 0;
+            cursor.y += 4 * gridSize;
           }
 
-          selectionBox.children = rows.slice( 0, numMasses );
-
-          const gridSize = selectorWidth / ( 1 + 4 * numMasses ); /* makes a grid with rectside = 2 units and padding = 1 unit */
-
-          for ( let i = 0; i < numMasses; i++ ) {
-            rows[ i ].spacing = rows[ i ].left = gridSize;
-            for ( let j = 0; j < numMasses; j++ ) {
-              rows[ i ].children[ j ].rectHeight = rows[ i ].children[ j ].rectWidth = 2 * gridSize;
-            }
-          }
-
-          selectionBox.spacing = gridSize;
-          selectionBox.top = gridSize;
         } );
 
       }
