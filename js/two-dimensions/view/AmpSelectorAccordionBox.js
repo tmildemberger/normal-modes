@@ -176,7 +176,6 @@ define( require => {
           model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
           } );
-          alert('TODO ver como adaptar esses links q sao unlinked no model do 2D')
         }
 
         const selectorBox = new Rectangle( { 

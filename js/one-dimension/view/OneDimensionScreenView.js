@@ -9,6 +9,7 @@ define( require => {
   // modules
   const AmpPhaseAccordionBox = require( 'NORMAL_MODES/one-dimension/view/AmpPhaseAccordionBox' );
   const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
+  const ModeGraphCanvasNode = require( 'NORMAL_MODES/one-dimension/view/ModeGraphCanvasNode' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
@@ -17,6 +18,7 @@ define( require => {
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   const ScreenView = require( 'JOIST/ScreenView' );
   const SpringNode = require( 'NORMAL_MODES/common/view/SpringNode' );
+  const VBox = require( 'SCENERY/nodes/VBox' );
   const Vector2 = require( 'DOT/Vector2' );
   const WallNode = require( 'NORMAL_MODES/one-dimension/view/WallNode' );
 
@@ -115,6 +117,22 @@ define( require => {
       //   self.addChild( massNode );
       //   return massNode;
       // } );
+
+      this.normalModeGraphs = new Array( OneDimensionConstants.MAX_MASSES_ROW_LEN );
+
+      for ( let i = 0; i < this.normalModeGraphs.length; i++ ) {
+        this.normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, { normalModeNum: i } );
+      }
+
+      this.graphBox = new VBox( { 
+        spacing: 5,
+        align: 'center',
+        top: optionsPanel.bottom + 10,
+        right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        children: this.normalModeGraphs
+      } );
+
+      this.addChild( this.graphBox );
     }
     /**
      * Resets the view.
