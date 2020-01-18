@@ -121,7 +121,14 @@ define( require => {
           cursor: 'pointer',
           fill: 'rgb( 0, 255, 255) ',
           rectWidth: 18.7, /* just a default value */
-          rectHeight: 18.7
+          rectHeight: 18.7,
+          cornerRadius: 2,
+          children: [ new Rectangle( { 
+            fill: 'rgb( 0, 0, 0) ',
+            rectWidth: 18.7,
+            rectHeight: 18.7 / 2,
+            cornerRadius: 2,
+          } ) ]
         };
 
         const selectorRectYOptions = {
@@ -130,7 +137,14 @@ define( require => {
           cursor: 'pointer',
           fill: 'rgb( 0, 0, 255) ',
           rectWidth: 18.7, /* just a default value */
-          rectHeight: 18.7
+          rectHeight: 18.7,
+          cornerRadius: 2,
+          children: [ new Rectangle( { 
+            fill: 'rgb( 0, 0, 0) ',
+            rectWidth: 18.7,
+            rectHeight: 0,
+            cornerRadius: 2,
+          } ) ]
         };
 
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
@@ -140,15 +154,34 @@ define( require => {
         selectorRects[ model.ampSelectorAxis.HORIZONTAL ] = new Array( selectorRectsLength );
         selectorRects[ model.ampSelectorAxis.VERTICAL ] = new Array( selectorRectsLength );
 
+        const changeSelectorRectProgress = function ( selectorRect, amplitude ) {
+          const progress = selectorRect.children[ 0 ];
+
+          //progress.bottom = selectorRect.bottom;
+          const factor = ( amplitude > TwoDimensionsConstants.MAX_MODE_AMPLITUDE)? 1 : amplitude / TwoDimensionsConstants.MAX_MODE_AMPLITUDE;
+          console.log(factor)
+          progress.rectHeight = selectorRect.rectHeight * factor;
+        }
+
         for ( let i = 0; i < selectorRectsLength; i++ ) {
           selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectXOptions );
           selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectYOptions );
+
+          const row = Math.trunc( i / NormalModesConstants.MAX_MASSES_ROW_LEN );
+          const col = i % NormalModesConstants.MAX_MASSES_ROW_LEN;
+
+          model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
+            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ], amplitude );
+          } );
+          model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
+            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
+          } );
+          alert('TODO ver como adaptar esses links q sao unlinked no model do 2D')
         }
 
         const selectorBox = new Rectangle( { 
-          children: selectorRects[ model.ampSelectorAxis.HORIZONTAL ]
+          children: selectorRects[ model.ampSelectorAxisProperty.get() ]
         } );
-        selectorBox.axis = null;
 
         const contentNode = new HBox( {
           spacing: 10,
@@ -158,35 +191,12 @@ define( require => {
 
         super( contentNode, options );
 
-        /* trying pre processed slices for faster execution */
-        // const rectSlices = {
-        //   x: new Array( NormalModesConstants.MAX_MASSES_ROW_LEN ),
-        //   y: new Array( NormalModesConstants.MAX_MASSES_ROW_LEN )
-        // };
-        // for ( let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
-        //   rectSlices.x[ i ] = selectorRects.x.slice( 0, ( i + 1 ) * NormalModesConstants.MAX_MASSES_ROW_LEN );
-        //   rectSlices.y[ i ] = selectorRects.y.slice( 0, ( i + 1 ) * NormalModesConstants.MAX_MASSES_ROW_LEN );
-        // }
-
-        //const date = new Date;
-
-        Property.multilink( [ model.ampSelectorAxisProperty, model.numVisibleMassesProperty ], function ( axis, numMasses ) {
-
-          //let startTime = date.getTime();
-
-          //console.log('-----------');
-          //selectorBox.children = ( axis == model.ampSelectorAxis.HORIZONTAL )? rectSlices.x[ numMasses - 1 ] : rectSlices.y[ numMasses - 1 ];
-
-          if ( selectorBox.axis != axis ) { /* if axis didn't change, there's no need to change the selector rects */
-            selectorBox.children = selectorRects[ axis ];
-            selectorBox.axis = axis;
-          }
-          //console.log(`1 - ${(startTime = date.getTime() - startTime)}`);
+        const massesChanged = function ( numMasses ) {
           const rects = selectorBox.children;
 
-          const gridSize = 300 / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
+          const gridSize = 400 / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
 
-          const cursor = new Vector2( gridSize, 0 );
+          const cursor = new Vector2( gridSize, gridSize / 2 );
 
           let j = 0;
           let row = 0;
@@ -198,6 +208,7 @@ define( require => {
               rects[ j ].visible = true;
               rects[ j ].rectWidth = rects[ j ].rectHeight = 3 * gridSize;
 
+              rects[ j ].children[ 0 ].rectWidth = rects[ j ].rectWidth;
               rects[ j ].left = cursor.x;
               rects[ j ].top = cursor.y;
               cursor.x += 4 * gridSize;
@@ -210,8 +221,14 @@ define( require => {
             cursor.y += 4 * gridSize;
           }
           for( ; j < selectorRectsLength; j++) rects[ j ].visible = false;
+        }
 
+        model.ampSelectorAxisProperty.link( function ( axis ) {
+          selectorBox.children = selectorRects[ axis ];
+          massesChanged( model.numVisibleMassesProperty.get() );
         } );
+
+        model.numVisibleMassesProperty.link( massesChanged );
 
       }
   

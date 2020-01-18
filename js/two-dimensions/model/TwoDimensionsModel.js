@@ -475,6 +475,7 @@ define( require => {
             // Se a cada vez que fosse mudar o valor de alguma dessas propriedades fosse recalcular
             // as posições exatas, iria levar uns 10 segundos para fazer isso com 10x10 massas
             // (Na verdade eu medi esse tempo de verdade, 10256.7 ms) - Thiago
+            // Meeeee - Franco
             
             this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();

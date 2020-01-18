@@ -8,7 +8,7 @@
 
   ![](better_springs.png)
 
-- [ ] Fazer aparecer texto escrito "Pausado" quando a simulação estiver pausada
+- [ ] Fazer aparecer texto escrito "Pausado" quando a simulação estiver pausada (Franco: isso tem em outras simulações HTML5? talvez fique meio feio)
 
 - [x] Fazer aparecerem flechas sobre as massas quando o mouse passar por cima (sendo que deixam de aparecer logo após qualquer massa ter sido arrastada) - pode ter como guia as mesmas flechas que aparecem na chave inglesa do Wave On A String
 
