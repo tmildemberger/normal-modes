@@ -9,8 +9,8 @@ define( require => {
   // modules
   const AccordionBox = require( 'SUN/AccordionBox' );
   const AmpPhaseAccordionBox = require( 'NORMAL_MODES/one-dimension/view/AmpPhaseAccordionBox' );
+  const GraphAccordionBox = require( 'NORMAL_MODES/one-dimension/view/GraphAccordionBox' );
   const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
-  const ModeGraphCanvasNode = require( 'NORMAL_MODES/one-dimension/view/ModeGraphCanvasNode' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
@@ -118,38 +118,14 @@ define( require => {
       //   self.addChild( massNode );
       //   return massNode;
       // } );
-
-      // TODO mudar isso pra outro lugar pra n ficar feio - Franco
-      this.normalModeGraphs = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
-
-      for ( let i = 0; i < this.normalModeGraphs.length; i++ ) {
-        this.normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, { normalModeNum: i } );
-        model.timeProperty.link( ( time ) => {
-          self.normalModeGraphs[ i ].update();
-        } );
-      }
-
-      const graphContainer = new VBox( { 
-        spacing: 5,
-        align: 'center',
-        children: this.normalModeGraphs
-      } );
-
-      this.graphBox = new AccordionBox( graphContainer, 
-      { 
-        fill: 'rgb( 254, 235, 214 )',
+      
+      this.graphBox = new GraphAccordionBox( { 
         top: optionsPanel.bottom + 10,
         right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 2,
-      } );
+        fill: 'rgb( 254, 235, 214 )',
+      }, model );
 
       this.addChild( this.graphBox );
-
-      model.numVisibleMassesProperty.link( function ( numMasses ) {
-        //self.graphBox.children[ 0 ].children = self.normalModeGraphs.slice( 0, numMasses );
-        for ( let i = 0; i < self.normalModeGraphs.length; i++ ) {
-          self.normalModeGraphs[ i ].visible = ( i < numMasses );
-        }
-      } );
     }
     /**
      * Resets the view.

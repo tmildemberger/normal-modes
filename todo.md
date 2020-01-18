@@ -25,7 +25,7 @@ Ilustração dos dois itens anteriores:
   
   ![](wave_icons.png)
 
-- [ ] Desenhar para cada modo normal uma coisa como essa, que muda com o tempo, fase e amplitude:
+- [x] Desenhar para cada modo normal uma coisa como essa, que muda com o tempo, fase e amplitude:
 
   ![](wavy_things.png)
 
