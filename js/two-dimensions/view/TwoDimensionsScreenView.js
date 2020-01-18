@@ -75,19 +75,6 @@ define( require => {
       this.addChild( optionsPanel );
       this.addChild( resetAllButton );
 
-      const ampSelectorAccordionBoxOptions = {
-        // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
-        right: this.layoutBounds.maxX - 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
-        top: optionsPanel.top + optionsPanel.height + 10,
-        cornerRadius: 5,
-        fill: 'rgb( 254, 235, 214 )',
-        maxHeight: 400
-      };
-
-      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, this.modelViewTransform, model );
-
-      this.addChild( ampSelectorAccordionBox );
-
       // @private {SpringNode[]} Array that will contain all of the springNodes.
       this.springXNodes = model.springsX.map( function( springArray ) {
         return springArray.map( function( spring ) {
@@ -115,6 +102,20 @@ define( require => {
       } );
 
       this.addChild( borderWalls );
+
+      const ampSelectorAccordionBoxOptions = {
+        // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        left: borderWalls.right + 50,
+        top: optionsPanel.top + optionsPanel.height + 10,
+        cornerRadius: 5,
+        fill: 'rgb( 254, 235, 214 )',
+        //minWidth: this.layoutBounds.maxX - borderWalls.right - 50 - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN
+      };
+
+      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, this.modelViewTransform, model );
+
+      this.addChild( ampSelectorAccordionBox );
+
       // this.leftWallNode = new WallNode( this.model.masses[ 0 ], this.modelViewTransform, this.model, tandem.createTandem( 'leftWallNode' ) );
       // this.rightWallNode = new WallNode( this.model.masses[ this.model.masses.length - 1 ], this.modelViewTransform, this.model, tandem.createTandem( 'rightWallNode' ) );
 

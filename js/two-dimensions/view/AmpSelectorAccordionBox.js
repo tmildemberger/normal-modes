@@ -136,19 +136,19 @@ define( require => {
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
 
         // Franco to make handling it easier, it's a simple array (not nested), as its known how many nodes are per row
-        const selectorRects = {
-          x: new Array( selectorRectsLength ),
-          y: new Array( selectorRectsLength )
-        };
+        const selectorRects = { };
+        selectorRects[ model.ampSelectorAxis.HORIZONTAL ] = new Array( selectorRectsLength );
+        selectorRects[ model.ampSelectorAxis.VERTICAL ] = new Array( selectorRectsLength );
 
         for ( let i = 0; i < selectorRectsLength; i++ ) {
-          selectorRects.x[ i ] = new Rectangle( selectorRectXOptions );
-          selectorRects.y[ i ] = new Rectangle( selectorRectYOptions );
+          selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectXOptions );
+          selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectYOptions );
         }
 
-        const selectorBox = new Node( { 
-          children: selectorRects.x
+        const selectorBox = new Rectangle( { 
+          children: selectorRects[ model.ampSelectorAxis.HORIZONTAL ]
         } );
+        selectorBox.axis = null;
 
         const contentNode = new HBox( {
           spacing: 10,
@@ -158,14 +158,35 @@ define( require => {
 
         super( contentNode, options );
 
+        /* trying pre processed slices for faster execution */
+        // const rectSlices = {
+        //   x: new Array( NormalModesConstants.MAX_MASSES_ROW_LEN ),
+        //   y: new Array( NormalModesConstants.MAX_MASSES_ROW_LEN )
+        // };
+        // for ( let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
+        //   rectSlices.x[ i ] = selectorRects.x.slice( 0, ( i + 1 ) * NormalModesConstants.MAX_MASSES_ROW_LEN );
+        //   rectSlices.y[ i ] = selectorRects.y.slice( 0, ( i + 1 ) * NormalModesConstants.MAX_MASSES_ROW_LEN );
+        // }
+
+        //const date = new Date;
+
         Property.multilink( [ model.ampSelectorAxisProperty, model.numVisibleMassesProperty ], function ( axis, numMasses ) {
-          
-          selectorBox.children = ( axis == model.ampSelectorAxis.HORIZONTAL )? selectorRects.x.slice( 0, numMasses * NormalModesConstants.MAX_MASSES_ROW_LEN ) : selectorRects.y.slice( 0, numMasses * NormalModesConstants.MAX_MASSES_ROW_LEN );
+
+          //let startTime = date.getTime();
+
+          //console.log('-----------');
+          //selectorBox.children = ( axis == model.ampSelectorAxis.HORIZONTAL )? rectSlices.x[ numMasses - 1 ] : rectSlices.y[ numMasses - 1 ];
+
+          if ( selectorBox.axis != axis ) { /* if axis didn't change, there's no need to change the selector rects */
+            selectorBox.children = selectorRects[ axis ];
+            selectorBox.axis = axis;
+          }
+          //console.log(`1 - ${(startTime = date.getTime() - startTime)}`);
           const rects = selectorBox.children;
 
-          const gridSize = selectorWidth / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
+          const gridSize = 300 / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
 
-          const cursor = new Vector2( 0, 0 );
+          const cursor = new Vector2( gridSize, 0 );
 
           let j = 0;
           let row = 0;
@@ -174,20 +195,21 @@ define( require => {
             const rowEnd = j + NormalModesConstants.MAX_MASSES_ROW_LEN;
 
             for ( ; j < visibleRowEnd; j++ ) {
-                rects[ j ].visible = true;
-                rects[ j ].rectWidth = rects[ j ].rectHeight = 3 * gridSize;
+              rects[ j ].visible = true;
+              rects[ j ].rectWidth = rects[ j ].rectHeight = 3 * gridSize;
 
-                rects[ j ].left = cursor.x;
-                rects[ j ].top = cursor.y;
-                cursor.x += 4 * gridSize;
-              }
+              rects[ j ].left = cursor.x;
+              rects[ j ].top = cursor.y;
+              cursor.x += 4 * gridSize;
+            }
             for ( ; j < rowEnd; j++ ) {
               rects[ j ].visible = false;
             }
 
-            cursor.x = 0;
+            cursor.x = gridSize;
             cursor.y += 4 * gridSize;
           }
+          for( ; j < selectorRectsLength; j++) rects[ j ].visible = false;
 
         } );
 
