@@ -34,12 +34,16 @@ define( require => {
         Model properties used:
           - timeProperty
           - numVisibleMassesProperty
+          - modeAmplitudeProperty[0..9]
+          - modePhaseProperty[0..9]
         */
 
         // from Vector Addition
         const PANEL_CORNER_RADIUS = 5;
         const PANEL_X_MARGIN = 9;
         const PANEL_Y_MARGIN = 10;
+
+        const titleNode = new Text( normalModeString, { font: NormalModesConstants.CONTROL_FONT } );
 
         options = merge( options, {
           resize: true,
@@ -61,8 +65,8 @@ define( require => {
             touchAreaYDilation: 6
           },
 
-          titleNode: new Text( normalModeString, { font: NormalModesConstants.CONTROL_FONT } ),
-          showTitleWhenExpanded: false
+          titleNode: titleNode,
+          showTitleWhenExpanded: true
 
         } );
 
@@ -88,14 +92,25 @@ define( require => {
           children: normalModeGraphs
         } );
 
-        model.numVisibleMassesProperty.link( function ( numMasses ) {
-          for ( let i = 0; i < normalModeGraphs.length; i++ ) {
-            normalModeGraphs[ i ].visible = ( i < numMasses );
-            normalModeGraphs[ i ].update();
-          }
-        } );
-
         super( graphContainer, options );
+
+        const self = this;
+
+        Property.multilink( [ model.numVisibleMassesProperty, this.expandedProperty ], function ( numMasses, isExpanded ) { 
+          graphContainer.children = normalModeGraphs.slice( 0, numMasses );
+          graphContainer.children.forEach( ( graph ) => graph.update() );
+
+          // both layout and _showTitleWhenExpanded should be private, but i don't know if there's a better way to do this
+          self._showTitleWhenExpanded = ( numMasses <= 8 );
+          if ( isExpanded ) {
+            titleNode.visible = self._showTitleWhenExpanded;
+          }
+          else {
+            titleNode.visible = true;
+          }
+        
+          self.layout();
+        } );
 
       }
   
