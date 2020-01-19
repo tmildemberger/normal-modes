@@ -132,7 +132,7 @@ define( require => {
      * @public
      */
     reset() {
-      //TODO
+      this.graphBox.reset();
     }
 
     /**

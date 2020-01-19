@@ -25,6 +25,7 @@ define( require => {
     const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
     const RadioButtonGroup = require( 'SUN/buttons/RadioButtonGroup' );
     const RangeWithValue = require( 'DOT/RangeWithValue' );
+    const StaticModeGraphCanvasNode = require( 'NORMAL_MODES/one-dimension/view/StaticModeGraphCanvasNode' );
     const Text = require( 'SCENERY/nodes/Text' );
     const VBox = require( 'SCENERY/nodes/VBox' );
     const VStrut = require( 'SCENERY/nodes/VStrut' );
@@ -87,6 +88,7 @@ define( require => {
         const phaseSliders = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
         const modeLabels = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
         const frequencyText = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        const modeGraphs = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
         const ampSliderOptions = {
           delta: 0.01,
@@ -176,6 +178,12 @@ define( require => {
             `${ freq.toFixed( 2 ) }\u03C9\u2080`,
             { font: NormalModesConstants.SMALL_FONT, maxWidth: 60 }
           );
+
+          modeGraphs[ i ] = new StaticModeGraphCanvasNode( model, { 
+              normalModeNum: i,
+              graphSize: { width: 40, height: 25 },
+              graphStartX: 0,
+          } );
         }
         
         const panelColumns = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN + 1);
@@ -301,7 +309,7 @@ define( require => {
           buttonContentXMargin: 8,
           buttonContentYMargin: 8,
           orientation: 'vertical'
-        } )
+        } );
         
         super( contentNode, options );
 
@@ -310,9 +318,10 @@ define( require => {
         
         model.phasesVisibilityProperty.link( function( phasesVisibility ) {
           for ( let i = 1; i < panelColumns.length; ++i ) {
+            const j = i - 1;
             panelColumns[ i ].children = ( phasesVisibility ) ?
-                                         [ modeLabels[ i - 1 ], ampSliders[ i - 1 ], frequencyText[ i - 1 ], phaseSliders[ i - 1 ] ] :
-                                         [ modeLabels[ i - 1 ], ampSliders[ i - 1 ], frequencyText[ i - 1 ] ];
+                                         [ modeGraphs[ j ], modeLabels[ j ], ampSliders[ j ], frequencyText[ j ], phaseSliders[ j ] ] :
+                                         [ modeGraphs[ j ], modeLabels[ j ], ampSliders[ j ], frequencyText[ j ] ];
           }
 
           lineSeparator.setY2( panelColumns[ 1 ].bounds.height * 0.8 );
@@ -345,6 +354,7 @@ define( require => {
             const m = OneDimensionConstants.MASSES_MASS_VALUE;
             const freq = model.modeFrequencyProperty[ i ].get() / Math.sqrt( k / m );
             
+            modeGraphs[ i ].update();
             frequencyText[ i ].text = `${ freq.toFixed( 2 ) }\u03C9\u2080`;
           }
 

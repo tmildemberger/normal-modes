@@ -21,7 +21,7 @@ Ilustração dos dois itens anteriores:
   
   ![](new_buttons.png)
 
-- [ ] Desenhar sobre cada modo normal uma coisa como essa (da original):
+- [x] Desenhar sobre cada modo normal uma coisa como essa (da original):
   
   ![](wave_icons.png)
 

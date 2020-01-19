@@ -15,6 +15,7 @@ define( require => {
     const ModeGraphCanvasNode = require( 'NORMAL_MODES/one-dimension/view/ModeGraphCanvasNode' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
+    const Property = require( 'AXON/Property' );
     const Text = require( 'SCENERY/nodes/Text' );
     const VBox = require( 'SCENERY/nodes/VBox' );
     
@@ -68,9 +69,16 @@ define( require => {
         const normalModeGraphs = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
         for ( let i = 0; i < normalModeGraphs.length; i++ ) {
-          normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, { normalModeNum: i } );
-          model.timeProperty.link( ( time ) => {
-              normalModeGraphs[ i ].update();
+          normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, 
+            {
+              normalModeNum: i,
+              graphSize: { width: 90, height: 22 },
+              graphStartX: 25,
+              wallHeight: 8
+          } );
+
+          Property.multilink( [ model.timeProperty, model.modeAmplitudeProperty[ i ], model.modePhaseProperty[ i ] ], function ( time, amp, phase ) {
+            normalModeGraphs[ i ].update();
           } );
         }
 
@@ -83,6 +91,7 @@ define( require => {
         model.numVisibleMassesProperty.link( function ( numMasses ) {
           for ( let i = 0; i < normalModeGraphs.length; i++ ) {
             normalModeGraphs[ i ].visible = ( i < numMasses );
+            normalModeGraphs[ i ].update();
           }
         } );
 
@@ -94,7 +103,9 @@ define( require => {
        * @public
        */
       reset() {
-        
+        for ( let i = 0; i < normalModeGraphs.length; i++ ) {
+          normalModeGraphs[ i ].update();
+        }
       }
   
     }
