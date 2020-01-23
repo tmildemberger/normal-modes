@@ -118,9 +118,11 @@ define( require => {
        * @public
        */
       reset() {
-        for ( let i = 0; i < normalModeGraphs.length; i++ ) {
-          normalModeGraphs[ i ].update();
-        }
+        // for ( let i = 0; i < normalModeGraphs.length; i++ ) {
+        //   normalModeGraphs[ i ].update();
+        // }
+        // os gráficos já vão ser atualizados por causa do reset do model
+        // além disso, normalModeGraphs não existe aqui - Thiago
       }
   
     }
