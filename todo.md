@@ -4,11 +4,7 @@
 
 - [x] Consertar indentação do optionspanel e ampphasemodel e colocar a frequência entre a amplitude e a fase (como na original)
 
-- [ ] Desenhar molas mais bonitas (ao invés de só uma linha como atualmente ou algumas linhas retas como na original) - uma possibilidade seria fazer como eu fiz na minha própria simulação:
-
-  ![](better_springs.png)
-
-- [ ] Fazer aparecer texto escrito "Pausado" quando a simulação estiver pausada (Franco: isso tem em outras simulações HTML5? talvez fique meio feio)
+- [ ] ~~Fazer aparecer texto escrito "Pausado" quando a simulação estiver pausada (Franco: isso tem em outras simulações HTML5?~~ (talvez fique meio feio, e já tem o botão para indicar se está pausado ou não)
 
 - [x] Fazer aparecerem flechas sobre as massas quando o mouse passar por cima (sendo que deixam de aparecer logo após qualquer massa ter sido arrastada) - pode ter como guia as mesmas flechas que aparecem na chave inglesa do Wave On A String
 
@@ -52,3 +48,7 @@ Ilustração dos dois itens anteriores:
 - [ ] Se assegurar de que a **performance** não esteja ruim!
 
 - [ ] Talvez melhorar os controles 2D (procurar inspiração em outras simulações?)
+
+- [ ] Desenhar molas mais bonitas (ao invés de só uma linha como atualmente ou algumas linhas retas como na original) - uma possibilidade seria fazer como eu fiz na minha própria simulação (foram feitas várias tentativas mas todas com má performance, seria necessário estudar mais o caso e ver se o problema somos nós ou eles):
+
+  ![](better_springs.png)
