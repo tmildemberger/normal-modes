@@ -476,21 +476,24 @@ define( require => {
             // as posições exatas, iria levar uns 10 segundos para fazer isso com 10x10 massas
             // (Na verdade eu medi esse tempo de verdade, 10256.7 ms) - Thiago
             // Meeeee - Franco
+
+            // Realmente não dá pra recalcular as posições exatas cada vez que for mudar uma das propriedades,
+            // mas também não dá pra dar unlinkAll porque senão os seletores de amplitude não acompanham mais as mudanças na propriedade
             
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            // this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            // this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            // this.modeXPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            // this.modeYPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
             
             this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseX ** 2 + AmplitudeTimesSinPhaseX ** 2 ) );
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
             this.modeXPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseX, AmplitudeTimesCosPhaseX ) );
             this.modeYPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseY, AmplitudeTimesCosPhaseY ) );
 
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
-            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
-            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
+            // this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
+            // this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
+            // this.modeXPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
+            // this.modeYPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
           }
         }
       }
