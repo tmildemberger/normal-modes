@@ -471,25 +471,10 @@ define( require => {
               AmplitudeTimesSinPhaseY += ( 4 / ( this.modeFrequencyProperty[ i - 1 ][ j - 1 ].get() * ( ( N + 1 ) * ( N + 1 ) ) ) ) * massVelocity.y * sineProduct;
             }
 
-            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            
             this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseX ** 2 + AmplitudeTimesSinPhaseX ** 2 ) );
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
             this.modeXPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseX, AmplitudeTimesCosPhaseX ) );
             this.modeYPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseY, AmplitudeTimesCosPhaseY ) );
-          }
-        }
-      }
-
-      // relink com um if só ( se o rectProgress != undefined em [N - 1][N - 1], é pra todos)
-      if ( this.modeYAmplitudeProperty[ N - 1 ][ N - 1 ].rectProgress ) {
-        for ( let r = 1; r <= N; ++r ) {
-          for ( let s = 1; s <= N; ++s ) {
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].link( this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].rectProgress )
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].link( this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].rectProgress )
           }
         }
       }

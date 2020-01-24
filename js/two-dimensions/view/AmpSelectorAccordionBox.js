@@ -173,16 +173,9 @@ define( require => {
           model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ], amplitude );
           } );
-          model.modeXAmplitudeProperty[ row ][ col ].rectProgress = ( amplitude ) => {
-            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ], amplitude );
-          };
           model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
           } );
-          model.modeYAmplitudeProperty[ row ][ col ].rectProgress = ( amplitude ) => {
-            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
-          };
-        }
 
         const selectorBox = new Rectangle( { 
           children: selectorRects[ model.ampSelectorAxisProperty.get() ]
