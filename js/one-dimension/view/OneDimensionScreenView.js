@@ -10,7 +10,7 @@ define( require => {
   const AccordionBox = require( 'SUN/AccordionBox' );
   const AmpPhaseAccordionBox = require( 'NORMAL_MODES/one-dimension/view/AmpPhaseAccordionBox' );
   const GraphAccordionBox = require( 'NORMAL_MODES/one-dimension/view/GraphAccordionBox' );
-  const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
+  const MassNode1D = require( 'NORMAL_MODES/one-dimension/view/MassNode1D' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
@@ -110,7 +110,7 @@ define( require => {
       // @private {MassNode[]} Array that will contain all of the massNodes.
       this.massNodes = [];
       for ( let i = 1; i < this.model.masses.length - 1; ++i ) {
-        this.massNodes.push( new MassNode( this.model.masses[ i ], this.modelViewTransform, this.model, true, tandem.createTandem( 'massNodes' ) ) );
+        this.massNodes.push( new MassNode1D( this.model.masses[ i ], this.modelViewTransform, this.model, tandem.createTandem( 'massNodes' ) ) );
         this.addChild( this.massNodes[ this.massNodes.length - 1 ] );
       }
       // this.massNodes = model.masses.map( function( mass ) {

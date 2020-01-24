@@ -39,7 +39,7 @@ Ilustração dos dois itens anteriores:
 
 ## Coisas extras
 
-- [ ] Separar o MassNode em MassNode1D e MassNode2D ou **algo** equivalente, porque no momento está **muito** feio (tando o startCallback, o dragCallback e o endCallback mudam de um pro outro) - o **importante** aqui é deixar não feio
+- [x] Separar o MassNode em MassNode1D e MassNode2D ou **algo** equivalente, porque no momento está **muito** feio (tando o startCallback, o dragCallback e o endCallback mudam de um pro outro) - o **importante** aqui é deixar não feio
 
 - [ ] Traduzir simulação para português?
 

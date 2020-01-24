@@ -10,7 +10,7 @@ define( require => {
   const AmpSelectorAccordionBox = require( 'NORMAL_MODES/two-dimensions/view/AmpSelectorAccordionBox' );
   const Bounds2 = require( 'DOT/Bounds2' );
   const Color = require( 'SCENERY/util/Color' );
-  const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
+  const MassNode2D = require( 'NORMAL_MODES/two-dimensions/view/MassNode2D' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const OptionsPanel = require( 'NORMAL_MODES/common/OptionsPanel' );
@@ -126,7 +126,7 @@ define( require => {
       this.massNodes = [];
       for ( let i = 1; i < this.model.masses.length - 1; ++i ) {
         for ( let j = 1; j < this.model.masses[ i ].length - 1; ++j ) {
-          this.massNodes.push( new MassNode( this.model.masses[ i ][ j ], this.modelViewTransform, this.model, false, tandem.createTandem( 'massNodes' ) ) );
+          this.massNodes.push( new MassNode2D( this.model.masses[ i ][ j ], this.modelViewTransform, this.model, tandem.createTandem( 'massNodes' ) ) );
           this.addChild( this.massNodes[ this.massNodes.length - 1 ] );
         }
       }
