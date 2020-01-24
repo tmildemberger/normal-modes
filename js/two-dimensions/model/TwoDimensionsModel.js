@@ -472,37 +472,10 @@ define( require => {
               AmplitudeTimesSinPhaseY += ( 4 / ( this.modeFrequencyProperty[ i - 1 ][ j - 1 ].get() * ( ( N + 1 ) * ( N + 1 ) ) ) ) * massVelocity.y * sineProduct;
             }
 
-            // Se a cada vez que fosse mudar o valor de alguma dessas propriedades fosse recalcular
-            // as posições exatas, iria levar uns 10 segundos para fazer isso com 10x10 massas
-            // (Na verdade eu medi esse tempo de verdade, 10256.7 ms) - Thiago
-            // Meeeee - Franco
-
-            // Realmente não dá pra recalcular as posições exatas cada vez que for mudar uma das propriedades,
-            // mas também não dá pra dar unlinkAll porque senão os seletores de amplitude não acompanham mais as mudanças na propriedade
-            
-            // this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            // this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            // this.modeXPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
-            // this.modeYPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
-
-            // isso funciona, mas deixa bem mais lento com várias massas. deve ter um jeito melhor - Franco
-            [
-              this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ],
-              this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ],
-              this.modeXPhaseProperty[ r - 1 ][ s - 1 ],
-              this.modeYPhaseProperty[ r - 1 ][ s - 1 ] 
-            ].forEach( ( prop ) => {
-                const listeners = prop.changedEmitter.listeners;
-
-                prop.unlink( listeners.find( ( callback ) => callback.name == "bound setExactPositions" ) );
-              } );
-
-            /* por algum motivo isso n deu certo, enquanto o de cima deu
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlink( this.setExactPositions.bind( this ) );
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlink( this.setExactPositions.bind( this ) );
-            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].unlink( this.setExactPositions.bind( this ) );
-            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].unlink( this.setExactPositions.bind( this ) );
-            */
+            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
+            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].unlinkAll();
             
             this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseX ** 2 + AmplitudeTimesSinPhaseX ** 2 ) );
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
@@ -513,6 +486,16 @@ define( require => {
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
             this.modeXPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
             this.modeYPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
+          }
+        }
+      }
+
+      // relink com um if só ( se o rectProgress != undefined em [N - 1][N - 1], é pra todos)
+      if ( this.modeYAmplitudeProperty[ N - 1 ][ N - 1 ].rectProgress ) {
+        for ( let r = 1; r <= N; ++r ) {
+          for ( let s = 1; s <= N; ++s ) {
+            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].link( this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].rectProgress )
+            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].link( this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].rectProgress )
           }
         }
       }

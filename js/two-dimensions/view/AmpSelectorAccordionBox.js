@@ -158,7 +158,7 @@ define( require => {
           const progress = selectorRect.children[ 0 ];
 
           //progress.bottom = selectorRect.bottom;
-          const factor = ( amplitude > TwoDimensionsConstants.MAX_MODE_AMPLITUDE)? 1 : amplitude / TwoDimensionsConstants.MAX_MODE_AMPLITUDE;
+          const factor = ( amplitude > TwoDimensionsConstants.MAX_MODE_AMPLITUDE )? 1 : amplitude / TwoDimensionsConstants.MAX_MODE_AMPLITUDE;
           console.log(factor)
           progress.rectHeight = selectorRect.rectHeight * factor;
         }
@@ -173,9 +173,15 @@ define( require => {
           model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ], amplitude );
           } );
+          model.modeXAmplitudeProperty[ row ][ col ].rectProgress = ( amplitude ) => {
+            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ], amplitude );
+          };
           model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
           } );
+          model.modeYAmplitudeProperty[ row ][ col ].rectProgress = ( amplitude ) => {
+            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
+          };
         }
 
         const selectorBox = new Rectangle( { 
