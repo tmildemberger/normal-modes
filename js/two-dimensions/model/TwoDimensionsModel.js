@@ -107,10 +107,6 @@ define( require => {
             }
           } );
 
-          this.modeXAmplitudeProperty[ i ][ j ].lazyLink( this.setExactPositions.bind( this ) );
-          this.modeYAmplitudeProperty[ i ][ j ].lazyLink( this.setExactPositions.bind( this ) );
-          this.modeXPhaseProperty[ i ][ j ].lazyLink( this.setExactPositions.bind( this ) );
-          this.modeYPhaseProperty[ i ][ j ].lazyLink( this.setExactPositions.bind( this ) );
         }
         
       }
@@ -317,6 +313,9 @@ define( require => {
           this.singleStep( TwoDimensionsConstants.FIXED_DT );
         }
       }
+      else if ( this.draggingMassIndexesProperty.get() == null ) {
+        this.setExactPositions();
+      }
 
     }
     
@@ -481,11 +480,6 @@ define( require => {
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
             this.modeXPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseX, AmplitudeTimesCosPhaseX ) );
             this.modeYPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseY, AmplitudeTimesCosPhaseY ) );
-
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
-            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
-            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].lazyLink( this.setExactPositions.bind( this ) );
           }
         }
       }

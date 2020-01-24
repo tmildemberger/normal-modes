@@ -76,7 +76,7 @@ define( require => {
       this.modeAmplitudeProperty = new Array( MAX_VISIBLE_MASSES );
       this.modePhaseProperty = new Array( MAX_VISIBLE_MASSES );
       this.modeFrequencyProperty = new Array( MAX_VISIBLE_MASSES );
-      for( let i = 0; i < MAX_VISIBLE_MASSES; i++ ) {
+      for ( let i = 0; i < MAX_VISIBLE_MASSES; i++ ) {
         this.modeAmplitudeProperty[ i ] = new NumberProperty( OneDimensionConstants.INIT_MODE_AMPLITUDE, {
           tandem: tandem.createTandem( 'modeAmplitudeProperty' + i ),
           range: new Range( OneDimensionConstants.MIN_MODE_AMPLITUDE, Number.POSITIVE_INFINITY ) 
@@ -98,9 +98,6 @@ define( require => {
             return 2 * Math.sqrt( k / m ) * Math.sin( Math.PI / 2 * ( i + 1 ) / ( numMasses + 1 ) );
           }
         } );
-
-        this.modeAmplitudeProperty[ i ].lazyLink( this.setExactPositions.bind( this ) );
-        this.modePhaseProperty[ i ].lazyLink( this.setExactPositions.bind( this ) );
         
       }
       
@@ -277,6 +274,9 @@ define( require => {
           this.dt -= OneDimensionConstants.FIXED_DT;
           this.singleStep( OneDimensionConstants.FIXED_DT );
         }
+      }
+      else if ( this.draggingMassIndexProperty.get() <= 0 ) {
+        this.setExactPositions();
       }
 
     }
