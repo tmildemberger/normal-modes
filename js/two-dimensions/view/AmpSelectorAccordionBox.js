@@ -116,6 +116,7 @@ define( require => {
         } );
 
         const selectorRectXOptions = {
+          boundsMethod: 'none',
           left: 0,
           top: 0,
           cursor: 'pointer',
@@ -132,6 +133,7 @@ define( require => {
         };
 
         const selectorRectYOptions = {
+          boundsMethod: 'none',
           left: 0,
           top: 0,
           cursor: 'pointer',
@@ -159,7 +161,7 @@ define( require => {
 
           //progress.bottom = selectorRect.bottom;
           const factor = ( amplitude > TwoDimensionsConstants.MAX_MODE_AMPLITUDE )? 1 : amplitude / TwoDimensionsConstants.MAX_MODE_AMPLITUDE;
-          console.log(factor)
+          // console.log(factor)
           progress.rectHeight = selectorRect.rectHeight * factor;
         }
 
@@ -176,6 +178,7 @@ define( require => {
           model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
           } );
+        }
 
         const selectorBox = new Rectangle( { 
           children: selectorRects[ model.ampSelectorAxisProperty.get() ]
