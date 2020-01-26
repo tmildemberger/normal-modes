@@ -33,6 +33,7 @@ define( require => {
     const VStrut = require( 'SCENERY/nodes/VStrut' );
     const Vector2 = require( 'DOT/Vector2' );
     const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
+    const FireListener = require( 'SCENERY/listeners/FireListener' );
     
     // strings
     const normalModeAmplitudesString = require( 'string!NORMAL_MODES/amp-selector-2d.normal-mode-amplitudes' );
@@ -122,6 +123,10 @@ define( require => {
           return PANEL_SIZE / ( 1 + ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * numMasses );
         }
 
+        const getMaxAmp = function ( ) {
+          return TwoDimensionsConstants.MAX_MODE_AMPLITUDE[ model.numVisibleMassesProperty.get() - 1 ];
+        }
+
         const selectorRectOptions = {
           boundsMethod: 'none',
           left: 0,
@@ -159,7 +164,7 @@ define( require => {
         const changeSelectorRectProgress = function ( selectorRect, amplitude ) {
           const progress = selectorRect.children[ 0 ];
 
-          const maxAmp = TwoDimensionsConstants.MAX_MODE_AMPLITUDE[ model.numVisibleMassesProperty.get() - 1 ];
+          const maxAmp = getMaxAmp();
           const heightFactor = ( amplitude > maxAmp )? 1 : amplitude / maxAmp;
           progress.rectHeight = selectorRect.rectHeight * heightFactor;
           progress.bottom = selectorRect.rectHeight;
@@ -177,7 +182,13 @@ define( require => {
           xSelector.addChild( new Rectangle( selectorRectXProgressOptions ) );
           ySelector.addChild( new Rectangle( selectorRectYProgressOptions ) );
 
-
+          xSelector.addInputListener( new FireListener( {
+            fire: () => { model.modeXAmplitudeProperty[ row ][ col ].set( getMaxAmp() ) }
+          } ) )
+          ySelector.addInputListener( new FireListener( {
+            fire: () => { model.modeYAmplitudeProperty[ row ][ col ].set( getMaxAmp() ) }
+          } ) )
+          
           model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( xSelector, amplitude );
           } );

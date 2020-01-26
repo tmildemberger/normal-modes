@@ -18,7 +18,7 @@ define( require => {
     
     let amp = .2;
     for( let i = 0; i < maxAmplitudes.length; i++ ) {
-      maxAmplitudes[ i ] = amp /= 1.4;
+      maxAmplitudes[ i ] = amp /= 1.3;
     }
 
     const TwoDimensionsConstants = {
