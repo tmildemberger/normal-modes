@@ -12,25 +12,13 @@ define( require => {
     // modules
     const AccordionBox = require( 'SUN/AccordionBox' );
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
-    const Color = require( 'SCENERY/util/Color' );
-    const Dimension2 = require( 'DOT/Dimension2' );
     const HBox = require( 'SCENERY/nodes/HBox' );
-    const HStrut = require( 'SCENERY/nodes/HStrut' );
-    const Line = require( 'SCENERY/nodes/Line' );
-    const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
     const merge = require( 'PHET_CORE/merge' );
-    const Node = require( 'SCENERY/nodes/Node' );
-    const NumberControl = require( 'SCENERY_PHET/NumberControl' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
-    const Panel = require( 'SUN/Panel' );
-    const Property = require( 'AXON/Property' );
     const RadioButtonGroup = require( 'SUN/buttons/RadioButtonGroup' );
-    const RangeWithValue = require( 'DOT/RangeWithValue' );
     const Text = require( 'SCENERY/nodes/Text' );
     const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
-    const VBox = require( 'SCENERY/nodes/VBox' );
-    const VStrut = require( 'SCENERY/nodes/VStrut' );
     const Vector2 = require( 'DOT/Vector2' );
     const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
     const FireListener = require( 'SCENERY/listeners/FireListener' );
@@ -38,7 +26,7 @@ define( require => {
     // strings
     const normalModeAmplitudesString = require( 'string!NORMAL_MODES/amp-selector-2d.normal-mode-amplitudes' );
 
-    const PANEL_SIZE = 280;
+    const PANEL_SIZE = 270;
     const RECT_GRID_UNITS = 5;
     const PADDING_GRID_UNITS = 1;
 
@@ -183,12 +171,18 @@ define( require => {
           ySelector.addChild( new Rectangle( selectorRectYProgressOptions ) );
 
           xSelector.addInputListener( new FireListener( {
-            fire: () => { model.modeXAmplitudeProperty[ row ][ col ].set( getMaxAmp() ) }
+            fire: () => {
+              const amp = model.modeXAmplitudeProperty[ row ][ col ];
+              amp.set( ( amp.get() < getMaxAmp() / 20 )? getMaxAmp() : TwoDimensionsConstants.MIN_MODE_AMPLITUDE );
+            }
           } ) )
           ySelector.addInputListener( new FireListener( {
-            fire: () => { model.modeYAmplitudeProperty[ row ][ col ].set( getMaxAmp() ) }
+            fire: () => {
+              const amp = model.modeYAmplitudeProperty[ row ][ col ];
+              amp.set( ( amp.get() < getMaxAmp() / 20 )? getMaxAmp() : TwoDimensionsConstants.MIN_MODE_AMPLITUDE );
+            }
           } ) )
-          
+
           model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( xSelector, amplitude );
           } );
@@ -198,7 +192,9 @@ define( require => {
         }
         
         const selectorBox = new Rectangle( { 
-          children: selectorRects[ model.ampSelectorAxisProperty.get() ]
+          children: selectorRects[ model.ampSelectorAxisProperty.get() ],
+          rectHeight: PANEL_SIZE,
+          rectWidth: PANEL_SIZE
         } );
         
         const contentNode = new HBox( {
@@ -260,7 +256,7 @@ define( require => {
           selectorsChanged( model.numVisibleMassesProperty.get() );
         } );
 
-        model.numVisibleMassesProperty.link( function(numMasses) {
+        model.numVisibleMassesProperty.link( function( numMasses ) {
           selectorsChanged( numMasses );
         } );
 
