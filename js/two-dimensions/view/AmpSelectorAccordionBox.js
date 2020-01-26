@@ -57,8 +57,6 @@ define( require => {
         const PANEL_X_MARGIN = 9;
         const PANEL_Y_MARGIN = 10;
 
-        const selectorWidth = 380;
-
         options = merge( options, {
           resize: true,
 
@@ -124,12 +122,6 @@ define( require => {
           rectWidth: 18.7, /* just a default value */
           rectHeight: 18.7,
           cornerRadius: 2,
-          children: [ new Rectangle( { 
-            fill: 'rgb( 0, 0, 0) ',
-            rectWidth: 18.7,
-            rectHeight: 18.7 / 2,
-            cornerRadius: 2,
-          } ) ]
         };
 
         const selectorRectYOptions = {
@@ -141,12 +133,20 @@ define( require => {
           rectWidth: 18.7, /* just a default value */
           rectHeight: 18.7,
           cornerRadius: 2,
-          children: [ new Rectangle( { 
-            fill: 'rgb( 0, 0, 0) ',
-            rectWidth: 18.7,
-            rectHeight: 0,
-            cornerRadius: 2,
-          } ) ]
+        };
+
+        const selectorRectYProgressOptions = {
+          fill: 'rgb( 0, 0, 0) ',
+          rectWidth: 18.7,
+          rectHeight: 0,
+          cornerRadius: 2,
+        };
+
+        const selectorRectXProgressOptions = {
+          fill: 'rgb( 0, 0, 0) ',
+          rectWidth: 18.7,
+          rectHeight: 0,
+          cornerRadius: 2,
         };
 
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
@@ -169,14 +169,19 @@ define( require => {
           selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectXOptions );
           selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectYOptions );
 
+          const xSelector = selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ];
+          const ySelector = selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ];
+          ySelector.addChild( new Rectangle( selectorRectYProgressOptions ) );
+          xSelector.addChild( new Rectangle( selectorRectXProgressOptions ) );
+
           const row = Math.trunc( i / NormalModesConstants.MAX_MASSES_ROW_LEN );
           const col = i % NormalModesConstants.MAX_MASSES_ROW_LEN;
 
           model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
-            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ], amplitude );
+            changeSelectorRectProgress( xSelector, amplitude );
           } );
           model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
-            changeSelectorRectProgress( selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ], amplitude );
+            changeSelectorRectProgress( ySelector, amplitude );
           } );
         }
 
