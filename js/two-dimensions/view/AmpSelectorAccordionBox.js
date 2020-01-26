@@ -37,13 +37,17 @@ define( require => {
     // strings
     const normalModeAmplitudesString = require( 'string!NORMAL_MODES/amp-selector-2d.normal-mode-amplitudes' );
 
+    const PANEL_SIZE = 280;
+    const RECT_GRID_UNITS = 5;
+    const PADDING_GRID_UNITS = 1;
+
     class AmpPhaseAccordionBox extends AccordionBox {
   
       /**
        * @param {Object} [options]
        * @param {Model} model
        */
-      constructor( options, modelViewTransform, model ) {
+      constructor( options, model ) {
   
         /*
         Model properties used:
@@ -113,41 +117,37 @@ define( require => {
           orientation: 'vertical'
         } );
 
-        const selectorRectXOptions = {
+        /* makes a grid with rectSize = RECT_GRID_UNITS units, padding = PADDING_GRIDE_SIZE units */
+        const getGridSize = function ( numMasses ) {
+          return PANEL_SIZE / ( 1 + ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * numMasses );
+        }
+
+        const selectorRectOptions = {
           boundsMethod: 'none',
           left: 0,
           top: 0,
           cursor: 'pointer',
+          fill: 'hsl( 31, 95%, 94% )',
+          rectWidth: RECT_GRID_UNITS * getGridSize( model.numVisibleMassesProperty.get() ),
+          rectHeight: RECT_GRID_UNITS * getGridSize( model.numVisibleMassesProperty.get() ),
+          cornerRadius: 2,
+          lineWidth: 1,
+          stroke: '#202020'
+        };
+        
+        const selectorRectProgressOptions = {
+          rectWidth: selectorRectOptions.rectWidth,
+          rectHeight: 0,
+          cornerRadius: 2,
+        };
+
+        const selectorRectXProgressOptions = Object.assign( {
           fill: 'rgb( 0, 255, 255) ',
-          rectWidth: 18.7, /* just a default value */
-          rectHeight: 18.7,
-          cornerRadius: 2,
-        };
+        }, selectorRectProgressOptions);
 
-        const selectorRectYOptions = {
-          boundsMethod: 'none',
-          left: 0,
-          top: 0,
-          cursor: 'pointer',
+        const selectorRectYProgressOptions = Object.assign( {
           fill: 'rgb( 0, 0, 255) ',
-          rectWidth: 18.7, /* just a default value */
-          rectHeight: 18.7,
-          cornerRadius: 2,
-        };
-
-        const selectorRectYProgressOptions = {
-          fill: 'rgb( 0, 0, 0) ',
-          rectWidth: 18.7,
-          rectHeight: 0,
-          cornerRadius: 2,
-        };
-
-        const selectorRectXProgressOptions = {
-          fill: 'rgb( 0, 0, 0) ',
-          rectWidth: 18.7,
-          rectHeight: 0,
-          cornerRadius: 2,
-        };
+        }, selectorRectProgressOptions);
 
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
 
@@ -159,23 +159,24 @@ define( require => {
         const changeSelectorRectProgress = function ( selectorRect, amplitude ) {
           const progress = selectorRect.children[ 0 ];
 
-          //progress.bottom = selectorRect.bottom;
-          const factor = ( amplitude > TwoDimensionsConstants.MAX_MODE_AMPLITUDE )? 1 : amplitude / TwoDimensionsConstants.MAX_MODE_AMPLITUDE;
-          // console.log(factor)
-          progress.rectHeight = selectorRect.rectHeight * factor;
+          const maxAmp = TwoDimensionsConstants.MAX_MODE_AMPLITUDE[ model.numVisibleMassesProperty.get() - 1 ];
+          const heightFactor = ( amplitude > maxAmp )? 1 : amplitude / maxAmp;
+          progress.rectHeight = selectorRect.rectHeight * heightFactor;
+          progress.bottom = selectorRect.rectHeight;
         }
 
         for ( let i = 0; i < selectorRectsLength; i++ ) {
-          selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectXOptions );
-          selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectYOptions );
-
-          const xSelector = selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ];
-          const ySelector = selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ];
-          ySelector.addChild( new Rectangle( selectorRectYProgressOptions ) );
-          xSelector.addChild( new Rectangle( selectorRectXProgressOptions ) );
+          selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectOptions );
+          selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectOptions );
 
           const row = Math.trunc( i / NormalModesConstants.MAX_MASSES_ROW_LEN );
           const col = i % NormalModesConstants.MAX_MASSES_ROW_LEN;
+
+          const xSelector = selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ];
+          const ySelector = selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ];
+          xSelector.addChild( new Rectangle( selectorRectXProgressOptions ) );
+          ySelector.addChild( new Rectangle( selectorRectYProgressOptions ) );
+
 
           model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
             changeSelectorRectProgress( xSelector, amplitude );
@@ -184,23 +185,33 @@ define( require => {
             changeSelectorRectProgress( ySelector, amplitude );
           } );
         }
-
+        
         const selectorBox = new Rectangle( { 
           children: selectorRects[ model.ampSelectorAxisProperty.get() ]
         } );
-
+        
         const contentNode = new HBox( {
           spacing: 10,
           align: 'center',
           children: [ ampSelectorAxisRadioButtonGroup, selectorBox ]
         } );
-
+        
         super( contentNode, options );
+        const self = this;
+        
+        this.ampProperty = ( model.ampSelectorAxisProperty.get() == model.ampSelectorAxis.VERTICAL )? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
 
-        const axisChanged = function ( numMasses ) {
+        const refreshSelector = function ( selectorRect, pos ) {
+          const row = Math.trunc( pos / NormalModesConstants.MAX_MASSES_ROW_LEN );
+          const col = pos % NormalModesConstants.MAX_MASSES_ROW_LEN;
+
+          changeSelectorRectProgress( selectorRect, self.ampProperty[ row ][ col ].get() );
+        }
+
+        const selectorsChanged = function ( numMasses ) {
           const rects = selectorBox.children;
 
-          const gridSize = 400 / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
+          const gridSize = getGridSize( numMasses );
 
           const cursor = new Vector2( gridSize, gridSize / 2 );
 
@@ -212,29 +223,35 @@ define( require => {
 
             for ( ; j < visibleRowEnd; j++ ) {
               rects[ j ].visible = true;
-              rects[ j ].rectWidth = rects[ j ].rectHeight = 3 * gridSize;
+              rects[ j ].rectWidth = rects[ j ].rectHeight = RECT_GRID_UNITS * gridSize;
 
               rects[ j ].children[ 0 ].rectWidth = rects[ j ].rectWidth;
+              rects[ j ].children[ 0 ].bottom = rects[ j ].rectHeight;
+              refreshSelector( rects[ j ], j );
+
               rects[ j ].left = cursor.x;
               rects[ j ].top = cursor.y;
-              cursor.x += 4 * gridSize;
+              cursor.x += ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * gridSize;
             }
             for ( ; j < rowEnd; j++ ) {
               rects[ j ].visible = false;
             }
 
             cursor.x = gridSize;
-            cursor.y += 4 * gridSize;
+            cursor.y += ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * gridSize;
           }
-          for( ; j < selectorRectsLength; j++) rects[ j ].visible = false;
+          for( ; j < selectorRectsLength; j++ ) rects[ j ].visible = false;
         }
 
         model.ampSelectorAxisProperty.link( function ( axis ) {
           selectorBox.children = selectorRects[ axis ];
-          axisChanged( model.numVisibleMassesProperty.get() );
+          self.ampProperty = ( axis == model.ampSelectorAxis.VERTICAL )? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
+          selectorsChanged( model.numVisibleMassesProperty.get() );
         } );
 
-        model.numVisibleMassesProperty.link( axisChanged );
+        model.numVisibleMassesProperty.link( function(numMasses) {
+          selectorsChanged( numMasses );
+        } );
 
       }
   

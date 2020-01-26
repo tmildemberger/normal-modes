@@ -51,7 +51,6 @@ define( require => {
       MIN_MASSES_ROW_LEN: 1,
       INIT_MASSES_ROW_LEN: 3,
       MAX_MASSES_ROW_LEN: 10,
-
   
       //TODO
     };

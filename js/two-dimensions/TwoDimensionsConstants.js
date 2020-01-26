@@ -7,10 +7,20 @@
  */
 define( require => {
     'use strict';
+    
+    const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
   
     // modules
     const normalModes = require( 'NORMAL_MODES/normalModes' );
   
+    /* as the default distances between masses decrease a lot, the max amplitudes must be smaller */
+    const maxAmplitudes = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+    
+    let amp = .2;
+    for( let i = 0; i < maxAmplitudes.length; i++ ) {
+      maxAmplitudes[ i ] = amp /= 1.4;
+    }
+
     const TwoDimensionsConstants = {
   
       SCREEN_VIEW_X_MARGIN: 15,
@@ -23,7 +33,7 @@ define( require => {
   
       MIN_MODE_AMPLITUDE: 0,
       INIT_MODE_AMPLITUDE: 0,
-      MAX_MODE_AMPLITUDE: .2, /* TODO experimentar e trocar como necessario Franco */
+      MAX_MODE_AMPLITUDE: maxAmplitudes, /* TODO experimentar e trocar como necessario Franco */
   
       MIN_MODE_PHASE: -Math.PI,
       INIT_MODE_PHASE: 0,

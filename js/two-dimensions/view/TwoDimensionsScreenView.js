@@ -104,15 +104,13 @@ define( require => {
       this.addChild( borderWalls );
 
       const ampSelectorAccordionBoxOptions = {
-        // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
-        left: borderWalls.right + 50,
+        left: borderWalls.right + 10,
         top: optionsPanel.top + optionsPanel.height + 10,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
-        //minWidth: this.layoutBounds.maxX - borderWalls.right - 50 - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN
       };
 
-      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, this.modelViewTransform, model );
+      const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, model );
 
       this.addChild( ampSelectorAccordionBox );
 
