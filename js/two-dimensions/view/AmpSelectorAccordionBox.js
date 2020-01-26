@@ -197,7 +197,7 @@ define( require => {
 
         super( contentNode, options );
 
-        const massesChanged = function ( numMasses ) {
+        const axisChanged = function ( numMasses ) {
           const rects = selectorBox.children;
 
           const gridSize = 400 / ( 1 + 6 * numMasses ); /* makes a grid with rectside = 3 units and padding = 1 unit */
@@ -231,10 +231,10 @@ define( require => {
 
         model.ampSelectorAxisProperty.link( function ( axis ) {
           selectorBox.children = selectorRects[ axis ];
-          massesChanged( model.numVisibleMassesProperty.get() );
+          axisChanged( model.numVisibleMassesProperty.get() );
         } );
 
-        model.numVisibleMassesProperty.link( massesChanged );
+        model.numVisibleMassesProperty.link( axisChanged );
 
       }
   
