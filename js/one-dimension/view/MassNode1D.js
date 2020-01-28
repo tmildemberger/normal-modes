@@ -9,9 +9,11 @@ define( require => {
 
   // modules
 
+  const Color = require( 'SCENERY/util/Color' );
   const DragListener = require( 'SCENERY/listeners/DragListener' );
   const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
   const Vector2 = require( 'DOT/Vector2' );
 
   class MassNode1D extends MassNode {
@@ -26,6 +28,20 @@ define( require => {
 
       super( mass, modelViewTransform, model, tandem );
       const self = this;
+
+      // @public {Rectangle}
+      this.rect = new Rectangle( {
+        fill: '#007bff',
+        stroke: Color.toColor( '#007bff' ).colorUtilsDarker( .6 ),
+        boundsMethod: 'unstroked',
+        lineWidth: 4,
+        rectWidth: this.size,
+        rectHeight: this.size,
+        centerX: 0,
+        centerY: 0
+      } );
+
+      this.addChild( this.rect );
 
       this.startCallback = function( event, listener ) {
         self.model.draggingMassIndexProperty.set( self.model.masses.indexOf( self.mass ) );
@@ -88,7 +104,6 @@ define( require => {
       } );
 
       this.visibilityProperty.linkAttribute( this, 'visible' );
-
     }
 
     /**

@@ -17,8 +17,6 @@ define( require => {
   const Node = require( 'SCENERY/nodes/Node' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const Property = require( 'AXON/Property' );
-  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  const Vector2 = require( 'DOT/Vector2' );
 
   class MassNode extends Node {
 
@@ -37,24 +35,17 @@ define( require => {
       this.mass = mass;
       this.modelViewTransform = modelViewTransform;
       this.model = model;
+
+      this.size = 20;
     
       // @public {Property.<boolean>} determines the visibility of the MassNode
       this.visibilityProperty = new DerivedProperty ( [ this.mass.visibilityProperty ], function( massVisible ) {
         return massVisible;
       } );
 
-      // @public {Rectangle}
-      this.rect = new Rectangle( {
-        fill: '#007bff',
-        stroke: Color.toColor( '#007bff' ).colorUtilsDarker( .6 ),
-        boundsMethod: 'unstroked',
-        lineWidth: 4,
-        rectWidth: 20,
-        rectHeight: 20
-      } );
-
       Property.multilink( [ this.mass.equilibriumPositionProperty, this.mass.displacementProperty ], function( massPosition, massDisplacement ) {
-        self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) ).subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 ) );
+        self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) );
+        // self.translation = self.modelViewTransform.modelToViewPosition( massPosition.plus( massDisplacement ) ).subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 ) );
       } );
 
       const arrowOptions = {
@@ -68,36 +59,35 @@ define( require => {
         visible: false,
       };
 
+      const arrowSize = 23;
       // @public {Object}
       this.arrows = {
         left: new ArrowNode( 
-          this.rect.left,
-          this.rect.centerY,
-          this.rect.left - 23,
-          this.rect.centerY, arrowOptions ),
+          - this.size / 2,
+          0,
+          - this.size / 2 - arrowSize,
+          0, arrowOptions ),
         top: new ArrowNode( 
-          this.rect.centerX,
-          this.rect.top,
-          this.rect.centerX,
-          this.rect.top - 23, arrowOptions ),
+          0,
+          - this.size / 2,
+          0,
+          - this.size / 2 - arrowSize, arrowOptions ),
         right: new ArrowNode( 
-          this.rect.right,
-          this.rect.centerY,
-          this.rect.right + 23,
-          this.rect.centerY, arrowOptions ),
+          this.size / 2,
+          0,
+          this.size / 2 + arrowSize,
+          0, arrowOptions ),
         bottom: new ArrowNode( 
-          this.rect.centerX,
-          this.rect.bottom,
-          this.rect.centerX,
-          this.rect.bottom + 23, arrowOptions ),
+          0,
+          this.size / 2,
+          0,
+          this.size / 2 + arrowSize, arrowOptions ),
       }
 
       this.addChild( this.arrows.left );
       this.addChild( this.arrows.top );
       this.addChild( this.arrows.right );
       this.addChild( this.arrows.bottom );
-      this.addChild( this.rect );
-
     }
 
     /**

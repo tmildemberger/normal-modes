@@ -489,10 +489,10 @@ define( require => {
               // const sineTimesAmpY = modeAmplitudeY * sineProduct;
 
               displacement.x += sineProduct * this.amplitudeXTimesCos[ r ][ s ];
-              displacement.y += sineProduct * this.amplitudeYTimesCos[ r ][ s ];
+              displacement.y -= sineProduct * this.amplitudeYTimesCos[ r ][ s ];
               
               velocity.x += sineProduct * this.freqTimesAmplitudeXTimesSin[ r ][ s ];
-              velocity.y += sineProduct * this.freqTimesAmplitudeYTimesSin[ r ][ s ];
+              velocity.y -= sineProduct * this.freqTimesAmplitudeYTimesSin[ r ][ s ];
             }
           }
           
@@ -530,9 +530,9 @@ define( require => {
               const constantTimesSineProduct = ( 4 / ( ( N + 1 ) * ( N + 1 ) ) ) * this.sineProduct[ i ][ j ][ r ][ s ];
               
               AmplitudeTimesCosPhaseX += constantTimesSineProduct * massDisplacement.x;
-              AmplitudeTimesCosPhaseY += constantTimesSineProduct * massDisplacement.y;
+              AmplitudeTimesCosPhaseY -= constantTimesSineProduct * massDisplacement.y;
               AmplitudeTimesSinPhaseX += ( constantTimesSineProduct / modeFrequency ) * massVelocity.x;
-              AmplitudeTimesSinPhaseY += ( constantTimesSineProduct / modeFrequency ) * massVelocity.y;
+              AmplitudeTimesSinPhaseY -= ( constantTimesSineProduct / modeFrequency ) * massVelocity.y;
             }
 
           }

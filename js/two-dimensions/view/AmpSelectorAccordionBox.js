@@ -31,7 +31,7 @@ define( require => {
     const RECT_GRID_UNITS = 5;
     const PADDING_GRID_UNITS = 1;
 
-    class AmpPhaseAccordionBox extends AccordionBox {
+    class AmpSelectorAccordionBox extends AccordionBox {
   
       /**
        * @param {Object} [options]
@@ -121,7 +121,6 @@ define( require => {
           left: 0,
           top: 0,
           cursor: 'pointer',
-          fill: 'hsl( 31, 95%, 94% )',
           rectWidth: RECT_GRID_UNITS * getGridSize( model.numVisibleMassesProperty.get() ),
           rectHeight: RECT_GRID_UNITS * getGridSize( model.numVisibleMassesProperty.get() ),
           cornerRadius: 2,
@@ -140,13 +139,13 @@ define( require => {
           cornerRadius: 2,
         };
 
-        const selectorRectXOptions = merge( selectorRectOptions, {
+        const selectorRectXOptions = merge( {
           fill: 'rgb( 0, 255, 255) ',
-        } );
-
-        const selectorRectYOptions = merge( selectorRectOptions, {
+        } , selectorRectOptions);
+        
+        const selectorRectYOptions = merge( {
           fill: 'rgb( 0, 0, 255) ',
-        } );
+        } , selectorRectOptions);
 
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
 
@@ -282,5 +281,5 @@ define( require => {
       }
   
     }
-    return normalModes.register( 'AmpPhaseAccordionBox', AmpPhaseAccordionBox );
+    return normalModes.register( 'AmpSelectorAccordionBox', AmpSelectorAccordionBox );
   } );

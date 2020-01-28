@@ -9,6 +9,8 @@ define( require => {
 
   // modules
 
+  const Circle = require( 'SCENERY/nodes/Circle' );
+  const Color = require( 'SCENERY/util/Color' );
   const DragListener = require( 'SCENERY/listeners/DragListener' );
   const MassNode = require( 'NORMAL_MODES/common/view/MassNode' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
@@ -26,8 +28,19 @@ define( require => {
 
       super( mass, modelViewTransform, model, tandem );
       const self = this;
+
+      // @public {Circle}
+      this.circle = new Circle( {
+        radius: this.size / 2,
+        fill: '#007bff',
+        stroke: Color.toColor( '#007bff' ).colorUtilsDarker( .6 ),
+        boundsMethod: 'unstroked',
+        lineWidth: 4
+      } );
+
+      this.addChild( this.circle );
       
-      const rotationPoint = new Vector2( this.rect.centerX, this.rect.centerY );
+      const rotationPoint = new Vector2( 0, 0 );
       for(let arrow in this.arrows) {
         this.arrows[ arrow ].rotateAround( rotationPoint, Math.PI / 4 );
       }
@@ -90,7 +103,6 @@ define( require => {
       } );
 
       this.visibilityProperty.linkAttribute( this, 'visible' );
-
     }
 
     /**
