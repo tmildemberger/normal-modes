@@ -39,6 +39,8 @@ define( require => {
       
       // @public {Rectangle}
       this.line = new Line( {
+        preventFit: true,
+        boundsMethod: 'none',
         stroke: 'yellow',
         lineWidth: 4
       } );

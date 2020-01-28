@@ -12,16 +12,17 @@ define( require => {
     // modules
     const AccordionBox = require( 'SUN/AccordionBox' );
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
+    const DerivedProperty = require( 'AXON/DerivedProperty' );
+    const FireListener = require( 'SCENERY/listeners/FireListener' );
     const HBox = require( 'SCENERY/nodes/HBox' );
     const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
     const RadioButtonGroup = require( 'SUN/buttons/RadioButtonGroup' );
+    const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
     const Text = require( 'SCENERY/nodes/Text' );
     const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
     const Vector2 = require( 'DOT/Vector2' );
-    const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
-    const FireListener = require( 'SCENERY/listeners/FireListener' );
     
     // strings
     const normalModeAmplitudesString = require( 'string!NORMAL_MODES/amp-selector-2d.normal-mode-amplitudes' );
@@ -107,11 +108,11 @@ define( require => {
         } );
 
         /* makes a grid with rectSize = RECT_GRID_UNITS units, padding = PADDING_GRIDE_SIZE units */
-        const getGridSize = function ( numMasses ) {
+        const getGridSize = function( numMasses ) {
           return PANEL_SIZE / ( 1 + ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * numMasses );
         }
 
-        const getMaxAmp = function ( ) {
+        const getMaxAmp = function() {
           return TwoDimensionsConstants.MAX_MODE_AMPLITUDE[ model.numVisibleMassesProperty.get() - 1 ];
         }
 
@@ -129,18 +130,23 @@ define( require => {
         };
         
         const selectorRectProgressOptions = {
+          preventFit: true,
+          boundsMethod: 'none',
+          left: 0,
+          top: 0,
+          fill: 'hsl( 31, 95%, 94% )',
           rectWidth: selectorRectOptions.rectWidth,
           rectHeight: 0,
           cornerRadius: 2,
         };
 
-        const selectorRectXProgressOptions = Object.assign( {
+        const selectorRectXOptions = merge( selectorRectOptions, {
           fill: 'rgb( 0, 255, 255) ',
-        }, selectorRectProgressOptions);
+        } );
 
-        const selectorRectYProgressOptions = Object.assign( {
+        const selectorRectYOptions = merge( selectorRectOptions, {
           fill: 'rgb( 0, 0, 255) ',
-        }, selectorRectProgressOptions);
+        } );
 
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
 
@@ -154,32 +160,37 @@ define( require => {
 
           const maxAmp = getMaxAmp();
           const heightFactor = ( amplitude > maxAmp )? 1 : amplitude / maxAmp;
-          progress.rectHeight = selectorRect.rectHeight * heightFactor;
-          progress.bottom = selectorRect.rectHeight;
+          progress.rectHeight = selectorRect.rectHeight * ( 1 - heightFactor );
+          // progress.bottom = selectorRect.rectHeight;
         }
 
         for ( let i = 0; i < selectorRectsLength; i++ ) {
-          selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectOptions );
-          selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectOptions );
+          selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectXOptions );
+          selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectYOptions );
 
           const row = Math.trunc( i / NormalModesConstants.MAX_MASSES_ROW_LEN );
           const col = i % NormalModesConstants.MAX_MASSES_ROW_LEN;
 
           const xSelector = selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ];
           const ySelector = selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ];
-          xSelector.addChild( new Rectangle( selectorRectXProgressOptions ) );
-          ySelector.addChild( new Rectangle( selectorRectYProgressOptions ) );
+          xSelector.addChild( new Rectangle( selectorRectProgressOptions ) );
+          ySelector.addChild( new Rectangle( selectorRectProgressOptions ) );
+
+          const isNear = function( n1, n2 ) {
+            const EPS = 10e-5;
+            return n1 >= ( n2 - EPS ) && n2 <= ( n2 + EPS );
+          }
 
           xSelector.addInputListener( new FireListener( {
             fire: () => {
               const amp = model.modeXAmplitudeProperty[ row ][ col ];
-              amp.set( ( amp.get() < getMaxAmp() / 20 )? getMaxAmp() : TwoDimensionsConstants.MIN_MODE_AMPLITUDE );
+              amp.set( isNear( amp.get(), getMaxAmp() ) ? TwoDimensionsConstants.MIN_MODE_AMPLITUDE : getMaxAmp() );
             }
           } ) )
           ySelector.addInputListener( new FireListener( {
             fire: () => {
               const amp = model.modeYAmplitudeProperty[ row ][ col ];
-              amp.set( ( amp.get() < getMaxAmp() / 20 )? getMaxAmp() : TwoDimensionsConstants.MIN_MODE_AMPLITUDE );
+              amp.set( isNear( amp.get(), getMaxAmp() ) ? TwoDimensionsConstants.MIN_MODE_AMPLITUDE : getMaxAmp() );
             }
           } ) )
 
@@ -206,13 +217,14 @@ define( require => {
         super( contentNode, options );
         const self = this;
         
-        this.ampProperty = ( model.ampSelectorAxisProperty.get() == model.ampSelectorAxis.VERTICAL )? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
-
+        this.ampProperty = new DerivedProperty( [ model.ampSelectorAxisProperty ], ( selectorAxis ) => {
+          return ( selectorAxis === model.ampSelectorAxis.VERTICAL ) ? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
+        } );
         const refreshSelector = function ( selectorRect, pos ) {
           const row = Math.trunc( pos / NormalModesConstants.MAX_MASSES_ROW_LEN );
           const col = pos % NormalModesConstants.MAX_MASSES_ROW_LEN;
-
-          changeSelectorRectProgress( selectorRect, self.ampProperty[ row ][ col ].get() );
+          
+          changeSelectorRectProgress( selectorRect, self.ampProperty.get()[ row ][ col ].get() );
         }
 
         const selectorsChanged = function ( numMasses ) {
@@ -233,7 +245,7 @@ define( require => {
               rects[ j ].rectWidth = rects[ j ].rectHeight = RECT_GRID_UNITS * gridSize;
 
               rects[ j ].children[ 0 ].rectWidth = rects[ j ].rectWidth;
-              rects[ j ].children[ 0 ].bottom = rects[ j ].rectHeight;
+              // rects[ j ].children[ 0 ].bottom = rects[ j ].rectHeight;
               refreshSelector( rects[ j ], j );
 
               rects[ j ].left = cursor.x;
@@ -252,7 +264,7 @@ define( require => {
 
         model.ampSelectorAxisProperty.link( function ( axis ) {
           selectorBox.children = selectorRects[ axis ];
-          self.ampProperty = ( axis == model.ampSelectorAxis.VERTICAL )? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
+          // self.ampProperty = ( axis == model.ampSelectorAxis.VERTICAL )? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
           selectorsChanged( model.numVisibleMassesProperty.get() );
         } );
 

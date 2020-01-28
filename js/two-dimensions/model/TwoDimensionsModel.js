@@ -148,6 +148,30 @@ define( require => {
       } );
 
     }
+
+    /**
+     * Calculates the sine products.
+     * @param {number} numMasses - the current number of visible masses in the simulation
+     * @private
+     */
+    calculateSineProducts( numMasses ) {
+      const N = numMasses;
+      this.sineProduct = [];
+      for ( let i = 1; i <= N; ++i ) {
+        this.sineProduct[ i ] = [];
+        for ( let j = 1; j <= N; ++j ) {
+          this.sineProduct[ i ][ j ] = [];
+          
+          for ( let r = 1; r <= N; ++r ) {
+            this.sineProduct[ i ][ j ][ r ] = [];
+            for ( let s = 1; s <= N; ++s ) {
+
+              this.sineProduct[ i ][ j ][ r ][ s ] = Math.sin( j * r * Math.PI / ( N + 1 ) ) * Math.sin( i * s * Math.PI / ( N + 1 ) );
+            }
+          }
+        }
+      }
+    }
     
     /**
      * Creates MAX_MASSES masses in the correct positions.
@@ -183,6 +207,7 @@ define( require => {
         }
       }
 
+      this.calculateSineProducts( numMasses );
       this.computeModeAmplitudesAndPhases();
     }
     
@@ -217,6 +242,7 @@ define( require => {
           y += yStep;
         }
       }
+      this.calculateSineProducts( defaultMassesNum );
     }
 
     /**
@@ -226,8 +252,8 @@ define( require => {
     createDefaultSprings() {
       for ( let i = 0; i < MAX_SPRINGS; i++ ) {
         for ( let j = 0; j < MAX_SPRINGS; ++j ) {
-          this.springsX[ i ][ j ] = new Spring( this.masses[ i + 1 ][ j ], this.masses[ i + 1 ][ j + 1 ] );
-          this.springsY[ i ][ j ] = new Spring( this.masses[ i ][ j + 1 ], this.masses[ i + 1 ][ j + 1 ] );
+          if ( i !== MAX_SPRINGS - 1 ) this.springsX[ i ][ j ] = new Spring( this.masses[ i + 1 ][ j ], this.masses[ i + 1 ][ j + 1 ] );
+          if ( j !== MAX_SPRINGS - 1 ) this.springsY[ i ][ j ] = new Spring( this.masses[ i ][ j + 1 ], this.masses[ i + 1 ][ j + 1 ] );
         }
       }
     }
@@ -409,27 +435,64 @@ define( require => {
      */
     setExactPositions() {
       const N = this.numVisibleMassesProperty.get();
+      
+      this.amplitudeXTimesCos = [];
+      this.amplitudeYTimesCos = [];
+      this.freqTimesAmplitudeXTimesSin = [];
+      this.freqTimesAmplitudeYTimesSin = [];
+      for ( let r = 1; r <= N; ++r ) {
+        this.amplitudeXTimesCos[ r ] = [];
+        this.amplitudeYTimesCos[ r ] = [];
+        this.freqTimesAmplitudeXTimesSin[ r ] = [];
+        this.freqTimesAmplitudeYTimesSin[ r ] = [];
+        for ( let s = 1; s <= N; ++s ) {
+          const modeAmplitudeX = this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].get();
+          const modeAmplitudeY = this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].get();
+          const modeFrequency = this.modeFrequencyProperty[ r - 1 ][ s - 1 ].get();
+          const modePhaseX = this.modeXPhaseProperty[ r - 1 ][ s - 1 ].get();
+          const modePhaseY = this.modeYPhaseProperty[ r - 1 ][ s - 1 ].get();
+
+          const freqTimesTime = modeFrequency * this.timeProperty.get();
+          const freqTimesTimeMinusPhsX = freqTimesTime - modePhaseX;
+          const freqTimesTimeMinusPhsY = freqTimesTime - modePhaseY;
+
+          this.amplitudeXTimesCos[ r ][ s ] = modeAmplitudeX * Math.cos( freqTimesTimeMinusPhsX );
+          this.amplitudeYTimesCos[ r ][ s ] = modeAmplitudeY * Math.cos( freqTimesTimeMinusPhsY );
+          
+          this.freqTimesAmplitudeXTimesSin[ r ][ s ] = - modeFrequency * modeAmplitudeX * Math.sin( freqTimesTimeMinusPhsX );
+          this.freqTimesAmplitudeYTimesSin[ r ][ s ] = - modeFrequency * modeAmplitudeY * Math.sin( freqTimesTimeMinusPhsY );
+        }
+      }
       for ( let i = 1; i <= N; ++i ) {
         for ( let j = 1; j <= N; ++j ) {
           let displacement = new Vector2( 0, 0 );
           let velocity = new Vector2( 0, 0 );
           
+          const sineProductMatrix = this.sineProduct[ i ][ j ];
           for ( let r = 1; r <= N; ++r ) {
+            const sineProductArray = sineProductMatrix[ r ];
             for ( let s = 1; s <= N; ++s ) {
               
-              const modeAmplitudeX = this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].get();
-              const modeAmplitudeY = this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].get();
-              const modeFrequency = this.modeFrequencyProperty[ r - 1 ][ s - 1 ].get();
-              const modePhaseX = this.modeXPhaseProperty[ r - 1 ][ s - 1 ].get();
-              const modePhaseY = this.modeYPhaseProperty[ r - 1 ][ s - 1 ].get();
+              // const modeAmplitudeX = this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].get();
+              // const modeAmplitudeY = this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].get();
+              // const modeFrequency = this.modeFrequencyProperty[ r - 1 ][ s - 1 ].get();
+              // const modePhaseX = this.modeXPhaseProperty[ r - 1 ][ s - 1 ].get();
+              // const modePhaseY = this.modeYPhaseProperty[ r - 1 ][ s - 1 ].get();
 
-              const sineProduct = Math.sin( j * r * Math.PI / ( N + 1 ) ) * Math.sin( i * s * Math.PI / ( N + 1 ) );
+              // const sineProduct = Math.sin( j * r * Math.PI / ( N + 1 ) ) * Math.sin( i * s * Math.PI / ( N + 1 ) );
+              const sineProduct = sineProductArray[ s ];
 
-              displacement.x += modeAmplitudeX * sineProduct * Math.cos( modeFrequency * this.timeProperty.get() - modePhaseX );
-              displacement.y += modeAmplitudeY * sineProduct * Math.cos( modeFrequency * this.timeProperty.get() - modePhaseY );
+              // const freqTimesTime = modeFrequency * this.timeProperty.get();
+              // const freqTimesTimeMinusPhsX = freqTimesTime - modePhaseX;
+              // const freqTimesTimeMinusPhsY = freqTimesTime - modePhaseY;
+              // const sineTimesAmpX = modeAmplitudeX * sineProduct;
+              // const sineTimesAmpY = modeAmplitudeY * sineProduct;
+
+              displacement.x += sineProduct * this.amplitudeXTimesCos[ r ][ s ];
+              displacement.y += sineProduct * this.amplitudeYTimesCos[ r ][ s ];
               
-              velocity.x += ( - modeFrequency ) * modeAmplitudeX * sineProduct * Math.sin( modeFrequency * this.timeProperty.get() - modePhaseX );
-              velocity.y += ( - modeFrequency ) * modeAmplitudeY * sineProduct * Math.sin( modeFrequency * this.timeProperty.get() - modePhaseY );
+              velocity.x += sineProduct * this.freqTimesAmplitudeXTimesSin[ r ][ s ];
+              velocity.y += sineProduct * this.freqTimesAmplitudeYTimesSin[ r ][ s ];
             }
           }
           
@@ -461,21 +524,22 @@ define( require => {
           let AmplitudeTimesSinPhaseY = 0;
           for ( let i = 1; i <= N; ++i ) {
             for ( let j = 1; j <= N; ++j ) { // for each mass
-              let massDisplacement = this.masses[ i ][ j ].initialDisplacementProperty.get();
-              let massVelocity = this.masses[ i ][ j ].initialVelocityProperty.get();
-              const sineProduct = Math.sin( j * r * Math.PI / ( N + 1 ) ) * Math.sin( i * s * Math.PI / ( N + 1 ) );
+              const massDisplacement = this.masses[ i ][ j ].initialDisplacementProperty.get();
+              const massVelocity = this.masses[ i ][ j ].initialVelocityProperty.get();
+              const modeFrequency = this.modeFrequencyProperty[ i - 1 ][ j - 1 ].get();
+              const constantTimesSineProduct = ( 4 / ( ( N + 1 ) * ( N + 1 ) ) ) * this.sineProduct[ i ][ j ][ r ][ s ];
               
-              AmplitudeTimesCosPhaseX += ( 4 / ( ( N + 1 ) * ( N + 1 ) ) ) * massDisplacement.x * sineProduct;
-              AmplitudeTimesCosPhaseY += ( 4 / ( ( N + 1 ) * ( N + 1 ) ) ) * massDisplacement.y * sineProduct;
-              AmplitudeTimesSinPhaseX += ( 4 / ( this.modeFrequencyProperty[ i - 1 ][ j - 1 ].get() * ( ( N + 1 ) * ( N + 1 ) ) ) ) * massVelocity.x * sineProduct;
-              AmplitudeTimesSinPhaseY += ( 4 / ( this.modeFrequencyProperty[ i - 1 ][ j - 1 ].get() * ( ( N + 1 ) * ( N + 1 ) ) ) ) * massVelocity.y * sineProduct;
+              AmplitudeTimesCosPhaseX += constantTimesSineProduct * massDisplacement.x;
+              AmplitudeTimesCosPhaseY += constantTimesSineProduct * massDisplacement.y;
+              AmplitudeTimesSinPhaseX += ( constantTimesSineProduct / modeFrequency ) * massVelocity.x;
+              AmplitudeTimesSinPhaseY += ( constantTimesSineProduct / modeFrequency ) * massVelocity.y;
             }
 
+          }
             this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseX ** 2 + AmplitudeTimesSinPhaseX ** 2 ) );
             this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
             this.modeXPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseX, AmplitudeTimesCosPhaseX ) );
             this.modeYPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseY, AmplitudeTimesCosPhaseY ) );
-          }
         }
       }
     }
