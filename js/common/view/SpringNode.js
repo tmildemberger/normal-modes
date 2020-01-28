@@ -12,7 +12,10 @@ define( require => {
   const Line = require( 'SCENERY/nodes/Line' );
   const Node = require( 'SCENERY/nodes/Node' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
+  const Path = require( 'SCENERY/nodes/Path' );
   const Property = require( 'AXON/Property' );
+  const Shape = require( 'KITE/Shape' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   class SpringNode extends Node {
 
@@ -23,7 +26,14 @@ define( require => {
      * @param {Tandem} tandem
      */
     constructor( spring, modelViewTransform, model, tandem ) {
-      super( { cursor: 'pointer' } );
+      super( {
+        cursor: 'pointer',
+        preventFit: true,
+        boundsMethod: 'none',
+        pickable: false,
+        inputEnabled: false,
+        excludeInvisible: true
+      } );
 
       const self = this;
 
@@ -31,33 +41,41 @@ define( require => {
       this.spring = spring;
       this.modelViewTransform = modelViewTransform;
       this.model = model;
-    
+
       // @public {Property.<boolean>} determines the visibility of the SpringNode
       this.visibilityProperty = new DerivedProperty ( [ this.spring.visibilityProperty, this.model.springsVisibilityProperty ], function( mySpringVisible, springsVisible ) {
         return mySpringVisible && springsVisible;
       } );
+
+      this.springShape = new Shape().moveTo( 0, 0 ).lineTo( 1, 0 );
       
-      // @public {Rectangle}
-      this.line = new Line( {
+      this.line = new Path( this.springShape, {
         preventFit: true,
         boundsMethod: 'none',
-        stroke: 'yellow',
-        lineWidth: 4
+        pickable: false,
+        inputEnabled: false,
+        stroke: 'red',
+        lineWidth: 5
       } );
-
-      // self.rect.rectBounds = new Bounds2(
-      //   modelViewTransform2.modelToViewDeltaX( -radiusValue ),
-      //   hookHeight,
-      //   modelViewTransform2.modelToViewDeltaX( radiusValue ),
-      //   modelViewTransform2.modelToViewDeltaY( -mass.cylinderHeightProperty.get() ) + hookHeight );
       this.addChild( this.line );
 
+      let currentXScaling = 1;
+
       Property.multilink( [ this.spring.leftMass.equilibriumPositionProperty, this.spring.leftMass.displacementProperty, this.spring.rightMass.equilibriumPositionProperty, this.spring.rightMass.displacementProperty ], function( leftPos, leftDispl, rightPos, rightDispl ) {
-      // this.spring.leftMass.equilibriumPositionProperty.link( function( position ) {
-        // self.translation = self.modelViewTransform.modelToViewPosition( position.plus( self.spring.leftMass.displacementProperty.get() ) );
-        let p1 = self.modelViewTransform.modelToViewPosition( leftPos.plus( leftDispl ) );
-        let p2 = self.modelViewTransform.modelToViewPosition( rightPos.plus( rightDispl ) );
-        self.line.setLine( p1.x, p1.y, p2.x, p2.y );
+        if ( self.visible ) {
+
+          let p1 = self.modelViewTransform.modelToViewPosition( leftPos.plus( leftDispl ) );
+          let p2 = self.modelViewTransform.modelToViewPosition( rightPos.plus( rightDispl ) );
+          if ( p1.distance( p2 ) === 0 ) return;
+          
+          self.scale( 1 / currentXScaling, 1 );
+          
+          currentXScaling = p1.distance( p2 );
+
+          self.translation = p1;
+          self.rotation = p2.minus( p1 ).angle;
+          self.scale( currentXScaling, 1 );
+        }
       } );
 
       this.visibilityProperty.linkAttribute( this, 'visible' );

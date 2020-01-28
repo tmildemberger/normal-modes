@@ -57,6 +57,7 @@ define( require => {
         headWidth: 20,
         headHeight: 16,
         visible: false,
+        excludeInvisible: true
       };
 
       const arrowSize = 23;
@@ -88,6 +89,8 @@ define( require => {
       this.addChild( this.arrows.top );
       this.addChild( this.arrows.right );
       this.addChild( this.arrows.bottom );
+
+      this.visibilityProperty.linkAttribute( this, 'visible' );
     }
 
     /**

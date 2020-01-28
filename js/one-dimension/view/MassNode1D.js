@@ -102,8 +102,6 @@ define( require => {
           self.dragListener.isOverProperty.unlink( callback );
         }
       } );
-
-      this.visibilityProperty.linkAttribute( this, 'visible' );
     }
 
     /**
