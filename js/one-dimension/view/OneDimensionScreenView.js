@@ -72,9 +72,7 @@ define( require => {
         true /* showPhases checkbox */
       );
 
-      // left: OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
       const ampPhaseAccordionBoxOptions = {
-        // left: 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
         bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
         fill: 'rgb( 254, 235, 214 )',
@@ -90,14 +88,14 @@ define( require => {
       this.addChild( optionsPanel );
       this.addChild( resetAllButton );
 
+      // The springs are added first
+
       // @private {SpringNode[]} Array that will contain all of the springNodes.
       this.springNodes = model.springs.map( function( spring ) {
         const springNode = new SpringNode( spring, self.modelViewTransform, self.model, tandem.createTandem( 'springNodes' ) );
         self.addChild( springNode );
         return springNode;
       } );
-
-      // The springs are added first
 
       this.leftWallNode = new WallNode( this.model.masses[ 0 ], this.modelViewTransform, this.model, tandem.createTandem( 'leftWallNode' ) );
       this.rightWallNode = new WallNode( this.model.masses[ this.model.masses.length - 1 ], this.modelViewTransform, this.model, tandem.createTandem( 'rightWallNode' ) );
@@ -111,12 +109,7 @@ define( require => {
         this.massNodes.push( new MassNode1D( this.model.masses[ i ], this.modelViewTransform, this.model, tandem.createTandem( 'massNodes' ) ) );
         this.addChild( this.massNodes[ this.massNodes.length - 1 ] );
       }
-      // this.massNodes = model.masses.map( function( mass ) {
-      //   const massNode = new MassNode( mass, self.modelViewTransform, self.model, tandem.createTandem( 'massNodes' ) );
-      //   self.addChild( massNode );
-      //   return massNode;
-      // } );
-      
+
       this.graphBox = new GraphAccordionBox( { 
         top: optionsPanel.bottom + 10,
         right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 2,
@@ -130,7 +123,7 @@ define( require => {
      * @public
      */
     reset() {
-      // this.graphBox.reset();
+      // NO-OP
     }
 
     /**
@@ -139,7 +132,7 @@ define( require => {
      * @public
      */
     step( dt ) {
-      //TODO
+      // NO-OP
     }
   }
 

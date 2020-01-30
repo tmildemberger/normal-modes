@@ -63,7 +63,6 @@ define( require => {
 
       this.dragCallback = function( event, listener ) {
         self.model.arrowsVisibilityProperty.set( false );
-        // console.log('model::'); console.log( listener.modelPoint );
         self.mass.displacementProperty.set( listener.modelPoint.minus( self.mass.equilibriumPositionProperty.get() ) );
       };
 

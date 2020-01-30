@@ -49,10 +49,6 @@ define( require => {
 
       this.dragCallback = function( event, listener ) {
         self.model.arrowsVisibilityProperty.set( false );
-        // let point = .subtract( new Vector2( self.rect.rectWidth / 2, self.rect.rectHeight / 2 );
-        // console.log('model::'); console.log( listener.modelPoint );
-        // console.log('local::'); console.log( listener.localPoint );
-        // console.log('parent::'); console.log( self.modelViewTransform.viewToModelPosition( listener.parentPoint ) );
         let point = listener.modelPoint.minus( self.mass.equilibriumPositionProperty.get() );
         if ( self.model.directionOfMotionProperty.get() === self.model.directionOfMotion.HORIZONTAL ) {
           const oldY = self.mass.displacementProperty.get().y;
