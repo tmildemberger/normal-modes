@@ -1,7 +1,8 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * @author UTFPR
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
+ * @author Franco Barpp Gomes (UTFPR)
  */
 define( require => {
   'use strict';
@@ -35,7 +36,7 @@ define( require => {
 
       const self = this;
 
-      // @public {OneDimensionModel}
+      // @public {TwoDimensionsModel}
       this.model = model;
 
       const viewOrigin = new Vector2( ( this.layoutBounds.maxX - 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN - 420 ) / 2 + 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
@@ -114,13 +115,6 @@ define( require => {
 
       this.addChild( ampSelectorAccordionBox );
 
-      // this.leftWallNode = new WallNode( this.model.masses[ 0 ], this.modelViewTransform, this.model, tandem.createTandem( 'leftWallNode' ) );
-      // this.rightWallNode = new WallNode( this.model.masses[ this.model.masses.length - 1 ], this.modelViewTransform, this.model, tandem.createTandem( 'rightWallNode' ) );
-
-      // this.addChild( this.leftWallNode );
-      // this.addChild( this.rightWallNode );
-
-      // @private {MassNode[]} Array that will contain all of the massNodes.
       this.massNodes = [];
       for ( let i = 1; i < this.model.masses.length - 1; ++i ) {
         for ( let j = 1; j < this.model.masses[ i ].length - 1; ++j ) {
@@ -135,7 +129,7 @@ define( require => {
      * @public
      */
     reset() {
-      //TODO
+      // NO-OP
     }
 
     /**
@@ -144,7 +138,7 @@ define( require => {
      * @public
      */
     step( dt ) {
-      //TODO
+      // NO-OP
     }
   }
 

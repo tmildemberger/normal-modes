@@ -13,7 +13,7 @@ define( require => {
   // modules
   const normalModes = require( 'NORMAL_MODES/normalModes' );
 
-  /* as the default distances between masses decrease a lot, the max amplitudes must be smaller */
+  /* as the default distances between masses decrease a lot, the max amplitudes must change */
   const maxAmplitudes = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
   const TwoDimensionsConstants = {
@@ -28,7 +28,7 @@ define( require => {
 
     MIN_MODE_AMPLITUDE: 0,
     INIT_MODE_AMPLITUDE: 0,
-    MAX_MODE_AMPLITUDE: maxAmplitudes, /* TODO experimentar e trocar como necessario Franco */
+    MAX_MODE_AMPLITUDE: maxAmplitudes,
 
     MIN_MODE_PHASE: -Math.PI,
     INIT_MODE_PHASE: 0,
@@ -45,13 +45,13 @@ define( require => {
     FPS: 60,
     FIXED_DT: 1 / 60
 
-    //TODO
   };
   
   let baseMaxAmplitude = .3;
   for( let i = 0; i < maxAmplitudes.length; i++ ) {
+    // this is the way the original sim does
     const springLength = TwoDimensionsConstants.DISTANCE_BETWEEN_X_WALLS / ( i + 2 );
-    maxAmplitudes[ i ] = baseMaxAmplitude * springLength; // this is the way the original sim does
+    maxAmplitudes[ i ] = baseMaxAmplitude * springLength;
   }
 
   return normalModes.register( 'TwoDimensionsConstants', TwoDimensionsConstants );

@@ -149,7 +149,6 @@ define( require => {
 
         const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
 
-        // Franco to make handling it easier, it's a simple array (not nested), as its known how many nodes are per row
         const selectorRects = { };
         selectorRects[ model.ampSelectorAxis.HORIZONTAL ] = new Array( selectorRectsLength );
         selectorRects[ model.ampSelectorAxis.VERTICAL ] = new Array( selectorRectsLength );
@@ -244,7 +243,6 @@ define( require => {
               rects[ j ].rectWidth = rects[ j ].rectHeight = RECT_GRID_UNITS * gridSize;
 
               rects[ j ].children[ 0 ].rectWidth = rects[ j ].rectWidth;
-              // rects[ j ].children[ 0 ].bottom = rects[ j ].rectHeight;
               refreshSelector( rects[ j ], j );
 
               rects[ j ].left = cursor.x;
@@ -263,7 +261,6 @@ define( require => {
 
         model.ampSelectorAxisProperty.link( function ( axis ) {
           selectorBox.children = selectorRects[ axis ];
-          // self.ampProperty = ( axis == model.ampSelectorAxis.VERTICAL )? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
           selectorsChanged( model.numVisibleMassesProperty.get() );
         } );
 

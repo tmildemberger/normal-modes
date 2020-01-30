@@ -1,7 +1,7 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * @author UTFPR
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
  */
 define( require => {
   'use strict';
@@ -13,14 +13,14 @@ define( require => {
   const EnumerationProperty = require( 'AXON/EnumerationProperty' );
   const Mass = require( 'NORMAL_MODES/common/model/Mass' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
+  const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
   const NumberProperty = require( 'AXON/NumberProperty' );
   const Property = require( 'AXON/Property' );
   const Spring = require( 'NORMAL_MODES/common/model/Spring' );
   const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
   const Vector2 = require( 'DOT/Vector2' );
 
-  const MAX_VISIBLE_MASSES = 10;
-  const MAX_MASSES = MAX_VISIBLE_MASSES + 2; // tem as imoveis das pontas tb - Franco
+  const MAX_MASSES = NormalModesConstants.MAX_MASSES_ROW_LEN + 2;
   const MAX_SPRINGS = MAX_MASSES - 1;
 
   class TwoDimensionsModel {
@@ -61,19 +61,19 @@ define( require => {
       // @public {number} Accumulated delta-time
       this.dt = 0;
       
-      this.modeXAmplitudeProperty = new Array( MAX_VISIBLE_MASSES );
-      this.modeYAmplitudeProperty = new Array( MAX_VISIBLE_MASSES );
-      this.modeXPhaseProperty = new Array( MAX_VISIBLE_MASSES );
-      this.modeYPhaseProperty = new Array( MAX_VISIBLE_MASSES );
-      this.modeFrequencyProperty = new Array( MAX_VISIBLE_MASSES );
-      for( let i = 0; i < MAX_VISIBLE_MASSES; i++ ) {
-        this.modeXAmplitudeProperty[ i ] = new Array( MAX_VISIBLE_MASSES );
-        this.modeYAmplitudeProperty[ i ] = new Array( MAX_VISIBLE_MASSES );
-        this.modeXPhaseProperty[ i ] = new Array( MAX_VISIBLE_MASSES );
-        this.modeYPhaseProperty[ i ] = new Array( MAX_VISIBLE_MASSES );
-        this.modeFrequencyProperty[ i ] = new Array( MAX_VISIBLE_MASSES );
+      this.modeXAmplitudeProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      this.modeYAmplitudeProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      this.modeXPhaseProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      this.modeYPhaseProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      this.modeFrequencyProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      for( let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
+        this.modeXAmplitudeProperty[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        this.modeYAmplitudeProperty[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        this.modeXPhaseProperty[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        this.modeYPhaseProperty[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+        this.modeFrequencyProperty[ i ] = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
-        for ( let j = 0; j < MAX_VISIBLE_MASSES; ++j ) {
+        for ( let j = 0; j < NormalModesConstants.MAX_MASSES_ROW_LEN; ++j ) {
           this.modeXAmplitudeProperty[ i ][ j ] = new NumberProperty( TwoDimensionsConstants.INIT_MODE_AMPLITUDE, {
             tandem: tandem.createTandem( 'modeXAmplitudeProperty' + i + '_' + j ),
             range: new Range( TwoDimensionsConstants.MIN_MODE_AMPLITUDE, Number.POSITIVE_INFINITY )
@@ -263,8 +263,8 @@ define( require => {
      * @public
      */
     resetNormalModes() {
-      for ( let i = 0; i < MAX_VISIBLE_MASSES; i++ ) {
-        for ( let j = 0; j < MAX_VISIBLE_MASSES; j++ ) {
+      for ( let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
+        for ( let j = 0; j < NormalModesConstants.MAX_MASSES_ROW_LEN; j++ ) {
           this.modeXAmplitudeProperty[ i ][ j ].reset();
           this.modeYAmplitudeProperty[ i ][ j ].reset();
           this.modeXPhaseProperty[ i ][ j ].reset();
@@ -299,12 +299,6 @@ define( require => {
       this.timeProperty.reset();
 
       this.setExactPositions();
-
-      // for(let i = 0; i < MAX_MASSES; i++) {
-      //   this.masses[ i ].restoreInitialState();
-      // }
-      
-      // this.computeModeAmplitudesAndPhases();
     }
 
     /**
@@ -472,21 +466,7 @@ define( require => {
           for ( let r = 1; r <= N; ++r ) {
             const sineProductArray = sineProductMatrix[ r ];
             for ( let s = 1; s <= N; ++s ) {
-              
-              // const modeAmplitudeX = this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].get();
-              // const modeAmplitudeY = this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].get();
-              // const modeFrequency = this.modeFrequencyProperty[ r - 1 ][ s - 1 ].get();
-              // const modePhaseX = this.modeXPhaseProperty[ r - 1 ][ s - 1 ].get();
-              // const modePhaseY = this.modeYPhaseProperty[ r - 1 ][ s - 1 ].get();
-
-              // const sineProduct = Math.sin( j * r * Math.PI / ( N + 1 ) ) * Math.sin( i * s * Math.PI / ( N + 1 ) );
               const sineProduct = sineProductArray[ s ];
-
-              // const freqTimesTime = modeFrequency * this.timeProperty.get();
-              // const freqTimesTimeMinusPhsX = freqTimesTime - modePhaseX;
-              // const freqTimesTimeMinusPhsY = freqTimesTime - modePhaseY;
-              // const sineTimesAmpX = modeAmplitudeX * sineProduct;
-              // const sineTimesAmpY = modeAmplitudeY * sineProduct;
 
               displacement.x += sineProduct * this.amplitudeXTimesCos[ r ][ s ];
               displacement.y -= sineProduct * this.amplitudeYTimesCos[ r ][ s ];

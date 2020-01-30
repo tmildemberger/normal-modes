@@ -108,7 +108,7 @@ define( require => {
      * @public
      */
     reset() {
-      // TODO
+      // NO-OP
     }
     
   }
