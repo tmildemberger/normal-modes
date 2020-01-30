@@ -3,7 +3,8 @@
 /**
  * Main entry point for the sim.
  *
- * @author UTFPR
+ * @author Franco Barpp Gomes (UTFPR)
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
  */
 define( require => {
   'use strict';
@@ -37,10 +38,8 @@ define( require => {
     const sim = new Sim( normalModesTitleString, [
       // new IntroScreen ..., TODO
       new OneDimensionScreen( Tandem.ROOT.createTandem( 'oneDimensionScreen' ) ),
-      new TwoDimensionsScreen( Tandem.ROOT.createTandem( 'normalModesScreen' ) ),
+      new TwoDimensionsScreen( Tandem.ROOT.createTandem( 'twoDimensionsScreen' ) ),
     ], simOptions );
-    // for debugging
-    console.log(sim);
     sim.start();
   } );
 } );
