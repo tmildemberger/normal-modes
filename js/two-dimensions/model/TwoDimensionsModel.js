@@ -509,13 +509,13 @@ define( require => {
      */
     computeModeAmplitudesAndPhases() {
       this.timeProperty.reset();
-      for ( let i = 1; i <= MAX_VISIBLE_MASSES; ++i ) {
-        for ( let j = 1; j <= MAX_VISIBLE_MASSES; ++j ) {
+      const N = this.numVisibleMassesProperty.get();
+      for ( let i = 1; i <= N; ++i ) {
+        for ( let j = 1; j <= N; ++j ) {
           this.masses[ i ][ j ].initialDisplacementProperty.set( this.masses[ i ][ j ].displacementProperty.get() );
           this.masses[ i ][ j ].initialVelocityProperty.set( this.masses[ i ][ j ].velocityProperty.get() );
         }
       }
-      const N = this.numVisibleMassesProperty.get();
       for ( let r = 1; r <= N; ++r ) {
         for ( let s = 1; s <= N; ++s ) { // for each mode
           let AmplitudeTimesCosPhaseX = 0;
@@ -526,7 +526,7 @@ define( require => {
             for ( let j = 1; j <= N; ++j ) { // for each mass
               const massDisplacement = this.masses[ i ][ j ].initialDisplacementProperty.get();
               const massVelocity = this.masses[ i ][ j ].initialVelocityProperty.get();
-              const modeFrequency = this.modeFrequencyProperty[ i - 1 ][ j - 1 ].get();
+              const modeFrequency = this.modeFrequencyProperty[ r - 1 ][ s - 1 ].get();
               const constantTimesSineProduct = ( 4 / ( ( N + 1 ) * ( N + 1 ) ) ) * this.sineProduct[ i ][ j ][ r ][ s ];
               
               AmplitudeTimesCosPhaseX += constantTimesSineProduct * massDisplacement.x;
@@ -536,10 +536,10 @@ define( require => {
             }
 
           }
-            this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseX ** 2 + AmplitudeTimesSinPhaseX ** 2 ) );
-            this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
-            this.modeXPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseX, AmplitudeTimesCosPhaseX ) );
-            this.modeYPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseY, AmplitudeTimesCosPhaseY ) );
+          this.modeXAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseX ** 2 + AmplitudeTimesSinPhaseX ** 2 ) );
+          this.modeYAmplitudeProperty[ r - 1 ][ s - 1 ].set( Math.sqrt( AmplitudeTimesCosPhaseY ** 2 + AmplitudeTimesSinPhaseY ** 2 ) );
+          this.modeXPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseX, AmplitudeTimesCosPhaseX ) );
+          this.modeYPhaseProperty[ r - 1 ][ s - 1 ].set( Math.atan2( AmplitudeTimesSinPhaseY, AmplitudeTimesCosPhaseY ) );
         }
       }
     }
