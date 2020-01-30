@@ -1,7 +1,7 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * This node draws a static normal mode graph. It is based on States of Matter's InteractionPotentialCanvasNode.
+ * This node draws a normal mode graph. It is based on States of Matter's InteractionPotentialCanvasNode.
  *
  * @author Franco Barpp Gomes (UTFPR)
  */
@@ -9,6 +9,7 @@ define( require => {
     'use strict';
   
     // modules
+
     const Bounds2 = require( 'DOT/Bounds2' );
     const CanvasNode = require( 'SCENERY/nodes/CanvasNode' );
     const inherit = require( 'PHET_CORE/inherit' );
@@ -16,6 +17,7 @@ define( require => {
     const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' )
   
     // constants
+
     const RIGHT_WALL_PADDING = 25;
     const X_LEN = 100;
 
@@ -53,7 +55,7 @@ define( require => {
     return inherit( CanvasNode, ModeGraphCanvasNode, {
   
       /**
-       * Paints the potential energy curve.
+       * Paints the normal mode graph.
        * @param {CanvasRenderingContext2D} context
        * @public
        */
@@ -81,7 +83,6 @@ define( require => {
           context.lineTo( this.graphStart.x + i * this.xStep, this.curveYPositions[ i ] + this.graphStart.y );
         }
         
-        // it's not pretty, but it works
         context.lineTo( this.graphStart.x + this.graphSize.width, this.graphStart.y );
         context.stroke();
 
@@ -105,7 +106,7 @@ define( require => {
         for ( let i = 0; i < this.curveYPositions.length; i++ ) {
           const x = i / X_LEN;
         
-          // Franco put a negative sign in front of it because of y coordinate stuff
+          // put a negative sign in front of it because of y coordinate stuff
           this.curveYPositions[ i ] = - ( 2 * this.graphSize.height / 3 ) * ( amp * Math.sin( x * ( n + 1 ) * Math.PI ) * Math.cos( freq * time - phase ) ) / OneDimensionConstants.MAX_MODE_AMPLITUDE;
         }
 

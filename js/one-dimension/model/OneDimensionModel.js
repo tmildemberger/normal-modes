@@ -1,7 +1,7 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * @author UTFPR
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
  */
 define( require => {
   'use strict';
@@ -12,14 +12,15 @@ define( require => {
   const Enumeration = require( 'PHET_CORE/Enumeration' );
   const EnumerationProperty = require( 'AXON/EnumerationProperty' );
   const Mass = require( 'NORMAL_MODES/common/model/Mass' );
+  const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const NumberProperty = require( 'AXON/NumberProperty' );
   const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
   const Spring = require( 'NORMAL_MODES/common/model/Spring' );
   const Vector2 = require( 'DOT/Vector2' );
 
-  const MAX_VISIBLE_MASSES = 10;
-  const MAX_MASSES = MAX_VISIBLE_MASSES + 2; // tem as imoveis das pontas tb - Franco
+  // counting the static masses on the edges
+  const MAX_MASSES = NormalModesConstants.MAX_MASSES_ROW_LEN + 2;
   const MAX_SPRINGS = MAX_MASSES - 1;
 
   class OneDimensionModel {
@@ -73,10 +74,10 @@ define( require => {
       // @public {number} Accumulated delta-time
       this.dt = 0;
       
-      this.modeAmplitudeProperty = new Array( MAX_VISIBLE_MASSES );
-      this.modePhaseProperty = new Array( MAX_VISIBLE_MASSES );
-      this.modeFrequencyProperty = new Array( MAX_VISIBLE_MASSES );
-      for ( let i = 0; i < MAX_VISIBLE_MASSES; i++ ) {
+      this.modeAmplitudeProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      this.modePhaseProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      this.modeFrequencyProperty = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
+      for ( let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
         this.modeAmplitudeProperty[ i ] = new NumberProperty( OneDimensionConstants.INIT_MODE_AMPLITUDE, {
           tandem: tandem.createTandem( 'modeAmplitudeProperty' + i ),
           range: new Range( OneDimensionConstants.MIN_MODE_AMPLITUDE, Number.POSITIVE_INFINITY ) 
@@ -155,7 +156,7 @@ define( require => {
      * @private
      */
     changedDirectionOfMotion( directionOfMotion ) {
-      for ( let i = 1; i <= MAX_VISIBLE_MASSES; i++ ) {
+      for ( let i = 1; i <= NormalModesConstants.MAX_MASSES_ROW_LEN; i++ ) {
         const oldX = this.masses[ i ].displacementProperty.get().x;
         const oldY = this.masses[ i ].displacementProperty.get().y;
         const oldVelocityX = this.masses[ i ].velocityProperty.get().x;
@@ -203,7 +204,7 @@ define( require => {
      * @public
      */
     resetNormalModes() {
-      for(let i = 0; i < MAX_VISIBLE_MASSES; i++) {
+      for(let i = 0; i < NormalModesConstants.MAX_MASSES_ROW_LEN; i++) {
         this.modeAmplitudeProperty[ i ].reset();
         this.modePhaseProperty[ i ].reset();
       }
@@ -237,12 +238,6 @@ define( require => {
       this.timeProperty.reset();
 
       this.setExactPositions();
-
-      // for(let i = 0; i < MAX_MASSES; i++) {
-      //   this.masses[ i ].restoreInitialState();
-      // }
-      
-      // this.computeModeAmplitudesAndPhases();
     }
 
     /**
@@ -407,7 +402,7 @@ define( require => {
      */
     computeModeAmplitudesAndPhases() {
       this.timeProperty.reset();
-      for ( let i = 1; i <= MAX_VISIBLE_MASSES; ++i ) {
+      for ( let i = 1; i <= NormalModesConstants.MAX_MASSES_ROW_LEN; ++i ) {
         this.masses[ i ].initialDisplacementProperty.set( this.masses[ i ].displacementProperty.get() );
         this.masses[ i ].initialVelocityProperty.set( this.masses[ i ].velocityProperty.get() );
       }

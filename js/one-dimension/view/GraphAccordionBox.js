@@ -10,6 +10,7 @@ define( require => {
     'use strict';
   
     // modules
+
     const AccordionBox = require( 'SUN/AccordionBox' );
     const merge = require( 'PHET_CORE/merge' );
     const ModeGraphCanvasNode = require( 'NORMAL_MODES/one-dimension/view/ModeGraphCanvasNode' );
@@ -20,6 +21,7 @@ define( require => {
     const VBox = require( 'SCENERY/nodes/VBox' );
     
     // strings
+
     const normalModeString = require( 'string!NORMAL_MODES/normal-modes.title' );
 
     class GraphAccordionBox extends AccordionBox {
@@ -100,7 +102,10 @@ define( require => {
           graphContainer.children = normalModeGraphs.slice( 0, numMasses );
           graphContainer.children.forEach( ( graph ) => graph.update() );
 
-          // both layout and _showTitleWhenExpanded should be private, but i don't know if there's a better way to do this
+          // Both layout and _showTitleWhenExpanded should be private,
+          // but I don't know if there's a better way to do this transition
+          // effect.
+
           self._showTitleWhenExpanded = ( numMasses <= 8 );
           if ( isExpanded ) {
             titleNode.visible = self._showTitleWhenExpanded;
@@ -118,11 +123,7 @@ define( require => {
        * @public
        */
       reset() {
-        // for ( let i = 0; i < normalModeGraphs.length; i++ ) {
-        //   normalModeGraphs[ i ].update();
-        // }
-        // os gráficos já vão ser atualizados por causa do reset do model
-        // além disso, normalModeGraphs não existe aqui - Thiago
+        // NO-OP
       }
   
     }

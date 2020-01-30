@@ -12,7 +12,6 @@ define( require => {
     const Bounds2 = require( 'DOT/Bounds2' );
     const CanvasNode = require( 'SCENERY/nodes/CanvasNode' );
     const inherit = require( 'PHET_CORE/inherit' );
-    const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' )
   
@@ -37,7 +36,7 @@ define( require => {
       this.curveYPositions = new Array( X_LEN );  // @private
       
       this.strokeColor        = options.strokeColor        || 'blue'; // @private
-      this.refLineStrokeColor = options.refLineStrokeColor || 'black';
+      this.refLineStrokeColor = options.refLineStrokeColor || 'black'; // @private
       
       this.xRatio = options.graphSize.width; // @private
       
@@ -49,12 +48,13 @@ define( require => {
     return inherit( CanvasNode, StaticModeGraphCanvasNode, {
   
       /**
-       * Paints the potential energy curve.
+       * Paints the static normal mode graph.
        * @param {CanvasRenderingContext2D} context
        * @public
        */
       paintCanvas: function( context ) {
 
+        // draw reference line
         context.beginPath();
         context.strokeStyle = this.refLineStrokeColor;
         context.lineWidth = 2;
@@ -62,12 +62,12 @@ define( require => {
         context.lineTo( this.graphStart.x + this.graphSize.width, this.graphStart.y );
         context.stroke();
 
+        // plot
         context.beginPath();
         context.moveTo( this.graphStart.x, this.graphStart.y );
         for ( let i = 1; i < this.curveYPositions.length; i++ ) {
           context.lineTo( this.graphStart.x + i * this.xStep, this.curveYPositions[ i ] + this.graphStart.y );
         }
-        // it's not pretty, but it works
         context.lineTo( this.graphStart.x + this.graphSize.width, this.graphStart.y );
 
         context.strokeStyle = this.strokeColor;
@@ -86,7 +86,7 @@ define( require => {
         for ( let i = 0; i < this.curveYPositions.length; i++ ) {
           const x = i / X_LEN;
         
-          // Franco put a negative sign in front of it because of y coordinate stuff
+          // put a negative sign in front of it because of y coordinate stuff
           this.curveYPositions[ i ] = - ( 2 * this.graphSize.height / 3 ) * ( amp * Math.sin( x * ( n + 1 ) * Math.PI ) * Math.cos( freq * time - phase ) ) / OneDimensionConstants.MAX_MODE_AMPLITUDE;
         }
 

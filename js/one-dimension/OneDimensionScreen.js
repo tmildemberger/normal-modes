@@ -1,7 +1,8 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * @author UTFPR
+ * @author Franco Barpp Gomes (UTFPR)
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
  */
 define( require => {
     'use strict';

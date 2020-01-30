@@ -3,7 +3,8 @@
 /**
  * Constants used in multiple locations within this simulation.
  *
- * @author UTFPR
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
+ * @author Franco Barpp Gomes (UTFPR)
  */
 define( require => {
   'use strict';
@@ -23,7 +24,7 @@ define( require => {
 
     MIN_MODE_AMPLITUDE: 0,
     INIT_MODE_AMPLITUDE: 0,
-    MAX_MODE_AMPLITUDE: .2, /* TODO experimentar e trocar como necessario Franco */
+    MAX_MODE_AMPLITUDE: .2,
 
     MIN_MODE_PHASE: -Math.PI,
     INIT_MODE_PHASE: 0,
@@ -38,7 +39,6 @@ define( require => {
     FPS: 60,
     FIXED_DT: 1 / 60
 
-    //TODO
   };
 
   return normalModes.register( 'OneDimensionConstants', OneDimensionConstants );

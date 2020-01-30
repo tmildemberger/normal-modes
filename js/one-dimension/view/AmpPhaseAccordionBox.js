@@ -110,21 +110,7 @@ define( require => {
             scale: 0
           }
         }
-        
-        // majorTicks: [ 
-        //   { 
-        //     value: OneDimensionConstants.MIN_MODE_PHASE,
-        //     label: new Text( "-\u03C0", { font: NormalModesConstants.GENERAL_FONT } ) 
-        //   },
-        //   { 
-        //     value: OneDimensionConstants.INIT_MODE_PHASE,
-        //     label: new Text( "0", { font: NormalModesConstants.GENERAL_FONT } ) 
-        //   },
-        //   { 
-        //     value: OneDimensionConstants.MAX_MODE_PHASE,
-        //     label: new Text( "\u03C0", { font: NormalModesConstants.GENERAL_FONT } ) 
-        //   },
-        // ]
+
         const phaseSliderOptions = {
           delta: 0.01,
           sliderOptions: {
@@ -175,7 +161,8 @@ define( require => {
 
           const freq = model.modeFrequencyProperty[ i ].get() / Math.sqrt( k / m );
           frequencyText[i] = new Text(
-            `${ freq.toFixed( 2 ) }\u03C9\u2080`,
+            // freq-omega-subscript0
+            `${ freq.toFixed( 2 ) }\u03C9\u2080`, 
             { font: NormalModesConstants.SMALL_FONT, maxWidth: 60 }
           );
 
@@ -224,44 +211,12 @@ define( require => {
           { font: NormalModesConstants.CONTROL_FONT, maxWidth: 120 }
         );
         
-        /* some ugly stuff, i don't know of a better way to do those different spacings */
-        // panelColumns[ 0 ] = new VBox( {
-        //   top: 5,
-        //   spacing: 60,
-        //   align: 'center',
-        //   children: [ normalModeLabel, new VBox( {
-        //     spacing: 110,
-        //     align: 'center',
-        //     children: [ amplitudeLabel, phaseLabel ]
-        //   } ), frequencyLabel ]
-        // } );
-        // children: [ normalModeLabel, amplitudeLabel, frequencyLabel, phaseLabel ]
-        
         for ( let i = 1; i < panelColumns.length; i++) {
           panelColumns[ i ] = new VBox( {
             spacing: 5,
             align: 'center'
           } );
         }
-
-        // normalModeLabel.center = modeLabels[ 0 ].center;
-        // amplitudeLabel.center = ampSliders[ 0 ].center;
-        // frequencyLabel.center = frequencyText[ 0 ].center;
-        // phaseLabel.center = phaseSliders[ 0 ].center;
-
-        // normalModeLabel.centerY = modeLabels[ 0 ].centerY;
-        // amplitudeLabel.centerY = ampSliders[ 0 ].centerY;
-        // frequencyLabel.centerY = frequencyText[ 0 ].centerY;
-        // phaseLabel.centerY = phaseSliders[ 0 ].centerY;
-        // panelColumns[ 0 ] = new Node( {
-        //   children: ( model.phasesVisibilityProperty.get() ) ?
-        //   [ normalModeLabel, amplitudeLabel, frequencyLabel, phaseLabel ] :
-        //   [ normalModeLabel, amplitudeLabel, frequencyLabel]
-        // } );
-        // normalModeLabel.right = panelColumns[ 0 ].right;
-        // amplitudeLabel.right = panelColumns[ 0 ].right;
-        // frequencyLabel.right = panelColumns[ 0 ].right;
-        // phaseLabel.right = panelColumns[ 0 ].right;
 
         panelColumns[ 0 ] = new Node( {
           children: [ new Line( 0, 0, 10, 10 ) ]
@@ -270,15 +225,12 @@ define( require => {
         const lineSeparator = new Line( 0, 0, 0, 0, {
           stroke: 'gray'
         } );
-        // contentNode.children.push( new Line( 0, 0, 0, 100, { stroke: 'gray' } ) );
 
-        // spacing: -10,
         const contentNode = new HBox( {
           spacing: 10,
           align: 'center',
           children: panelColumns.slice( 0, model.numVisibleMassesProperty.get() + 1 )
         } );
-        // contentNode.children.push( new Line( 0, 0, 0, 100, { stroke: 'gray' } ) );
 
         const RADIO_BUTTON_ICON_SIZE = 45;
         const iconSize = RADIO_BUTTON_ICON_SIZE;
@@ -314,7 +266,6 @@ define( require => {
         super( contentNode, options );
 
         const self = this;
-        // console.log( this );
         
         model.phasesVisibilityProperty.link( function( phasesVisibility ) {
           for ( let i = 1; i < panelColumns.length; ++i ) {
@@ -331,9 +282,7 @@ define( require => {
 
           panelColumns[ 0 ].children = ( phasesVisibility ) ?
                                        [ strut, normalModeLabel, amplitudeLabel, frequencyLabel, phaseBox ] :
-                                       [ strut, normalModeLabel, amplitudeLabel, frequencyLabel];
-                                      
-          //
+                                       [ strut, normalModeLabel, amplitudeLabel, frequencyLabel ];
 
           normalModeLabel.centerY = modeLabels[ 0 ].centerY;
           amplitudeLabel.centerY = ampSliders[ 0 ].centerY;
@@ -367,40 +316,13 @@ define( require => {
 
         } );
 
-        // model.phasesVisibilityProperty.link(
-        //   function() {
-        //     if( model.phasesVisibilityProperty.get() ) {
-        //       contentNode.spacing = -10;
-        //       panelColumns[ 0 ].children[ 1 ].children = [ amplitudeLabel, phaseBox ];
-        //       panelColumns[ 0 ].spacing = 62.5;
-
-        //       for(let i = 0; i < panelColumns.length - 1; i++) {
-        //         panelColumns[ i + 1 ].children = [ modeLabels[ i ],
-        //          ampSliders[ i ], phaseSliders[ i ], frequencyText[ i ] ];
-        //       }
-        //     }
-        //     else {
-        //       contentNode.spacing = 10;
-        //       panelColumns[ 0 ].children[ 1 ].children = [ amplitudeLabel ];
-        //       panelColumns[ 0 ].spacing = 60;
-              
-        //       for(let i = 0; i < panelColumns.length - 1; i++) {
-        //         panelColumns[ i + 1 ].children = [ modeLabels[ i ],
-        //          ampSliders[ i ], frequencyText[ i ] ];
-        //       }
-        //     }
-
-        //     self.centerX = options.centerX;
-        //   }
-        // )
-
       }
   
       /**
        * @public
        */
       reset() {
-        
+        // NO-OP
       }
   
     }

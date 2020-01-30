@@ -1,25 +1,23 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * @author UTFPR
+ * @author Franco Barpp Gomes (UTFPR)
+ * @author Thiago de Mendonça Mildemberger (UTFPR)
  */
 define( require => {
   'use strict';
 
   // modules
-  const AccordionBox = require( 'SUN/AccordionBox' );
   const AmpPhaseAccordionBox = require( 'NORMAL_MODES/one-dimension/view/AmpPhaseAccordionBox' );
   const GraphAccordionBox = require( 'NORMAL_MODES/one-dimension/view/GraphAccordionBox' );
   const MassNode1D = require( 'NORMAL_MODES/one-dimension/view/MassNode1D' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
-  const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
   const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
   const OptionsPanel = require( 'NORMAL_MODES/common/view/OptionsPanel' );
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   const ScreenView = require( 'JOIST/ScreenView' );
   const SpringNode = require( 'NORMAL_MODES/common/view/SpringNode' );
-  const VBox = require( 'SCENERY/nodes/VBox' );
   const Vector2 = require( 'DOT/Vector2' );
   const WallNode = require( 'NORMAL_MODES/one-dimension/view/WallNode' );
 
