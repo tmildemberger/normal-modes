@@ -26,7 +26,7 @@ define( require => {
      * @param {OneDimensionModel} model
      * @param {Tandem} tandem
      */
-    constructor( mass, modelViewTransform, model, oneDimension, tandem ) {
+    constructor( mass, modelViewTransform, model, tandem ) {
       super( { cursor: 'pointer' } );
 
       const self = this;
@@ -98,7 +98,7 @@ define( require => {
      * @public
      */
     reset() {
-      // TODO
+      // NO-OP
     }
     
   }

@@ -9,13 +9,11 @@ define( require => {
   // modules
 
   const DerivedProperty = require( 'AXON/DerivedProperty' );
-  const Line = require( 'SCENERY/nodes/Line' );
   const Node = require( 'SCENERY/nodes/Node' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
   const Path = require( 'SCENERY/nodes/Path' );
   const Property = require( 'AXON/Property' );
   const Shape = require( 'KITE/Shape' );
-  const Vector2 = require( 'DOT/Vector2' );
 
   class SpringNode extends Node {
 
@@ -47,8 +45,10 @@ define( require => {
         return mySpringVisible && springsVisible;
       } );
 
+      // @private {Shape} shape of the spring path
       this.springShape = new Shape().moveTo( 0, 0 ).lineTo( 1, 0 );
       
+      // @private {Path} line path that represents a string
       this.line = new Path( this.springShape, {
         preventFit: true,
         boundsMethod: 'none',
@@ -86,7 +86,7 @@ define( require => {
      * @public
      */
     reset() {
-      // TODO
+      // NO-OP
     }
     
   }

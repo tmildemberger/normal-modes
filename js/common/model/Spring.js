@@ -8,7 +8,6 @@ define( require => {
 
   // modules
 
-  const BooleanProperty = require( 'AXON/BooleanProperty' );
   const DerivedProperty = require( 'AXON/DerivedProperty' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
 
@@ -26,7 +25,7 @@ define( require => {
     
       // @public {Property.<boolean>} determines the visibility of the spring
       this.visibilityProperty = new DerivedProperty ( [ this.leftMass.visibilityProperty, this.rightMass.visibilityProperty ], function( leftVisible, rightVisible ) {
-        return leftVisible; // && rightVisible; chuncho
+        return leftVisible;
       } );
       
     }

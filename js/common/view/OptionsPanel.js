@@ -17,7 +17,6 @@ define( require => {
     // modules
     const Checkbox = require( 'SUN/Checkbox' );
     const HBox = require( 'SCENERY/nodes/HBox' );
-    const inherit = require( 'PHET_CORE/inherit' );
     const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
@@ -68,9 +67,6 @@ define( require => {
           model.springsVisibilityProperty
         );
 
-        // TODO
-        // ver se tem um jeito melhor de fazer isso
-
         let showPhasesCheckbox = null;
         let checkboxes = null;
 
@@ -90,7 +86,7 @@ define( require => {
             ]
           });
         }
-        else { /* model.phasesVisibilityProperty */
+        else { /* !doShowPhases */
           checkboxes = new VBox( { 
             spacing: 15,
             children: [
@@ -99,18 +95,13 @@ define( require => {
           })
         }
 
-        // TODO - Franco
-        // To passando o model como parametro,
-        // mas seria bom tirar dps e talvez mandar
-        // so os callbacks, to pensando em um jeito
-
         const playPauseButtonOptions = {
-          upFill: NormalModesConstants.blueUpColor,
-          overFill: NormalModesConstants.blueOverColor,
-          disabledFill: NormalModesConstants.blueDisabledColor,
-          downFill: NormalModesConstants.blueDownColor,
-          backgroundGradientColorStop0: NormalModesConstants.buttonBorder0,
-          backgroundGradientColorStop1: NormalModesConstants.buttonBorder1,
+          upFill: NormalModesConstants.BLUE_BTN_UP_COLOR,
+          overFill: NormalModesConstants.BLUE_BTN_OVER_COLOR,
+          disabledFill: NormalModesConstants.BLUE_BTN_DISABLED_COLOR,
+          downFill: NormalModesConstants.BLUE_BTN_DOWN_COLOR,
+          backgroundGradientColorStop0: NormalModesConstants.BLUE_BTN_BORDER_0,
+          backgroundGradientColorStop1: NormalModesConstants.BLUE_BTN_BORDER_1,
           innerButtonLineWidth: 1
         };
 
@@ -225,7 +216,6 @@ define( require => {
           numVisibleMassesControlOptions
         );
 
-        // vertical layout
         const contentNode = new VBox( {
           spacing: 15,
           align: 'center',
@@ -246,7 +236,7 @@ define( require => {
        * @public
        */
       reset() {
-        
+        // NO-OP
       }
   
     }
