@@ -77,7 +77,7 @@ define( require => {
       };
 
       this.dragListener = new DragListener( {
-        applyOffset: false,
+        applyOffset: true,
         start: this.startCallback,
         drag: this.dragCallback,
         end: this.endCallback,

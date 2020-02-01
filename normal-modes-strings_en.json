@@ -29,6 +29,9 @@
   "options-panel.slow": {
     "value": "slow"
   },
+  "options-panel.normal": {
+    "value": "normal"
+  },
   "options-panel.fast": {
     "value": "fast"
   },

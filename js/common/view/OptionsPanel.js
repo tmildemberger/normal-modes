@@ -16,6 +16,7 @@ define( require => {
   
     // modules
     const Checkbox = require( 'SUN/Checkbox' );
+    const Dimension2 = require( 'DOT/Dimension2' );
     const HBox = require( 'SCENERY/nodes/HBox' );
     const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
@@ -30,10 +31,12 @@ define( require => {
     const Text = require( 'SCENERY/nodes/Text' );
     const TextPushButton = require( 'SUN/buttons/TextPushButton' );
     const VBox = require( 'SCENERY/nodes/VBox' );
+    const VStrut = require( 'SCENERY/nodes/VStrut' );
 
     // strings
     const speedString = require( 'string!NORMAL_MODES/options-panel.speed' );
     const slowString = require( 'string!NORMAL_MODES/options-panel.slow' );
+    const normalString = require( 'string!NORMAL_MODES/options-panel.normal' );
     const fastString = require( 'string!NORMAL_MODES/options-panel.fast' );
     const showSpringsString = require( 'string!NORMAL_MODES/options-panel.show-springs' );
     const showPhasesString = require( 'string!NORMAL_MODES/options-panel.show-phases' );
@@ -58,28 +61,24 @@ define( require => {
           - springsVisibilityProperty
           - phasesVisibilityProperty (if 1D)
         */
-
-        const showSpringsCheckbox = new Checkbox(
-          new Text( showSpringsString, {
-            font: NormalModesConstants.GENERAL_FONT,
-            maxWidth: 140
-          } ),
-          model.springsVisibilityProperty
-        );
-
+       
+        // TODO - create text on a separate line
+        const showSpringsCheckbox = new Checkbox( new Text( showSpringsString, { font: NormalModesConstants.GENERAL_FONT } ), model.springsVisibilityProperty, {
+          boxWidth: 16
+        } );
+        showSpringsCheckbox.touchArea = showSpringsCheckbox.localBounds.dilatedXY( 10, 6 );
+        
         let showPhasesCheckbox = null;
         let checkboxes = null;
-
+        
+        // maxWidth: 140
         if( doShowPhases ) {
-          showPhasesCheckbox = new Checkbox(
-            new Text( showPhasesString, {
-              font: NormalModesConstants.GENERAL_FONT,
-              maxWidth: 140
-            } ),
-            model.phasesVisibilityProperty
-          );
+          showPhasesCheckbox = new Checkbox( new Text( showPhasesString, { font: NormalModesConstants.GENERAL_FONT, } ), model.phasesVisibilityProperty, {
+            boxWidth: 16
+          } );
+          showPhasesCheckbox.touchArea = showPhasesCheckbox.localBounds.dilatedXY( 10, 6 );
           checkboxes = new VBox( { 
-            spacing: 15,
+            spacing: 7,
             children: [
               showSpringsCheckbox,
               showPhasesCheckbox
@@ -88,7 +87,7 @@ define( require => {
         }
         else { /* !doShowPhases */
           checkboxes = new VBox( { 
-            spacing: 15,
+            spacing: 7,
             children: [
               showSpringsCheckbox
             ]
@@ -105,40 +104,49 @@ define( require => {
           innerButtonLineWidth: 1
         };
 
+        // scale: 0.8,
         const playPauseButton = new PlayPauseButton( model.playingProperty, {
-          scale: 0.8,
+          radius: 18,
           scaleFactorWhenPaused: 1.15,
-          touchAreaDilation: 12,
+          touchAreaDilation: 18,
           pauseOptions: playPauseButtonOptions,
           playOptions: playPauseButtonOptions
         } );
 
         const stepButton = new StepForwardButton( {
+          radius: 18,
+          touchAreaDilation: 15,
           isPlayingProperty: model.playingProperty,
           listener: function() { model.singleStep( OneDimensionConstants.FIXED_DT ); },
         } );
 
+        const strut = new VStrut( playPauseButton.height * 1.15 );
+
         const playAndStepButtons = new HBox( {
-          spacing: 15,
+          spacing: 7,
           align: 'center',
           children: [
             playPauseButton,
+            strut,
             stepButton
           ]
         } );
 
+        // maxWidth: 250,
         const textButtonsOptions = {
-          font: NormalModesConstants.CONTROL_FONT,
+          font: NormalModesConstants.GENERAL_FONT,
           baseColor: 'hsl(210,0%,85%)',
-          maxWidth: 250,
 
           touchAreaXDilation: 10,
-          touchAreaYDilation: 20,
+          touchAreaYDilation: 16,
+          touchAreaYShift: 6,
           mouseAreaXDilation: 5,
           mouseAreaYDilation: 5,
 
           buttonAppearanceStrategy: RectangularButtonView.FlatAppearanceStrategy,
-          lineWidth: 2,
+          lineWidth: 1.5,
+          xMargin: 11,
+          yMargin: 3,
           stroke: '#202020'
         };
 
@@ -152,32 +160,76 @@ define( require => {
           listener: model.zeroPositions.bind(model)
         }, textButtonsOptions ) );
 
+        const createLayoutFunction5 = function( options ) {
+
+          options = merge( {
+            align: 'center', // {string} horizontal alignment of rows, 'left'|'right'|'center'
+            titleXSpacing: 5, // {number} horizontal spacing between title and number
+            arrowButtonsXSpacing: 15, // {number} horizontal spacing between arrow buttons and slider
+            ySpacing: 3 // {number} vertical spacing between rows
+          }, options );
+    
+          return ( titleNode, numberDisplay, slider, leftArrowButton, rightArrowButton ) => {
+            const includeArrowButtons = !!leftArrowButton; // if there aren't arrow buttons, then exclude them
+            return new VBox( {
+              align: options.align,
+              spacing: options.ySpacing,
+              children: [
+                new HBox( {
+                  spacing: options.titleXSpacing,
+                  children: [ titleNode, numberDisplay ]
+                } ),
+                new HBox( {
+                  spacing: options.arrowButtonsXSpacing,
+                  resize: false, // prevent slider from causing a resize when thumb is at min or max
+                  children: !includeArrowButtons ? [ slider ] : [
+                    leftArrowButton,
+                    slider,
+                    rightArrowButton
+                  ]
+                } )
+              ]
+            } );
+          };
+        };
+
         const speedControlOptions = {
           delta: OneDimensionConstants.DELTA_SPEED,
+          layoutFunction: createLayoutFunction5(),
+          includeArrowButtons: false,
           sliderOptions: {
+            trackSize: new Dimension2( 150, 3 ),
+            thumbSize: new Dimension2( 11, 19 ),
+            thumbTouchAreaXDilation: 12,
+            thumbTouchAreaYDilation: 15,
+            majorTickLength: 10,
+            minorTickLength: 5,
             majorTicks: [ 
               { 
                 value: OneDimensionConstants.MIN_SPEED,
-                label: new Text( slowString, { font: NormalModesConstants.GENERAL_FONT } ) 
+                label: new Text( slowString, { font: NormalModesConstants.REALLY_SMALL_FONT } ) 
+              },
+              { 
+                value: OneDimensionConstants.INIT_SPEED,
+                label: new Text( normalString, { font: NormalModesConstants.REALLY_SMALL_FONT } ) 
               },
               { 
                 value: OneDimensionConstants.MAX_SPEED,
-                label: new Text( fastString, { font: NormalModesConstants.GENERAL_FONT } ) 
+                label: new Text( fastString, { font: NormalModesConstants.REALLY_SMALL_FONT } ) 
               },
             ],
             minorTickSpacing: OneDimensionConstants.DELTA_SPEED,
           },
-          arrowButtonOptions: {
-            scale: 0
-          },
           titleNodeOptions: {
-            font: NormalModesConstants.CONTROL_FONT
+            font: NormalModesConstants.GENERAL_FONT
           },
           numberDisplayOptions: {
-            font: NormalModesConstants.CONTROL_FONT,
             scale: 0
           }
         }
+                          // arrowButtonOptions: {
+                          //   scale: 0
+                          // },
 
         const speedControl = new NumberControl(
           speedString,
@@ -188,22 +240,32 @@ define( require => {
           speedControlOptions
         );
 
+        const temp = new VBox( {
+          align: 'center',
+          children: [ playAndStepButtons, speedControl ]
+        } );
+
         const numVisibleMassesControlOptions = {
+          layoutFunction: createLayoutFunction5(),
+          includeArrowButtons: false,
           sliderOptions: {
+            trackSize: new Dimension2( 150, 3 ),
+            thumbSize: new Dimension2( 11, 19 ),
+            thumbTouchAreaXDilation: 12,
+            thumbTouchAreaYDilation: 15,
+            majorTickLength: 10,
+            minorTickLength: 5,
             majorTicks: [ 
               { value: NormalModesConstants.MIN_MASSES_ROW_LEN, label: "" },
               { value: NormalModesConstants.MAX_MASSES_ROW_LEN, label: "" },
             ],
             minorTickSpacing: NormalModesConstants.MIN_MASSES_ROW_LEN
           },
-          arrowButtonOptions: {
-            scale: 0
-          },
           titleNodeOptions: {
-            font: NormalModesConstants.CONTROL_FONT
+            font: NormalModesConstants.GENERAL_FONT
           },
           numberDisplayOptions: {
-            font: NormalModesConstants.CONTROL_FONT,
+            font: NormalModesConstants.GENERAL_FONT
           }
         }
 
@@ -217,11 +279,10 @@ define( require => {
         );
 
         const contentNode = new VBox( {
-          spacing: 15,
+          spacing: 7,
           align: 'center',
           children: [
-            playAndStepButtons,
-            speedControl,
+            temp,
             initialPositionsButton,
             zeroPositionsButton,
             numVisibleMassesControl,

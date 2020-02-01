@@ -39,7 +39,7 @@ define( require => {
       this.normalModeNum   = options.normalModeNum; // @private {Number} - 0 to 9 (representing 1 to 10)
       this.curveYPositions = new Array( X_LEN ); // @private
       
-      this.strokeColor = options.strokeColor || 'black'; // @private
+      this.strokeColor = options.strokeColor || 'blue'; // @private
       this.wallColor   = options.wallColor   || 'black'; // @private
       
       this.textColor = options.textColor || 'black'; // @private

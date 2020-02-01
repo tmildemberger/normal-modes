@@ -39,7 +39,7 @@ define( require => {
       // @public {TwoDimensionsModel}
       this.model = model;
 
-      const viewOrigin = new Vector2( ( this.layoutBounds.maxX - 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN - 420 ) / 2 + 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
+      const viewOrigin = new Vector2( ( this.layoutBounds.maxX - 2 * TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN - 420 ) / 2 + TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
                                       ( this.layoutBounds.maxY - 2 * TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN - 0 ) / 2 + TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN);
 
       // @public {ModelViewTransform2}
@@ -56,15 +56,19 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
+      const panel_colors = {
+        stroke: 'rgb( 190, 190, 190 )',
+        fill: 'rgb( 240, 240, 240 )'
+      };
+
       const optionsPanelOptions = {
-        right: this.layoutBounds.maxX - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN,
+        right: this.layoutBounds.maxX - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 10,
         top: TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: 'rgb( 254, 235, 214 )',
-        xMargin: 10,
-        yMargin: 10,
-        maxWidth: 180,
-        minWidth: 180
+        fill: panel_colors.fill,
+        stroke: panel_colors.stroke,
+        xMargin: 8,
+        yMargin: 8
       };
 
       const optionsPanel = new OptionsPanel(
@@ -106,9 +110,11 @@ define( require => {
 
       const ampSelectorAccordionBoxOptions = {
         left: borderWalls.right + 10,
-        top: optionsPanel.top + optionsPanel.height + 10,
+        // top: optionsPanel.top + optionsPanel.height + 10,
+        bottom: this.layoutBounds.maxY - TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: 'rgb( 254, 235, 214 )',
+        fill: panel_colors.fill,
+        stroke: panel_colors.stroke
       };
 
       const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, model );

@@ -56,7 +56,7 @@ define( require => {
 
         // from Vector Addition
         const PANEL_CORNER_RADIUS = 5;
-        const PANEL_X_MARGIN = 9;
+        const PANEL_X_MARGIN = 10;
         const PANEL_Y_MARGIN = 10;
 
         options = merge( options, {
@@ -227,7 +227,7 @@ define( require => {
         } );
 
         const contentNode = new HBox( {
-          spacing: 10,
+          spacing: 9.8,
           align: 'center',
           children: panelColumns.slice( 0, model.numVisibleMassesProperty.get() + 1 )
         } );

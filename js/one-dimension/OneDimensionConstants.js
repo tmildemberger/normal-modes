@@ -14,8 +14,8 @@ define( require => {
 
   const OneDimensionConstants = {
 
-    SCREEN_VIEW_X_MARGIN: 15,
-    SCREEN_VIEW_Y_MARGIN: 15,
+    SCREEN_VIEW_X_MARGIN: 10,
+    SCREEN_VIEW_Y_MARGIN: 10,
 
     MIN_SPEED: 0.02,
     INIT_SPEED: 1,

@@ -42,8 +42,8 @@ define( require => {
 
         // from Vector Addition
         const PANEL_CORNER_RADIUS = 5;
-        const PANEL_X_MARGIN = 9;
-        const PANEL_Y_MARGIN = 10;
+        const PANEL_X_MARGIN = 7;
+        const PANEL_Y_MARGIN = 8;
 
         const titleNode = new Text( normalModeString, { font: NormalModesConstants.CONTROL_FONT } );
 
@@ -51,7 +51,7 @@ define( require => {
           resize: true,
 
           cornerRadius: PANEL_CORNER_RADIUS,
-          contentXMargin: PANEL_X_MARGIN,
+          contentXMargin: 15,
           contentYMargin: PANEL_Y_MARGIN,
           contentXSpacing: PANEL_X_MARGIN,
           contentYSpacing: 1,
@@ -60,9 +60,9 @@ define( require => {
           titleYMargin: PANEL_Y_MARGIN,
           titleXMargin: PANEL_X_MARGIN,
           titleXSpacing: PANEL_X_MARGIN,
-          titleAlignX: 'left',
+          titleAlignX: 'center',
           expandCollapseButtonOptions: {
-            sideLength: 22,
+            sideLength: 18,
             touchAreaXDilation: 6,
             touchAreaYDilation: 6
           },
@@ -75,12 +75,11 @@ define( require => {
         const normalModeGraphs = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
         for ( let i = 0; i < normalModeGraphs.length; i++ ) {
-          normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, 
-            {
-              normalModeNum: i,
-              graphSize: { width: 90, height: 22 },
-              graphStartX: 25,
-              wallHeight: 8
+          normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, {
+            normalModeNum: i,
+            graphSize: { width: 133, height: 22 },
+            graphStartX: 25,
+            wallHeight: 8
           } );
 
           Property.multilink( [ model.timeProperty, model.modeAmplitudeProperty[ i ], model.modePhaseProperty[ i ] ], function ( time, amp, phase ) {
@@ -89,7 +88,7 @@ define( require => {
         }
 
         const graphContainer = new VBox( { 
-          spacing: 5,
+          spacing: 4.8,
           align: 'center',
           children: normalModeGraphs
         } );
@@ -101,19 +100,6 @@ define( require => {
         Property.multilink( [ model.numVisibleMassesProperty, this.expandedProperty ], function ( numMasses, isExpanded ) { 
           graphContainer.children = normalModeGraphs.slice( 0, numMasses );
           graphContainer.children.forEach( ( graph ) => graph.update() );
-
-          // Both layout and _showTitleWhenExpanded should be private,
-          // but I don't know if there's a better way to do this transition
-          // effect.
-
-          self._showTitleWhenExpanded = ( numMasses <= 8 );
-          if ( isExpanded ) {
-            titleNode.visible = self._showTitleWhenExpanded;
-          }
-          else {
-            titleNode.visible = true;
-          }
-        
           self.layout();
         } );
 

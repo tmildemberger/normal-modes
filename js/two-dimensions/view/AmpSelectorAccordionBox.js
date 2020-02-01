@@ -12,9 +12,11 @@ define( require => {
     // modules
     const AccordionBox = require( 'SUN/AccordionBox' );
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
+    const Color = require( 'SCENERY/util/Color' );
     const DerivedProperty = require( 'AXON/DerivedProperty' );
     const FireListener = require( 'SCENERY/listeners/FireListener' );
     const HBox = require( 'SCENERY/nodes/HBox' );
+    const HStrut = require( 'SCENERY/nodes/HStrut' );
     const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
     const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
@@ -55,7 +57,7 @@ define( require => {
           resize: true,
 
           cornerRadius: PANEL_CORNER_RADIUS,
-          contentXMargin: PANEL_X_MARGIN,
+          contentXMargin: - 24 - 2 * PANEL_X_MARGIN,
           contentYMargin: PANEL_Y_MARGIN,
           contentXSpacing: PANEL_X_MARGIN,
           contentYSpacing: 1,
@@ -133,7 +135,7 @@ define( require => {
           boundsMethod: 'none',
           left: 0,
           top: 0,
-          fill: 'hsl( 31, 95%, 94% )',
+          fill: Color.toColor( options.fill ).colorUtilsBrighter( .6 ),
           rectWidth: selectorRectOptions.rectWidth,
           rectHeight: 0,
           cornerRadius: 2,
@@ -176,7 +178,7 @@ define( require => {
 
           const isNear = function( n1, n2 ) {
             const EPS = 10e-5;
-            return n1 >= ( n2 - EPS ) && n2 <= ( n2 + EPS );
+            return n1 >= ( n2 - EPS ) && n1 <= ( n2 + EPS );
           }
 
           xSelector.addInputListener( new FireListener( {
@@ -205,11 +207,13 @@ define( require => {
           rectHeight: PANEL_SIZE,
           rectWidth: PANEL_SIZE
         } );
-        
+
+        const rightMargin = new HStrut( 15 + PANEL_X_MARGIN );
+
         const contentNode = new HBox( {
-          spacing: 10,
+          spacing: 0,
           align: 'center',
-          children: [ ampSelectorAxisRadioButtonGroup, selectorBox ]
+          children: [ ampSelectorAxisRadioButtonGroup, selectorBox, rightMargin ]
         } );
         
         super( contentNode, options );

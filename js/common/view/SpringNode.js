@@ -25,7 +25,6 @@ define( require => {
      */
     constructor( spring, modelViewTransform, model, tandem ) {
       super( {
-        cursor: 'pointer',
         preventFit: true,
         boundsMethod: 'none',
         pickable: false,

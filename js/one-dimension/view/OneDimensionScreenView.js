@@ -38,11 +38,13 @@ define( require => {
       // @public {OneDimensionModel}
       this.model = model;
 
-      const viewOrigin = new Vector2( ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 + 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
-                                      ( this.layoutBounds.maxY - 2 * OneDimensionConstants.SCREEN_VIEW_Y_MARGIN - 300 ) / 2 + OneDimensionConstants.SCREEN_VIEW_Y_MARGIN);
+      const VIEWBOX_WIDTH = 755 - 8;
+
+      const viewOrigin = new Vector2( VIEWBOX_WIDTH / 2 + OneDimensionConstants.SCREEN_VIEW_X_MARGIN + 4,
+                                      ( this.layoutBounds.maxY - 2 * OneDimensionConstants.SCREEN_VIEW_Y_MARGIN - 300 ) / 2 + OneDimensionConstants.SCREEN_VIEW_Y_MARGIN );
 
       // @public {ModelViewTransform2}
-      this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping( Vector2.ZERO, viewOrigin, ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 );
+      this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping( Vector2.ZERO, viewOrigin, VIEWBOX_WIDTH / 2 );
 
       const resetAllButton = new ResetAllButton( {
         listener: () => {
@@ -55,16 +57,23 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
+      const panel_colors = {
+        stroke: 'rgb( 190, 190, 190 )',
+        fill: 'rgb( 240, 240, 240 )'
+      };
+
       const optionsPanelOptions = {
-        right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 10,
         top: OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: 'rgb( 254, 235, 214 )',
-        xMargin: 10,
-        yMargin: 10,
-        maxWidth: 180,
-        minWidth: 180
+        fill: panel_colors.fill,
+        stroke: panel_colors.stroke,
+        xMargin: 8,
+        yMargin: 8
       };
+      // fill: 'rgb( 254, 235, 214 )',
+      // maxWidth: 180,
+      // minWidth: 180
 
       const optionsPanel = new OptionsPanel(
         optionsPanelOptions,
@@ -75,12 +84,12 @@ define( require => {
       const ampPhaseAccordionBoxOptions = {
         bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: 'rgb( 254, 235, 214 )',
-        xMargin: 10,
-        yMargin: 10,
-        maxWidth: this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240,
-        centerX: ( this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240 ) / 2 + 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN,
+        fill: panel_colors.fill,
+        stroke: panel_colors.stroke,
+        centerX: viewOrigin.x
       };
+      // maxWidth: VIEWBOX_WIDTH
+      // maxWidth: this.layoutBounds.maxX - 2 * OneDimensionConstants.SCREEN_VIEW_X_MARGIN - 240,
 
       const ampPhaseAccordionBox = new AmpPhaseAccordionBox( ampPhaseAccordionBoxOptions, model );
       
@@ -111,9 +120,10 @@ define( require => {
       }
 
       this.graphBox = new GraphAccordionBox( { 
-        top: optionsPanel.bottom + 10,
-        right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 2,
-        fill: 'rgb( 254, 235, 214 )',
+        top: optionsPanel.bottom + 8,
+        right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 10,
+        fill: panel_colors.fill,
+        stroke: panel_colors.stroke
       }, model );
 
       this.addChild( this.graphBox );
