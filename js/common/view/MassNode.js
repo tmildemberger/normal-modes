@@ -1,4 +1,4 @@
-// Copyright 2019, University of Colorado Boulder
+// Copyright 2019-2020, University of Colorado Boulder
 
 /**
  * MassNode is a base class for MassNode1D and MassNode2D, as its drag listeners differ.

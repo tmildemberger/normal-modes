@@ -1,4 +1,4 @@
-// Copyright 2019, University of Colorado Boulder
+// Copyright 2019-2020, University of Colorado Boulder
 
 /**
  * This node draws a normal mode graph. It is based on States of Matter's InteractionPotentialCanvasNode.
