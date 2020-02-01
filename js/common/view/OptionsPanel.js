@@ -71,7 +71,7 @@ define( require => {
         let showPhasesCheckbox = null;
         let checkboxes = null;
         
-        // maxWidth: 140
+        // TODO - refactor
         if( doShowPhases ) {
           showPhasesCheckbox = new Checkbox( new Text( showPhasesString, { font: NormalModesConstants.GENERAL_FONT, } ), model.phasesVisibilityProperty, {
             boxWidth: 16
@@ -104,7 +104,7 @@ define( require => {
           innerButtonLineWidth: 1
         };
 
-        // scale: 0.8,
+        // TODO - magic numbers
         const playPauseButton = new PlayPauseButton( model.playingProperty, {
           radius: 18,
           scaleFactorWhenPaused: 1.15,
@@ -120,6 +120,7 @@ define( require => {
           listener: function() { model.singleStep( OneDimensionConstants.FIXED_DT ); },
         } );
 
+        // TODO - rename
         const strut = new VStrut( playPauseButton.height * 1.15 );
 
         const playAndStepButtons = new HBox( {
@@ -132,7 +133,7 @@ define( require => {
           ]
         } );
 
-        // maxWidth: 250,
+        // TODO - magic numbers
         const textButtonsOptions = {
           font: NormalModesConstants.GENERAL_FONT,
           baseColor: 'hsl(210,0%,85%)',
@@ -227,9 +228,6 @@ define( require => {
             scale: 0
           }
         }
-                          // arrowButtonOptions: {
-                          //   scale: 0
-                          // },
 
         const speedControl = new NumberControl(
           speedString,

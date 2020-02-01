@@ -21,6 +21,7 @@ define( require => {
     const RIGHT_WALL_PADDING = 25;
     const X_LEN = 100;
 
+    // TODO - this should be a class
     /**
      * @param {Model} [model] used to get model properties
      * @param {Object} [options] that can be passed on to the underlying node

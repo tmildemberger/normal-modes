@@ -74,6 +74,7 @@ define( require => {
 
         const normalModeGraphs = new Array( NormalModesConstants.MAX_MASSES_ROW_LEN );
 
+        // TODO - separate the mode number and right align it
         for ( let i = 0; i < normalModeGraphs.length; i++ ) {
           normalModeGraphs[ i ] = new ModeGraphCanvasNode( model, {
             normalModeNum: i,

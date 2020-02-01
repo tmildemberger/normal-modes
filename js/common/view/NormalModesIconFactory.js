@@ -18,6 +18,7 @@ define( require => {
   const Rectangle = require( 'SCENERY/nodes/Rectangle' );
   const Circle = require( 'SCENERY/nodes/Circle' );
   
+  // TODO - Fix 
   const NormalModesIconFactory = {
     
     createOneDimensionScreenIcon() {

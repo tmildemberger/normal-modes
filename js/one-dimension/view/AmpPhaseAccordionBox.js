@@ -38,6 +38,7 @@ define( require => {
     const phaseString = require( 'string!NORMAL_MODES/amp-selector-1d.phase' );
 
     class AmpPhaseAccordionBox extends AccordionBox {
+      // TODO - comment code
   
       /**
        * @param {Object} [options]

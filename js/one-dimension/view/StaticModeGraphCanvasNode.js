@@ -18,6 +18,7 @@ define( require => {
     // constants
     const X_LEN = 100;
 
+    // TODO - this should be a class
     /**
      * @param {Model} [model] used to get model properties
      * @param {Object} [options] that can be passed on to the underlying node

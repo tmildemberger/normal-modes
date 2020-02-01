@@ -17,6 +17,7 @@ define( require => {
   const Vector2 = require( 'DOT/Vector2' );
 
   class MassNode1D extends MassNode {
+    // TODO - comment code
 
     /**
      * @param {Mass} mass

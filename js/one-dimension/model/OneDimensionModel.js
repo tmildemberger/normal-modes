@@ -24,6 +24,7 @@ define( require => {
   const MAX_SPRINGS = MAX_MASSES - 1;
 
   class OneDimensionModel {
+    // TODO - comment code
 
     /**
      * @param {Tandem} tandem

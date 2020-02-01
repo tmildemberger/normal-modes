@@ -57,6 +57,7 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
+      // TODO - move this to some other file
       const panel_colors = {
         stroke: 'rgb( 190, 190, 190 )',
         fill: 'rgb( 240, 240, 240 )'

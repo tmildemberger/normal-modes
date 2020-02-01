@@ -110,7 +110,6 @@ define( require => {
 
       const ampSelectorAccordionBoxOptions = {
         left: borderWalls.right + 10,
-        // top: optionsPanel.top + optionsPanel.height + 10,
         bottom: this.layoutBounds.maxY - TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
         fill: panel_colors.fill,

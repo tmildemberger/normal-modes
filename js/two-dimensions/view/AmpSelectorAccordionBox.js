@@ -229,6 +229,7 @@ define( require => {
           changeSelectorRectProgress( selectorRect, self.ampProperty.get()[ row ][ col ].get() );
         }
 
+        // TODO - refactor everything 
         const selectorsChanged = function ( numMasses ) {
           const rects = selectorBox.children;
 
