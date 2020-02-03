@@ -19,7 +19,7 @@ define( require => {
     // constants
 
     const RIGHT_WALL_PADDING = 25;
-    const X_LEN = 100;
+    const X_LEN = 50;
 
     // TODO - this should be a class
     /**

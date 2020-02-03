@@ -10,25 +10,12 @@ define( require => {
     'use strict';
   
     // modules
-    const AccordionBox = require( 'SUN/AccordionBox' );
-    const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
     const Color = require( 'SCENERY/util/Color' );
-    const DerivedProperty = require( 'AXON/DerivedProperty' );
     const FireListener = require( 'SCENERY/listeners/FireListener' );
-    const HBox = require( 'SCENERY/nodes/HBox' );
-    const HStrut = require( 'SCENERY/nodes/HStrut' );
     const merge = require( 'PHET_CORE/merge' );
     const normalModes = require( 'NORMAL_MODES/normalModes' );
-    const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
-    const RadioButtonGroup = require( 'SUN/buttons/RadioButtonGroup' );
     const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
-    const Text = require( 'SCENERY/nodes/Text' );
     const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
-    const Vector2 = require( 'DOT/Vector2' );
-
-    const PANEL_SIZE = 270;
-    const RECT_GRID_UNITS = 5;
-    const PADDING_GRID_UNITS = 1;
 
     class AmpSelectorRectNode extends Rectangle {
   
@@ -56,7 +43,7 @@ define( require => {
             boundsMethod: 'none',
             left: 0,
             top: 0,
-            fill: Color.toColor( options.fill ).colorUtilsBrighter( .6 ),
+            fill: Color.toColor( 'rgb( 0, 0, 0)' ).colorUtilsBrighter( .6 ),
             rectWidth: 1, /* just a default value */
             rectHeight: 0,
             cornerRadius: 2,

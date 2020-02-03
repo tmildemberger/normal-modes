@@ -13,6 +13,7 @@ define( require => {
   const MassNode1D = require( 'NORMAL_MODES/one-dimension/view/MassNode1D' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
+  const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
   const OneDimensionConstants = require( 'NORMAL_MODES/one-dimension/OneDimensionConstants' );
   const OptionsPanel = require( 'NORMAL_MODES/common/view/OptionsPanel' );
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
@@ -57,24 +58,15 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
-      // TODO - move this to some other file
-      const panel_colors = {
-        stroke: 'rgb( 190, 190, 190 )',
-        fill: 'rgb( 240, 240, 240 )'
-      };
-
       const optionsPanelOptions = {
         right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 10,
         top: OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: panel_colors.fill,
-        stroke: panel_colors.stroke,
+        fill: NormalModesConstants.PANEL_COLORS.fill,
+        stroke: NormalModesConstants.PANEL_COLORS.stroke,
         xMargin: 8,
         yMargin: 8
       };
-      // fill: 'rgb( 254, 235, 214 )',
-      // maxWidth: 180,
-      // minWidth: 180
 
       const optionsPanel = new OptionsPanel(
         optionsPanelOptions,
@@ -85,8 +77,8 @@ define( require => {
       const ampPhaseAccordionBoxOptions = {
         bottom: this.layoutBounds.maxY - OneDimensionConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: panel_colors.fill,
-        stroke: panel_colors.stroke,
+        fill: NormalModesConstants.PANEL_COLORS.fill,
+        stroke: NormalModesConstants.PANEL_COLORS.stroke,
         centerX: viewOrigin.x
       };
       // maxWidth: VIEWBOX_WIDTH
@@ -123,8 +115,8 @@ define( require => {
       this.graphBox = new GraphAccordionBox( { 
         top: optionsPanel.bottom + 8,
         right: this.layoutBounds.maxX - OneDimensionConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 10,
-        fill: panel_colors.fill,
-        stroke: panel_colors.stroke
+        fill: NormalModesConstants.PANEL_COLORS.fill,
+        stroke: NormalModesConstants.PANEL_COLORS.stroke
       }, model );
 
       this.addChild( this.graphBox );

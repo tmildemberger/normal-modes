@@ -91,8 +91,6 @@ define( require => {
           this.curveYPositions[ i ] = - ( 2 * this.graphSize.height / 3 ) * ( amp * Math.sin( x * ( n + 1 ) * Math.PI ) * Math.cos( freq * time - phase ) ) / OneDimensionConstants.MAX_MODE_AMPLITUDE;
         }
 
-        // indicate that this should be repainted during the next paint cycle
-        this.invalidatePaint();
       }
     } );
   } );

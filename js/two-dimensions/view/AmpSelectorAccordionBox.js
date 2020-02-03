@@ -132,6 +132,9 @@ define( require => {
           selectorRects[ i ] = new AmpSelectorRectNode( {
             rectGridSize: RECT_GRID_UNITS,
             paddingGridSize: PADDING_GRID_UNITS,
+            progressRect: {
+              fill: Color.toColor( options.fill ).colorUtilsBrighter( 0.6 )
+            }
           }, model, row, col, ampAxisProperty, maxAmpProperty, gridSizeProperty );
         }
         

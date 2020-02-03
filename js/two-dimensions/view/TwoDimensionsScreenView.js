@@ -14,6 +14,7 @@ define( require => {
   const MassNode2D = require( 'NORMAL_MODES/two-dimensions/view/MassNode2D' );
   const ModelViewTransform2 = require( 'PHETCOMMON/view/ModelViewTransform2' );
   const normalModes = require( 'NORMAL_MODES/normalModes' );
+  const NormalModesConstants = require( 'NORMAL_MODES/common/NormalModesConstants' );
   const OptionsPanel = require( 'NORMAL_MODES/common/view/OptionsPanel' );
   const Rectangle = require( 'SCENERY/nodes/Rectangle' );
   const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
@@ -56,17 +57,12 @@ define( require => {
         tandem: tandem.createTandem( 'resetAllButton' )
       } );
 
-      const panel_colors = {
-        stroke: 'rgb( 190, 190, 190 )',
-        fill: 'rgb( 240, 240, 240 )'
-      };
-
       const optionsPanelOptions = {
         right: this.layoutBounds.maxX - TwoDimensionsConstants.SCREEN_VIEW_X_MARGIN - resetAllButton.width - 10,
         top: TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: panel_colors.fill,
-        stroke: panel_colors.stroke,
+        fill: NormalModesConstants.PANEL_COLORS.fill,
+        stroke: NormalModesConstants.PANEL_COLORS.stroke,
         xMargin: 8,
         yMargin: 8
       };
@@ -112,8 +108,8 @@ define( require => {
         left: borderWalls.right + 10,
         bottom: this.layoutBounds.maxY - TwoDimensionsConstants.SCREEN_VIEW_Y_MARGIN,
         cornerRadius: 5,
-        fill: panel_colors.fill,
-        stroke: panel_colors.stroke
+        fill: NormalModesConstants.PANEL_COLORS.fill,
+        stroke: NormalModesConstants.PANEL_COLORS.stroke
       };
 
       const ampSelectorAccordionBox = new AmpSelectorAccordionBox( ampSelectorAccordionBoxOptions, model );

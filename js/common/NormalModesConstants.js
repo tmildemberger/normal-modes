@@ -48,6 +48,12 @@ define( require => {
   INIT_MASSES_ROW_LEN: 3, // TODO - i would like to change the name of this variable
   MAX_MASSES_ROW_LEN: 10,
 
+  // color scheme for panels in the whole sim
+  PANEL_COLORS: {
+    stroke: 'rgb( 190, 190, 190 )',
+    fill: 'rgb( 240, 240, 240 )'
+  }
+
   };
 
   return normalModes.register( 'NormalModesConstants', NormalModesConstants );
