@@ -38,7 +38,7 @@ define( require => {
           fill: 'rgb( 0, 255, 255 )',
           fillX: 'rgb( 0, 255, 255 )',
           fillY: 'rgb( 0, 0, 255 )',
-          progressRect: {
+          backgroundRect: {
             preventFit: true,
             boundsMethod: 'none',
             left: 0,
@@ -57,8 +57,8 @@ define( require => {
         this.row = row; // @private
         this.col = col; // @private
 
-        this.progressRect = new Rectangle( options.progressRect );
-        this.addChild( this.progressRect );
+        this.backgroundRect = new Rectangle( options.backgroundRect );
+        this.addChild( this.backgroundRect );
 
         const self = this;
 
@@ -66,7 +66,7 @@ define( require => {
           if( model.ampSelectorAxisProperty.get() == axis ) {
             const maxAmp = maxAmpProperty.get();
             const heightFactor = Math.min( 1, amplitude / maxAmp );
-            self.progressRect.rectHeight = self.rectHeight * ( 1 - heightFactor );
+            self.backgroundRect.rectHeight = self.rectHeight * ( 1 - heightFactor );
           }
         }
 
@@ -75,8 +75,8 @@ define( require => {
             self.visible = true;
             self.rectWidth = self.rectHeight = options.rectGridSize * gridSizeProperty.get();
 
-            self.progressRect.rectWidth = self.rectWidth;
-            self.amplitudeChanged( ampAxisProperty.get()[ row ][ col ].get(), model.ampSelectorAxisProperty.get() ); // in fact, the maximum amplitude changed
+            self.backgroundRect.rectWidth = self.rectWidth;
+            self.amplitudeChanged( ampAxisProperty.get()[ row ][ col ].get(), model.ampSelectorAxisProperty.get() );
 
             const gridLeft = options.paddingGridSize + self.col * ( options.paddingGridSize + options.rectGridSize );
             const gridTop = options.paddingGridSize + self.row * ( options.paddingGridSize + options.rectGridSize );

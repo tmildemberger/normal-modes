@@ -15,7 +15,6 @@ define( require => {
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
     const Color = require( 'SCENERY/util/Color' );
     const DerivedProperty = require( 'AXON/DerivedProperty' );
-    const FireListener = require( 'SCENERY/listeners/FireListener' );
     const HBox = require( 'SCENERY/nodes/HBox' );
     const HStrut = require( 'SCENERY/nodes/HStrut' );
     const merge = require( 'PHET_CORE/merge' );
@@ -25,7 +24,6 @@ define( require => {
     const Rectangle = require( 'SCENERY/nodes/Rectangle' );    
     const Text = require( 'SCENERY/nodes/Text' );
     const TwoDimensionsConstants = require( 'NORMAL_MODES/two-dimensions/TwoDimensionsConstants' );
-    const Vector2 = require( 'DOT/Vector2' );
     
     // strings
     const normalModeAmplitudesString = require( 'string!NORMAL_MODES/amp-selector-2d.normal-mode-amplitudes' );
@@ -132,7 +130,7 @@ define( require => {
           selectorRects[ i ] = new AmpSelectorRectNode( {
             rectGridSize: RECT_GRID_UNITS,
             paddingGridSize: PADDING_GRID_UNITS,
-            progressRect: {
+            backgroundRect: {
               fill: Color.toColor( options.fill ).colorUtilsBrighter( 0.6 )
             }
           }, model, row, col, ampAxisProperty, maxAmpProperty, gridSizeProperty );
