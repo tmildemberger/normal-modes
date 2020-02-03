@@ -11,6 +11,7 @@ define( require => {
   
     // modules
     const AccordionBox = require( 'SUN/AccordionBox' );
+    const AmpSelectorRectNode = require( 'NORMAL_MODES/two-dimensions/view/AmpSelectorRectNode' );
     const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
     const Color = require( 'SCENERY/util/Color' );
     const DerivedProperty = require( 'AXON/DerivedProperty' );
@@ -109,169 +110,47 @@ define( require => {
           orientation: 'vertical'
         } );
 
-        /* makes a grid with rectSize = RECT_GRID_UNITS units, padding = PADDING_GRIDE_SIZE units */
-        const getGridSize = function( numMasses ) {
+        const ampAxisProperty = new DerivedProperty( [ model.ampSelectorAxisProperty ], ( selectorAxis ) => {
+          return ( selectorAxis === model.ampSelectorAxis.VERTICAL ) ? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
+        } );
+
+        const maxAmpProperty = new DerivedProperty( [ model.numVisibleMassesProperty ], ( numMasses ) => {
+          return TwoDimensionsConstants.MAX_MODE_AMPLITUDE[ numMasses - 1 ];
+        } );
+
+        const gridSizeProperty = new DerivedProperty( [ model.numVisibleMassesProperty ], ( numMasses ) => {
           return PANEL_SIZE / ( 1 + ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * numMasses );
-        }
+        } );
 
-        const getMaxAmp = function() {
-          return TwoDimensionsConstants.MAX_MODE_AMPLITUDE[ model.numVisibleMassesProperty.get() - 1 ];
-        }
-
-        const selectorRectOptions = {
-          boundsMethod: 'none',
-          left: 0,
-          top: 0,
-          cursor: 'pointer',
-          rectWidth: RECT_GRID_UNITS * getGridSize( model.numVisibleMassesProperty.get() ),
-          rectHeight: RECT_GRID_UNITS * getGridSize( model.numVisibleMassesProperty.get() ),
-          cornerRadius: 2,
-          lineWidth: 1,
-          stroke: '#202020'
-        };
-        
-        const selectorRectProgressOptions = {
-          preventFit: true,
-          boundsMethod: 'none',
-          left: 0,
-          top: 0,
-          fill: Color.toColor( options.fill ).colorUtilsBrighter( .6 ),
-          rectWidth: selectorRectOptions.rectWidth,
-          rectHeight: 0,
-          cornerRadius: 2,
-        };
-
-        const selectorRectXOptions = merge( {
-          fill: 'rgb( 0, 255, 255) ',
-        } , selectorRectOptions);
-        
-        const selectorRectYOptions = merge( {
-          fill: 'rgb( 0, 0, 255) ',
-        } , selectorRectOptions);
-
-        const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN * NormalModesConstants.MAX_MASSES_ROW_LEN;
-
-        const selectorRects = { };
-        selectorRects[ model.ampSelectorAxis.HORIZONTAL ] = new Array( selectorRectsLength );
-        selectorRects[ model.ampSelectorAxis.VERTICAL ] = new Array( selectorRectsLength );
-
-        const changeSelectorRectProgress = function ( selectorRect, amplitude ) {
-          const progress = selectorRect.children[ 0 ];
-
-          const maxAmp = getMaxAmp();
-          const heightFactor = ( amplitude > maxAmp )? 1 : amplitude / maxAmp;
-          progress.rectHeight = selectorRect.rectHeight * ( 1 - heightFactor );
-          // progress.bottom = selectorRect.rectHeight;
-        }
+        const selectorRectsLength = NormalModesConstants.MAX_MASSES_ROW_LEN ** 2;
+        const selectorRects = new Array( selectorRectsLength );
 
         for ( let i = 0; i < selectorRectsLength; i++ ) {
-          selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ] = new Rectangle( selectorRectXOptions );
-          selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ] = new Rectangle( selectorRectYOptions );
-
           const row = Math.trunc( i / NormalModesConstants.MAX_MASSES_ROW_LEN );
           const col = i % NormalModesConstants.MAX_MASSES_ROW_LEN;
 
-          const xSelector = selectorRects[ model.ampSelectorAxis.HORIZONTAL ][ i ];
-          const ySelector = selectorRects[ model.ampSelectorAxis.VERTICAL ][ i ];
-          xSelector.addChild( new Rectangle( selectorRectProgressOptions ) );
-          ySelector.addChild( new Rectangle( selectorRectProgressOptions ) );
-
-          const isNear = function( n1, n2 ) {
-            const EPS = 10e-5;
-            return n1 >= ( n2 - EPS ) && n1 <= ( n2 + EPS );
-          }
-
-          xSelector.addInputListener( new FireListener( {
-            fire: () => {
-              const amp = model.modeXAmplitudeProperty[ row ][ col ];
-              amp.set( isNear( amp.get(), getMaxAmp() ) ? TwoDimensionsConstants.MIN_MODE_AMPLITUDE : getMaxAmp() );
-            }
-          } ) )
-          ySelector.addInputListener( new FireListener( {
-            fire: () => {
-              const amp = model.modeYAmplitudeProperty[ row ][ col ];
-              amp.set( isNear( amp.get(), getMaxAmp() ) ? TwoDimensionsConstants.MIN_MODE_AMPLITUDE : getMaxAmp() );
-            }
-          } ) )
-
-          model.modeXAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
-            changeSelectorRectProgress( xSelector, amplitude );
-          } );
-          model.modeYAmplitudeProperty[ row ][ col ].link( ( amplitude ) => {
-            changeSelectorRectProgress( ySelector, amplitude );
-          } );
+          selectorRects[ i ] = new AmpSelectorRectNode( {
+            rectGridSize: RECT_GRID_UNITS,
+            paddingGridSize: PADDING_GRID_UNITS,
+          }, model, row, col, ampAxisProperty, maxAmpProperty, gridSizeProperty );
         }
         
         const selectorBox = new Rectangle( { 
-          children: selectorRects[ model.ampSelectorAxisProperty.get() ],
+          children: selectorRects,
           rectHeight: PANEL_SIZE,
           rectWidth: PANEL_SIZE
         } );
 
         const rightMargin = new HStrut( 15 + PANEL_X_MARGIN );
+        const leftMargin = new HStrut( PANEL_X_MARGIN );
 
         const contentNode = new HBox( {
           spacing: 0,
           align: 'center',
-          children: [ ampSelectorAxisRadioButtonGroup, selectorBox, rightMargin ]
+          children: [ ampSelectorAxisRadioButtonGroup, leftMargin, selectorBox, rightMargin ]
         } );
         
         super( contentNode, options );
-        const self = this;
-        
-        this.ampProperty = new DerivedProperty( [ model.ampSelectorAxisProperty ], ( selectorAxis ) => {
-          return ( selectorAxis === model.ampSelectorAxis.VERTICAL ) ? model.modeYAmplitudeProperty : model.modeXAmplitudeProperty;
-        } );
-        const refreshSelector = function ( selectorRect, pos ) {
-          const row = Math.trunc( pos / NormalModesConstants.MAX_MASSES_ROW_LEN );
-          const col = pos % NormalModesConstants.MAX_MASSES_ROW_LEN;
-          
-          changeSelectorRectProgress( selectorRect, self.ampProperty.get()[ row ][ col ].get() );
-        }
-
-        // TODO - refactor everything 
-        const selectorsChanged = function ( numMasses ) {
-          const rects = selectorBox.children;
-
-          const gridSize = getGridSize( numMasses );
-
-          const cursor = new Vector2( gridSize, gridSize / 2 );
-
-          let j = 0;
-          let row = 0;
-          for ( ; row < numMasses; row++ ) {
-            const visibleRowEnd = j + numMasses;
-            const rowEnd = j + NormalModesConstants.MAX_MASSES_ROW_LEN;
-
-            for ( ; j < visibleRowEnd; j++ ) {
-              rects[ j ].visible = true;
-              rects[ j ].rectWidth = rects[ j ].rectHeight = RECT_GRID_UNITS * gridSize;
-
-              rects[ j ].children[ 0 ].rectWidth = rects[ j ].rectWidth;
-              refreshSelector( rects[ j ], j );
-
-              rects[ j ].left = cursor.x;
-              rects[ j ].top = cursor.y;
-              cursor.x += ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * gridSize;
-            }
-            for ( ; j < rowEnd; j++ ) {
-              rects[ j ].visible = false;
-            }
-
-            cursor.x = gridSize;
-            cursor.y += ( RECT_GRID_UNITS + PADDING_GRID_UNITS ) * gridSize;
-          }
-          for( ; j < selectorRectsLength; j++ ) rects[ j ].visible = false;
-        }
-
-        model.ampSelectorAxisProperty.link( function ( axis ) {
-          selectorBox.children = selectorRects[ axis ];
-          selectorsChanged( model.numVisibleMassesProperty.get() );
-        } );
-
-        model.numVisibleMassesProperty.link( function( numMasses ) {
-          selectorsChanged( numMasses );
-        } );
 
       }
   
